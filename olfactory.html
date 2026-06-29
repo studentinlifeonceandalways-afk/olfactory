@@ -1128,24 +1128,6 @@
             letter-spacing: 0.5px;
         }
 
-        .streak-status .status-badge {
-            padding: 4px 14px;
-            border-radius: 20px;
-            font-size: 12px;
-            font-weight: 600;
-            display: inline-block;
-        }
-
-        .status-badge.logged {
-            background: #1a1a1a;
-            color: #ffffff;
-        }
-
-        .status-badge.not-logged {
-            background: #e0e0e0;
-            color: #666;
-        }
-
         .last-used {
             margin-top: 10px;
             font-size: 12px;
@@ -1230,6 +1212,74 @@
             color: #888;
             font-size: 13px;
             padding: 12px 0;
+        }
+
+        /* ============================================
+                   PROFILE PROMPT BANNER
+                ============================================ */
+        .profile-prompt {
+            background: linear-gradient(135deg, #f8f4ff, #f0e8ff);
+            border: 1px solid #d4c4e8;
+            border-radius: 12px;
+            padding: 14px 16px;
+            margin-bottom: 14px;
+            display: none;
+            align-items: center;
+            gap: 12px;
+            animation: slideDown 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .profile-prompt.show {
+            display: flex;
+        }
+
+        .profile-prompt:hover {
+            transform: scale(1.01);
+            box-shadow: 0 4px 16px rgba(106, 27, 154, 0.12);
+        }
+
+        .profile-prompt:active {
+            transform: scale(0.98);
+        }
+
+        @keyframes slideDown {
+            from { opacity: 0; transform: translateY(-20px) scale(0.95); }
+            to { opacity: 1; transform: translateY(0) scale(1); }
+        }
+
+        .profile-prompt .prompt-icon {
+            font-size: 28px;
+            flex-shrink: 0;
+        }
+
+        .profile-prompt .prompt-content {
+            flex: 1;
+        }
+
+        .profile-prompt .prompt-title {
+            font-size: 13px;
+            font-weight: 700;
+            color: #1a1a1a;
+            margin-bottom: 2px;
+        }
+
+        .profile-prompt .prompt-text {
+            font-size: 11px;
+            color: #666;
+            line-height: 1.4;
+        }
+
+        .profile-prompt .prompt-arrow {
+            font-size: 18px;
+            color: #888;
+            flex-shrink: 0;
+            transition: transform 0.3s ease;
+        }
+
+        .profile-prompt:hover .prompt-arrow {
+            transform: translateX(4px);
         }
 
         /* ============================================
@@ -2213,6 +2263,18 @@
             .profile-form .form-row {
                 grid-template-columns: 1fr;
             }
+            .profile-prompt {
+                padding: 12px 14px;
+            }
+            .profile-prompt .prompt-icon {
+                font-size: 22px;
+            }
+            .profile-prompt .prompt-title {
+                font-size: 12px;
+            }
+            .profile-prompt .prompt-text {
+                font-size: 10px;
+            }
         }
 
         @media (max-height: 700px) {
@@ -2364,6 +2426,18 @@
             .detail-item {
                 font-size: 11px;
                 padding: 4px 0;
+            }
+            .profile-prompt {
+                padding: 10px 12px;
+            }
+            .profile-prompt .prompt-icon {
+                font-size: 20px;
+            }
+            .profile-prompt .prompt-title {
+                font-size: 11px;
+            }
+            .profile-prompt .prompt-text {
+                font-size: 10px;
             }
         }
 
@@ -2706,6 +2780,16 @@
                     </div>
                 </div>
 
+                <!-- ===== PROFILE PROMPT BANNER ===== -->
+                <div class="profile-prompt" id="profilePrompt">
+                    <span class="prompt-icon">👤</span>
+                    <div class="prompt-content">
+                        <div class="prompt-title">Complete Your Profile</div>
+                        <div class="prompt-text">Add your personal details for better clinical tracking</div>
+                    </div>
+                    <span class="prompt-arrow">→</span>
+                </div>
+
                 <!-- ===== DATE DETAIL VIEW ===== -->
                 <div class="date-detail-section" id="dateDetailSection">
                     <div class="detail-header">
@@ -2723,9 +2807,6 @@
                         <div class="streak-circle">
                             <span class="streak-number" id="streakCount">0</span>
                             <span class="streak-label">Uses Today</span>
-                        </div>
-                        <div class="streak-status">
-                            <span class="status-badge" id="statusBadge">⚪ No usage today</span>
                         </div>
                     </div>
                     <div class="last-used">
@@ -3002,6 +3083,9 @@
             const profileCountry = document.getElementById('profileCountry');
             const profileCondition = document.getElementById('profileCondition');
 
+            // Profile Prompt Elements
+            const profilePrompt = document.getElementById('profilePrompt');
+
             // Date Detail Elements
             const dateDetailSection = document.getElementById('dateDetailSection');
             const detailDateTitle = document.getElementById('detailDateTitle');
@@ -3010,7 +3094,6 @@
 
             const streakCountEl = document.getElementById('streakCount');
             const lastUsedDateEl = document.getElementById('lastUsedDate');
-            const statusBadge = document.getElementById('statusBadge');
             const logUsageBtn = document.getElementById('logUsageBtn');
             const resetBtn = document.getElementById('resetBtn');
             const exportBtn = document.getElementById('exportBtn');
@@ -3041,6 +3124,8 @@
             let pendingLogEntry = null;
             let isLoggingInProgress = false;
             let cart = [];
+            let isProfilePromptDismissed = false;
+            let hasProfileBeenShown = false;
 
             // ============================================================
             //  DATE DETAIL FUNCTIONS
@@ -3099,6 +3184,8 @@
                 loadProfileData();
                 profileOverlay.classList.add('active');
                 closeDropdown();
+                // Hide the prompt when profile is opened
+                hideProfilePrompt();
             }
 
             function closeProfile() {
@@ -3132,6 +3219,31 @@
                 updateUserProfile(profileData.username);
                 showToast('✅ Profile saved successfully!');
                 closeProfile();
+                // Check if profile is now complete and hide prompt if needed
+                checkProfileComplete();
+            }
+
+            function checkProfileComplete() {
+                const profileData = JSON.parse(localStorage.getItem('user_profile') || '{}');
+                const isComplete = profileData.fullName && profileData.fullName.trim() !== '' &&
+                                  profileData.email && profileData.email.trim() !== '';
+                if (isComplete) {
+                    hideProfilePrompt();
+                } else {
+                    // Only show prompt if not dismissed and user is logged in
+                    if (!isProfilePromptDismissed && isLoggedIn && isQuestionnaireComplete) {
+                        showProfilePrompt();
+                    }
+                }
+            }
+
+            function showProfilePrompt() {
+                profilePrompt.classList.add('show');
+            }
+
+            function hideProfilePrompt() {
+                profilePrompt.classList.remove('show');
+                isProfilePromptDismissed = true;
             }
 
             // ============================================================
@@ -3162,11 +3274,13 @@
                     closeDropdown();
                     isLoggedIn = false;
                     isQuestionnaireComplete = false;
+                    hasProfileBeenShown = false;
                     appContainer.classList.remove('show');
                     loginScreen.classList.remove('hidden');
                     questionnaireScreen.classList.add('hidden');
                     usernameInput.value = 'patient_001';
                     passwordInput.value = 'smell2024';
+                    hideProfilePrompt();
                     showToast('👋 Logged out successfully');
                 }
             }
@@ -3580,6 +3694,25 @@
                     document.getElementById('profileCondition').value = selectedCondition;
                 }
                 
+                // Check if profile is complete and show prompt/overlay if needed
+                const profileData = JSON.parse(localStorage.getItem('user_profile') || '{}');
+                const isComplete = profileData.fullName && profileData.fullName.trim() !== '' &&
+                                  profileData.email && profileData.email.trim() !== '';
+                
+                // Show profile popup for first-time users
+                if (!isComplete && !hasProfileBeenShown && isLoggedIn) {
+                    hasProfileBeenShown = true;
+                    setTimeout(() => {
+                        openProfile();
+                        showToast('👤 Welcome! Please complete your profile');
+                    }, 1200);
+                } else if (!isComplete && !isProfilePromptDismissed) {
+                    setTimeout(() => {
+                        showProfilePrompt();
+                        showToast('👤 Please complete your profile for better tracking');
+                    }, 800);
+                }
+                
                 showToast('🔬 Assessment complete. Begin tracking!');
                 createWelcomeEffect();
                 
@@ -3605,6 +3738,25 @@
                     renderProducts();
                     updateCartUI();
                     loadProfileData();
+                    
+                    // Check if profile is complete and show prompt/overlay if needed
+                    const profileData = JSON.parse(localStorage.getItem('user_profile') || '{}');
+                    const isComplete = profileData.fullName && profileData.fullName.trim() !== '' &&
+                                      profileData.email && profileData.email.trim() !== '';
+                    
+                    if (!isComplete && !hasProfileBeenShown && isLoggedIn) {
+                        hasProfileBeenShown = true;
+                        setTimeout(() => {
+                            openProfile();
+                            showToast('👤 Welcome! Please complete your profile');
+                        }, 1200);
+                    } else if (!isComplete && !isProfilePromptDismissed) {
+                        setTimeout(() => {
+                            showProfilePrompt();
+                            showToast('👤 Please complete your profile for better tracking');
+                        }, 800);
+                    }
+                    
                     showToast('⏭ Assessment skipped. Begin tracking!');
                     createWelcomeEffect();
                     localStorage.setItem('perfume_answers', JSON.stringify({ country: '', condition: '', answers: [] }));
@@ -3682,6 +3834,11 @@
                 if (e.target === this) {
                     closeProfile();
                 }
+            });
+
+            // Profile prompt click handler
+            profilePrompt.addEventListener('click', function() {
+                openProfile();
             });
 
             // ============================================================
@@ -3962,18 +4119,8 @@
                     const countryDisplay = lastEntry.country ? ' • ' + lastEntry.country : '';
                     const notesDisplay = lastEntry.notes ? ' • 📝 ' + lastEntry.notes : '';
                     lastUsedDateEl.textContent = formatDate(lastDate) + ' at ' + formatTime(lastDate) + countryDisplay + ratingDisplay + notesDisplay;
-
-                    if (isToday(lastDate)) {
-                        statusBadge.textContent = '● ' + dailyUsageCount + ' uses today';
-                        statusBadge.className = 'status-badge logged';
-                    } else {
-                        statusBadge.textContent = '○ No usage today';
-                        statusBadge.className = 'status-badge not-logged';
-                    }
                 } else {
                     lastUsedDateEl.textContent = 'Never';
-                    statusBadge.textContent = '○ No usage logged';
-                    statusBadge.className = 'status-badge not-logged';
                 }
 
                 totalUsesEl.textContent = usageHistory.length;

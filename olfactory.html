@@ -293,6 +293,134 @@
             margin: 12px auto 0;
         }
 
+        /* Signup link */
+        .signup-link {
+            margin-top: 16px;
+            font-size: 13px;
+            color: #888;
+        }
+        .signup-link a {
+            color: #fff;
+            font-weight: 600;
+            text-decoration: none;
+            border-bottom: 1px solid rgba(255,255,255,0.2);
+            transition: border-color 0.3s;
+        }
+        .signup-link a:hover {
+            border-bottom-color: #fff;
+        }
+
+        /* Signup overlay */
+        .signup-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.8);
+            backdrop-filter: blur(6px);
+            -webkit-backdrop-filter: blur(6px);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 400;
+            animation: fadeInOverlay 0.3s ease;
+        }
+        .signup-overlay.active {
+            display: flex;
+        }
+
+        .signup-popup {
+            background: #1a1a1a;
+            border-radius: 24px;
+            padding: 28px 24px;
+            max-width: 360px;
+            width: 92%;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.6);
+            animation: slideUp 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            border: 1px solid rgba(255,255,255,0.06);
+        }
+        .signup-popup h2 {
+            color: #fff;
+            font-size: 22px;
+            font-weight: 700;
+            margin-bottom: 4px;
+        }
+        .signup-popup .sub {
+            color: #888;
+            font-size: 13px;
+            margin-bottom: 20px;
+        }
+        .signup-popup .input-group {
+            margin-bottom: 14px;
+        }
+        .signup-popup .input-group label {
+            display: block;
+            font-size: 11px;
+            font-weight: 600;
+            color: #888;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 4px;
+        }
+        .signup-popup .input-group input {
+            width: 100%;
+            padding: 12px 14px;
+            background: rgba(255,255,255,0.04);
+            border: 1.5px solid rgba(255,255,255,0.08);
+            border-radius: 10px;
+            color: #fff;
+            font-size: 15px;
+            outline: none;
+            transition: border 0.3s;
+        }
+        .signup-popup .input-group input:focus {
+            border-color: rgba(255,255,255,0.3);
+        }
+        .signup-popup .btn-signup {
+            width: 100%;
+            padding: 14px;
+            background: #fff;
+            color: #0a0a0a;
+            border: none;
+            border-radius: 10px;
+            font-size: 15px;
+            font-weight: 700;
+            cursor: pointer;
+            margin-top: 8px;
+            transition: all 0.3s;
+        }
+        .signup-popup .btn-signup:hover {
+            background: #eee;
+            transform: scale(1.01);
+        }
+        .signup-popup .btn-close-signup {
+            background: transparent;
+            border: none;
+            color: #888;
+            font-size: 24px;
+            position: absolute;
+            top: 16px;
+            right: 20px;
+            cursor: pointer;
+            transition: color 0.3s;
+        }
+        .signup-popup .btn-close-signup:hover {
+            color: #fff;
+        }
+        .signup-popup .signup-footer {
+            margin-top: 16px;
+            font-size: 12px;
+            color: #666;
+            text-align: center;
+        }
+        .signup-popup .signup-footer a {
+            color: #fff;
+            font-weight: 600;
+            text-decoration: none;
+            border-bottom: 1px solid rgba(255,255,255,0.15);
+        }
+
         /* ============================================
                    QUESTIONNAIRE SCREEN
                 ============================================ */
@@ -2505,6 +2633,11 @@
                 </button>
             </form>
 
+            <!-- SIGNUP LINK (new) -->
+            <div class="signup-link">
+                Don't have an account? <a href="#" id="showSignupLink">Sign up</a>
+            </div>
+
             <div class="login-footer">
                 <p class="disclaimer">
                     <strong>🔒 Protected Health Information</strong><br />
@@ -2512,6 +2645,37 @@
                     All information is encrypted and secure.
                 </p>
                 <div class="decorative-line"></div>
+            </div>
+        </div>
+
+        <!-- ===== SIGNUP OVERLAY (new) ===== -->
+        <div class="signup-overlay" id="signupOverlay">
+            <div class="signup-popup" style="position:relative;">
+                <button class="btn-close-signup" id="closeSignupBtn">✕</button>
+                <h2>Create Account</h2>
+                <p class="sub">Join the olfactory health community</p>
+                <form id="signupForm" onsubmit="return false;">
+                    <div class="input-group">
+                        <label>Full Name</label>
+                        <input type="text" id="signupName" placeholder="John Doe" />
+                    </div>
+                    <div class="input-group">
+                        <label>Email</label>
+                        <input type="email" id="signupEmail" placeholder="john@example.com" />
+                    </div>
+                    <div class="input-group">
+                        <label>Username</label>
+                        <input type="text" id="signupUsername" placeholder="Choose a username" />
+                    </div>
+                    <div class="input-group">
+                        <label>Password</label>
+                        <input type="password" id="signupPassword" placeholder="Create a password" />
+                    </div>
+                    <button type="submit" class="btn-signup" id="signupBtn">Sign Up</button>
+                </form>
+                <div class="signup-footer">
+                    Already have an account? <a href="#" id="gotoLoginLink">Log in</a>
+                </div>
             </div>
         </div>
 
@@ -2530,69 +2694,7 @@
 
                 <div class="country-select-wrapper" id="countrySelectWrapper">
                     <select id="countrySelect" class="country-select">
-                        <option value="">Select your country...</option>
-                        <option value="Afghanistan">Afghanistan</option>
-                        <option value="Albania">Albania</option>
-                        <option value="Algeria">Algeria</option>
-                        <option value="Argentina">Argentina</option>
-                        <option value="Australia">Australia</option>
-                        <option value="Austria">Austria</option>
-                        <option value="Bangladesh">Bangladesh</option>
-                        <option value="Belgium">Belgium</option>
-                        <option value="Brazil">Brazil</option>
-                        <option value="Canada">Canada</option>
-                        <option value="China">China</option>
-                        <option value="Colombia">Colombia</option>
-                        <option value="Croatia">Croatia</option>
-                        <option value="Cuba">Cuba</option>
-                        <option value="Czech Republic">Czech Republic</option>
-                        <option value="Denmark">Denmark</option>
-                        <option value="Egypt">Egypt</option>
-                        <option value="Finland">Finland</option>
-                        <option value="France">France</option>
-                        <option value="Germany">Germany</option>
-                        <option value="Greece">Greece</option>
-                        <option value="Hong Kong">Hong Kong</option>
-                        <option value="Hungary">Hungary</option>
-                        <option value="Iceland">Iceland</option>
-                        <option value="India">India</option>
-                        <option value="Indonesia">Indonesia</option>
-                        <option value="Iran">Iran</option>
-                        <option value="Iraq">Iraq</option>
-                        <option value="Ireland">Ireland</option>
-                        <option value="Israel">Israel</option>
-                        <option value="Italy">Italy</option>
-                        <option value="Japan">Japan</option>
-                        <option value="Kenya">Kenya</option>
-                        <option value="Malaysia">Malaysia</option>
-                        <option value="Mexico">Mexico</option>
-                        <option value="Netherlands">Netherlands</option>
-                        <option value="New Zealand">New Zealand</option>
-                        <option value="Nigeria">Nigeria</option>
-                        <option value="Norway">Norway</option>
-                        <option value="Pakistan">Pakistan</option>
-                        <option value="Peru">Peru</option>
-                        <option value="Philippines">Philippines</option>
-                        <option value="Poland">Poland</option>
-                        <option value="Portugal">Portugal</option>
-                        <option value="Romania">Romania</option>
-                        <option value="Russia">Russia</option>
-                        <option value="Saudi Arabia">Saudi Arabia</option>
-                        <option value="Singapore">Singapore</option>
-                        <option value="South Africa">South Africa</option>
-                        <option value="South Korea">South Korea</option>
-                        <option value="Spain">Spain</option>
-                        <option value="Sweden">Sweden</option>
-                        <option value="Switzerland">Switzerland</option>
-                        <option value="Taiwan">Taiwan</option>
-                        <option value="Thailand">Thailand</option>
-                        <option value="Turkey">Turkey</option>
-                        <option value="Ukraine">Ukraine</option>
-                        <option value="United Arab Emirates">United Arab Emirates</option>
-                        <option value="United Kingdom">United Kingdom</option>
-                        <option value="United States">United States</option>
-                        <option value="Venezuela">Venezuela</option>
-                        <option value="Vietnam">Vietnam</option>
+                        <!-- populated from JS -->
                     </select>
                 </div>
 
@@ -2721,15 +2823,7 @@
                     <div class="form-group">
                         <label>Country</label>
                         <select id="profileCountry">
-                            <option value="">Select your country</option>
-                            <option value="United States">United States</option>
-                            <option value="Canada">Canada</option>
-                            <option value="United Kingdom">United Kingdom</option>
-                            <option value="Australia">Australia</option>
-                            <option value="Germany">Germany</option>
-                            <option value="France">France</option>
-                            <option value="India">India</option>
-                            <option value="Other">Other</option>
+                            <!-- populated from JS -->
                         </select>
                     </div>
                     <div class="form-group">
@@ -2913,6 +3007,23 @@
             'use strict';
 
             // ============================================================
+            //  COUNTRY LIST (shared between quiz and profile)
+            // ============================================================
+            const countryList = [
+                "Afghanistan", "Albania", "Algeria", "Argentina", "Australia", "Austria",
+                "Bangladesh", "Belgium", "Brazil", "Canada", "China", "Colombia",
+                "Croatia", "Cuba", "Czech Republic", "Denmark", "Egypt", "Finland",
+                "France", "Germany", "Greece", "Hong Kong", "Hungary", "Iceland",
+                "India", "Indonesia", "Iran", "Iraq", "Ireland", "Israel",
+                "Italy", "Japan", "Kenya", "Malaysia", "Mexico", "Netherlands",
+                "New Zealand", "Nigeria", "Norway", "Pakistan", "Peru", "Philippines",
+                "Poland", "Portugal", "Romania", "Russia", "Saudi Arabia", "Singapore",
+                "South Africa", "South Korea", "Spain", "Sweden", "Switzerland",
+                "Taiwan", "Thailand", "Turkey", "Ukraine", "United Arab Emirates",
+                "United Kingdom", "United States", "Venezuela", "Vietnam"
+            ];
+
+            // ============================================================
             //  PRODUCT DATA
             // ============================================================
             const products = [{
@@ -2976,7 +3087,7 @@
             }
 
             // ============================================================
-            //  QUESTIONNAIRE DATA - FIXED: Proper index handling for condition
+            //  QUESTIONNAIRE DATA
             // ============================================================
             const questions = [{
                 id: 1,
@@ -3030,6 +3141,17 @@
             const loginBtn = document.getElementById('loginBtn');
             const usernameInput = document.getElementById('usernameInput');
             const passwordInput = document.getElementById('passwordInput');
+
+            // Signup elements
+            const signupOverlay = document.getElementById('signupOverlay');
+            const showSignupLink = document.getElementById('showSignupLink');
+            const closeSignupBtn = document.getElementById('closeSignupBtn');
+            const gotoLoginLink = document.getElementById('gotoLoginLink');
+            const signupBtn = document.getElementById('signupBtn');
+            const signupName = document.getElementById('signupName');
+            const signupEmail = document.getElementById('signupEmail');
+            const signupUsername = document.getElementById('signupUsername');
+            const signupPassword = document.getElementById('signupPassword');
 
             const progressBar = document.getElementById('progressBar');
             const progressText = document.getElementById('progressText');
@@ -3128,19 +3250,95 @@
             let hasProfileBeenShown = false;
 
             // ============================================================
+            //  POPULATE COUNTRY DROPDOWNS (shared)
+            // ============================================================
+            function populateCountryDropdowns() {
+                // Quiz country select
+                const quizSelect = countrySelect;
+                quizSelect.innerHTML = '<option value="">Select your country...</option>';
+                countryList.forEach(c => {
+                    const opt = document.createElement('option');
+                    opt.value = c;
+                    opt.textContent = c;
+                    quizSelect.appendChild(opt);
+                });
+                if (selectedCountry) {
+                    quizSelect.value = selectedCountry;
+                }
+
+                // Profile country select
+                const profileSelect = profileCountry;
+                profileSelect.innerHTML = '<option value="">Select your country...</option>';
+                countryList.forEach(c => {
+                    const opt = document.createElement('option');
+                    opt.value = c;
+                    opt.textContent = c;
+                    profileSelect.appendChild(opt);
+                });
+                // Sync with profile data or selectedCountry
+                const profileData = JSON.parse(localStorage.getItem('user_profile') || '{}');
+                if (profileData.country) {
+                    profileSelect.value = profileData.country;
+                } else if (selectedCountry) {
+                    profileSelect.value = selectedCountry;
+                }
+            }
+
+            // ============================================================
+            //  SIGNUP FUNCTIONS
+            // ============================================================
+            function openSignup() {
+                signupOverlay.classList.add('active');
+            }
+
+            function closeSignup() {
+                signupOverlay.classList.remove('active');
+                signupName.value = '';
+                signupEmail.value = '';
+                signupUsername.value = '';
+                signupPassword.value = '';
+            }
+
+            function handleSignup(e) {
+                e.preventDefault();
+                const name = signupName.value.trim();
+                const email = signupEmail.value.trim();
+                const username = signupUsername.value.trim();
+                const password = signupPassword.value.trim();
+
+                if (!name || !email || !username || !password) {
+                    showToast('⚠️ Please fill in all fields');
+                    return;
+                }
+                if (!email.includes('@')) {
+                    showToast('⚠️ Please enter a valid email');
+                    return;
+                }
+                if (password.length < 4) {
+                    showToast('⚠️ Password must be at least 4 characters');
+                    return;
+                }
+
+                showToast('✅ Account created! Please login.');
+                closeSignup();
+                usernameInput.value = username;
+                passwordInput.value = password;
+                setTimeout(() => {
+                    handleLogin();
+                }, 300);
+            }
+
+            // ============================================================
             //  DATE DETAIL FUNCTIONS
             // ============================================================
             function showDateDetail(date) {
-                const dateStr = date.toDateString();
                 const logs = getLogsForDate(date, usageHistory);
-                
                 detailDateTitle.textContent = '📅 ' + date.toLocaleDateString('en-US', {
                     weekday: 'long',
                     year: 'numeric',
                     month: 'long',
                     day: 'numeric'
                 });
-                
                 if (logs.length === 0) {
                     detailContent.innerHTML = '<div class="detail-no-data">No logs found for this date</div>';
                 } else {
@@ -3152,7 +3350,6 @@
                         const starsStr = log.rating ? '★'.repeat(log.rating) + '☆'.repeat(5 - log.rating) : 'N/A';
                         const countryStr = log.country || 'Unknown';
                         const notesStr = log.notes || '';
-                        
                         html += `
                             <div class="detail-item">
                                 <span class="detail-label">#${index + 1} • ${timeStr}</span>
@@ -3167,9 +3364,7 @@
                     });
                     detailContent.innerHTML = html;
                 }
-                
                 dateDetailSection.classList.add('active');
-                // Scroll to the detail section
                 dateDetailSection.scrollIntoView({ behavior: 'smooth', block: 'center' });
             }
 
@@ -3184,7 +3379,6 @@
                 loadProfileData();
                 profileOverlay.classList.add('active');
                 closeDropdown();
-                // Hide the prompt when profile is opened
                 hideProfilePrompt();
             }
 
@@ -3198,8 +3392,14 @@
                 profileFullName.value = profileData.fullName || '';
                 profileEmail.value = profileData.email || '';
                 profilePhone.value = profileData.phone || '';
-                profileCountry.value = profileData.country || '';
-                // Set condition from profile or use selectedCondition
+                // Set country: from profile, then from selectedCountry, then empty
+                if (profileData.country) {
+                    profileCountry.value = profileData.country;
+                } else if (selectedCountry) {
+                    profileCountry.value = selectedCountry;
+                } else {
+                    profileCountry.value = '';
+                }
                 const conditionValue = profileData.condition || selectedCondition || '';
                 profileCondition.value = conditionValue;
                 const initial = (profileData.fullName || currentUser).charAt(0).toUpperCase();
@@ -3216,10 +3416,15 @@
                     condition: profileCondition.value
                 };
                 localStorage.setItem('user_profile', JSON.stringify(profileData));
+                // Also sync selectedCountry if profile country is set
+                if (profileData.country) {
+                    selectedCountry = profileData.country;
+                    // Update quiz dropdown as well
+                    countrySelect.value = selectedCountry;
+                }
                 updateUserProfile(profileData.username);
                 showToast('✅ Profile saved successfully!');
                 closeProfile();
-                // Check if profile is now complete and hide prompt if needed
                 checkProfileComplete();
             }
 
@@ -3230,7 +3435,6 @@
                 if (isComplete) {
                     hideProfilePrompt();
                 } else {
-                    // Only show prompt if not dismissed and user is logged in
                     if (!isProfilePromptDismissed && isLoggedIn && isQuestionnaireComplete) {
                         showProfilePrompt();
                     }
@@ -3315,7 +3519,6 @@
                     checkoutItems.innerHTML = html;
                     checkoutTotal.textContent = '$' + total.toFixed(2);
                     checkoutSubmitBtn.disabled = false;
-
                     document.querySelectorAll('.item-remove').forEach(btn => {
                         btn.addEventListener('click', function() {
                             const index = parseInt(this.dataset.index);
@@ -3343,7 +3546,6 @@
                     cart.push({ ...product });
                     updateCartUI();
                     showCartToast(`🛒 Added ${product.name} to cart!`);
-                    
                     const btn = document.querySelector(`.btn-add-cart[data-id="${productId}"]`);
                     if (btn) {
                         btn.textContent = '✓ Added';
@@ -3387,35 +3589,28 @@
                 const card = checkoutCard.value.trim();
                 const expiry = checkoutExpiry.value.trim();
                 const cvv = checkoutCVV.value.trim();
-
                 if (!name || !email || !card || !expiry || !cvv) {
                     showToast('⚠️ Please fill in all fields');
                     return;
                 }
-
                 if (!email.includes('@')) {
                     showToast('⚠️ Please enter a valid email');
                     return;
                 }
-
                 if (card.replace(/\s/g, '').length < 16) {
                     showToast('⚠️ Please enter a valid card number');
                     return;
                 }
-
                 if (expiry.length < 5) {
                     showToast('⚠️ Please enter a valid expiry date (MM/YY)');
                     return;
                 }
-
                 if (cvv.length < 3) {
                     showToast('⚠️ Please enter a valid CVV');
                     return;
                 }
-
                 checkoutSubmitBtn.textContent = 'Processing...';
                 checkoutSubmitBtn.disabled = true;
-
                 setTimeout(() => {
                     const total = cart.reduce((sum, item) => sum + item.price, 0);
                     showToast(`✅ Purchase complete! Thank you, ${name}! Total: $${total.toFixed(2)}`);
@@ -3432,7 +3627,6 @@
                 }, 2000);
             }
 
-            // Card number formatting
             checkoutCard.addEventListener('input', function() {
                 let value = this.value.replace(/\D/g, '');
                 if (value.length > 16) value = value.slice(0, 16);
@@ -3477,7 +3671,6 @@
                         </div>
                     `;
                 }).join('');
-
                 document.querySelectorAll('.btn-add-cart').forEach(btn => {
                     btn.addEventListener('click', function() {
                         const productId = parseInt(this.dataset.id);
@@ -3499,7 +3692,7 @@
             });
 
             // ============================================================
-            //  QUESTIONNAIRE FUNCTIONS - FIXED: Proper index handling
+            //  QUESTIONNAIRE FUNCTIONS
             // ============================================================
             function renderQuestion(index) {
                 const q = questions[index];
@@ -3516,60 +3709,43 @@
                     }
                     nextQuestionBtn.disabled = !selectedCountry;
                 } else if (q.type === 'condition') {
-                    // Show condition options with full text values
                     optionsContainer.style.display = 'flex';
                     const letters = ['A', 'B', 'C', 'D', 'E', 'F'];
                     optionsContainer.innerHTML = q.options.map((opt, i) => {
-                        const optionValue = opt;
                         return `
-                            <button class="option-btn" data-index="${i}" data-value="${optionValue}">
+                            <button class="option-btn" data-index="${i}" data-value="${opt}">
                                 <span class="option-letter">${letters[i]}</span>
                                 <span class="option-text">${opt}</span>
                             </button>
                         `;
                     }).join('');
-
                     document.querySelectorAll('.option-btn').forEach(btn => {
                         btn.addEventListener('click', function() {
-                            // Remove selected class from all buttons
                             document.querySelectorAll('.option-btn').forEach(b => b.classList.remove('selected'));
-                            // Add selected class to clicked button
                             this.classList.add('selected');
                             const clickedIndex = parseInt(this.dataset.index);
                             const value = this.dataset.value;
-                            // Store the selection at the correct index
                             selectedAnswers[index] = clickedIndex;
                             selectedCondition = value;
-                            // Update the condition in profile data immediately
                             const profileData = JSON.parse(localStorage.getItem('user_profile') || '{}');
                             profileData.condition = value;
                             localStorage.setItem('user_profile', JSON.stringify(profileData));
-                            // Also update the profile condition dropdown
                             const profileCond = document.getElementById('profileCondition');
-                            if (profileCond) {
-                                profileCond.value = value;
-                            }
-                            // Enable the next button
+                            if (profileCond) profileCond.value = value;
                             nextQuestionBtn.disabled = false;
                         });
                     });
-
-                    // Check if we already have a selected condition from previous selections
                     let hasSelection = false;
                     if (selectedCondition) {
-                        const btns = document.querySelectorAll('.option-btn');
-                        btns.forEach((btn) => {
+                        document.querySelectorAll('.option-btn').forEach(btn => {
                             if (btn.dataset.value === selectedCondition) {
                                 btn.classList.add('selected');
                                 hasSelection = true;
                             }
                         });
                     }
-                    
-                    // If no selection yet, check if there's a stored answer at this index
                     if (!hasSelection && selectedAnswers[index] !== undefined) {
-                        const btns = document.querySelectorAll('.option-btn');
-                        btns.forEach((btn, i) => {
+                        document.querySelectorAll('.option-btn').forEach((btn, i) => {
                             if (i === selectedAnswers[index]) {
                                 btn.classList.add('selected');
                                 selectedCondition = btn.dataset.value;
@@ -3577,12 +3753,8 @@
                             }
                         });
                     }
-                    
-                    // Enable or disable next button based on selection
                     nextQuestionBtn.disabled = !hasSelection;
-                    
                 } else {
-                    // Regular options
                     optionsContainer.style.display = 'flex';
                     const letters = ['A', 'B', 'C', 'D'];
                     optionsContainer.innerHTML = q.options.map((opt, i) => `
@@ -3591,7 +3763,6 @@
                                 <span class="option-text">${opt}</span>
                             </button>
                         `).join('');
-
                     document.querySelectorAll('.option-btn').forEach(btn => {
                         btn.addEventListener('click', function() {
                             document.querySelectorAll('.option-btn').forEach(b => b.classList.remove('selected'));
@@ -3600,13 +3771,9 @@
                             nextQuestionBtn.disabled = false;
                         });
                     });
-
                     if (selectedAnswers[index] !== undefined) {
-                        const btns = document.querySelectorAll('.option-btn');
-                        btns.forEach((btn, i) => {
-                            if (i === selectedAnswers[index]) {
-                                btn.classList.add('selected');
-                            }
+                        document.querySelectorAll('.option-btn').forEach((btn, i) => {
+                            if (i === selectedAnswers[index]) btn.classList.add('selected');
                         });
                         nextQuestionBtn.disabled = false;
                     } else {
@@ -3619,19 +3786,9 @@
                 progressText.textContent = `Question ${index + 1} of ${questions.length}`;
 
                 if (index === questions.length - 1) {
-                    nextQuestionBtn.innerHTML = `
-                            <span class="btn-content">
-                                <span>✨ Complete Assessment</span>
-                                <span>→</span>
-                            </span>
-                        `;
+                    nextQuestionBtn.innerHTML = `<span class="btn-content"><span>✨ Complete Assessment</span><span>→</span></span>`;
                 } else {
-                    nextQuestionBtn.innerHTML = `
-                            <span class="btn-content">
-                                <span>Next Question</span>
-                                <span>→</span>
-                            </span>
-                        `;
+                    nextQuestionBtn.innerHTML = `<span class="btn-content"><span>Next Question</span><span>→</span></span>`;
                 }
             }
 
@@ -3640,6 +3797,12 @@
                 if (selectedCountry) {
                     selectedAnswers[0] = selectedCountry;
                     nextQuestionBtn.disabled = false;
+                    // Also update profile country dropdown
+                    profileCountry.value = selectedCountry;
+                    // Save to profile
+                    const profileData = JSON.parse(localStorage.getItem('user_profile') || '{}');
+                    profileData.country = selectedCountry;
+                    localStorage.setItem('user_profile', JSON.stringify(profileData));
                 } else {
                     nextQuestionBtn.disabled = true;
                 }
@@ -3647,8 +3810,6 @@
 
             function goToNextQuestion() {
                 const q = questions[currentQuestionIndex];
-                
-                // Check if the current question is answered
                 if (q.type === 'country') {
                     if (!selectedCountry) {
                         showToast('⚠️ Please select your country');
@@ -3665,7 +3826,6 @@
                         return;
                     }
                 }
-
                 if (currentQuestionIndex === questions.length - 1) {
                     completeQuestionnaire();
                 } else {
@@ -3684,22 +3844,22 @@
                 renderProducts();
                 updateCartUI();
                 loadProfileData();
-                
-                // Save condition to profile if not already saved
                 if (selectedCondition) {
                     const profileData = JSON.parse(localStorage.getItem('user_profile') || '{}');
                     profileData.condition = selectedCondition;
                     localStorage.setItem('user_profile', JSON.stringify(profileData));
-                    // Update profile condition dropdown
                     document.getElementById('profileCondition').value = selectedCondition;
                 }
-                
-                // Check if profile is complete and show prompt/overlay if needed
+                // Sync country to profile
+                if (selectedCountry) {
+                    const profileData = JSON.parse(localStorage.getItem('user_profile') || '{}');
+                    profileData.country = selectedCountry;
+                    localStorage.setItem('user_profile', JSON.stringify(profileData));
+                    profileCountry.value = selectedCountry;
+                }
                 const profileData = JSON.parse(localStorage.getItem('user_profile') || '{}');
                 const isComplete = profileData.fullName && profileData.fullName.trim() !== '' &&
                                   profileData.email && profileData.email.trim() !== '';
-                
-                // Show profile popup for first-time users
                 if (!isComplete && !hasProfileBeenShown && isLoggedIn) {
                     hasProfileBeenShown = true;
                     setTimeout(() => {
@@ -3712,14 +3872,12 @@
                         showToast('👤 Please complete your profile for better tracking');
                     }, 800);
                 }
-                
                 showToast('🔬 Assessment complete. Begin tracking!');
                 createWelcomeEffect();
-                
                 const answersData = {
                     country: selectedCountry,
                     condition: selectedCondition,
-                    answers: selectedAnswers.slice(2) // Skip country and condition
+                    answers: selectedAnswers.slice(2)
                 };
                 localStorage.setItem('perfume_answers', JSON.stringify(answersData));
             }
@@ -3738,12 +3896,9 @@
                     renderProducts();
                     updateCartUI();
                     loadProfileData();
-                    
-                    // Check if profile is complete and show prompt/overlay if needed
                     const profileData = JSON.parse(localStorage.getItem('user_profile') || '{}');
                     const isComplete = profileData.fullName && profileData.fullName.trim() !== '' &&
                                       profileData.email && profileData.email.trim() !== '';
-                    
                     if (!isComplete && !hasProfileBeenShown && isLoggedIn) {
                         hasProfileBeenShown = true;
                         setTimeout(() => {
@@ -3756,7 +3911,6 @@
                             showToast('👤 Please complete your profile for better tracking');
                         }, 800);
                     }
-                    
                     showToast('⏭ Assessment skipped. Begin tracking!');
                     createWelcomeEffect();
                     localStorage.setItem('perfume_answers', JSON.stringify({ country: '', condition: '', answers: [] }));
@@ -3780,29 +3934,25 @@
             function handleLogin() {
                 const username = usernameInput.value.trim();
                 const password = passwordInput.value.trim();
-
                 if (!username || !password) {
                     showToast('⚠️ Please enter both Patient ID and Access Code');
                     return;
                 }
-
                 loginBtn.classList.add('loading');
                 loginBtn.disabled = true;
-
                 setTimeout(() => {
                     loginScreen.classList.add('hidden');
                     isLoggedIn = true;
-
                     loginBtn.classList.remove('loading');
                     loginBtn.disabled = false;
-
                     questionnaireScreen.classList.remove('hidden');
                     currentQuestionIndex = 0;
                     selectedAnswers = [];
                     selectedCountry = '';
                     selectedCondition = '';
+                    // Populate country dropdowns before rendering
+                    populateCountryDropdowns();
                     renderQuestion(0);
-
                     showToast('📝 Please complete the olfactory assessment');
                 }, 1200);
             }
@@ -3829,14 +3979,10 @@
             profileCloseBtn.addEventListener('click', closeProfile);
             profileSaveBtn.addEventListener('click', saveProfileData);
 
-            // Close profile on overlay click
             profileOverlay.addEventListener('click', function(e) {
-                if (e.target === this) {
-                    closeProfile();
-                }
+                if (e.target === this) closeProfile();
             });
 
-            // Profile prompt click handler
             profilePrompt.addEventListener('click', function() {
                 openProfile();
             });
@@ -3855,10 +4001,7 @@
                 ratingNotes.value = '';
                 charCount.textContent = '0';
                 ratingOverlay.classList.add('active');
-                
-                document.querySelectorAll('.rating-star-btn').forEach(btn => {
-                    btn.classList.remove('active');
-                });
+                document.querySelectorAll('.rating-star-btn').forEach(btn => btn.classList.remove('active'));
             }
 
             function closeRatingPopup() {
@@ -3872,19 +4015,12 @@
             ratingStarsContainer.addEventListener('click', function(e) {
                 const starBtn = e.target.closest('.rating-star-btn');
                 if (!starBtn) return;
-                
                 const value = parseInt(starBtn.dataset.value);
                 selectedRating = value;
-                
                 document.querySelectorAll('.rating-star-btn').forEach(btn => {
                     const btnValue = parseInt(btn.dataset.value);
-                    if (btnValue <= value) {
-                        btn.classList.add('active');
-                    } else {
-                        btn.classList.remove('active');
-                    }
+                    btn.classList.toggle('active', btnValue <= value);
                 });
-                
                 ratingSubmitBtn.disabled = false;
             });
 
@@ -3905,15 +4041,13 @@
             });
 
             ratingSubmitBtn.addEventListener('click', function() {
-                if (selectedRating > 0) {
-                    if (pendingLogEntry) {
-                        pendingLogEntry.rating = selectedRating;
-                        pendingLogEntry.notes = ratingNotes.value.trim() || '';
-                        saveData();
-                        updateUI();
-                        showRatingToast(selectedRating);
-                        pendingLogEntry = null;
-                    }
+                if (selectedRating > 0 && pendingLogEntry) {
+                    pendingLogEntry.rating = selectedRating;
+                    pendingLogEntry.notes = ratingNotes.value.trim() || '';
+                    saveData();
+                    updateUI();
+                    showRatingToast(selectedRating);
+                    pendingLogEntry = null;
                     closeRatingPopup();
                 }
             });
@@ -3949,20 +4083,14 @@
                 };
                 usageHistory.push(entry);
                 pendingLogEntry = entry;
-
                 const todayStr = new Date().toDateString();
-                const todayLogs = usageHistory.filter(entry => 
+                dailyUsageCount = usageHistory.filter(entry => 
                     new Date(entry.timestamp).toDateString() === todayStr
-                );
-                dailyUsageCount = todayLogs.length;
-
+                ).length;
                 saveData();
                 updateUI();
-
                 streakCountEl.classList.add('pulse');
-                setTimeout(() => {
-                    streakCountEl.classList.remove('pulse');
-                }, 400);
+                setTimeout(() => streakCountEl.classList.remove('pulse'), 400);
             }
 
             function showRatingToast(rating) {
@@ -3984,32 +4112,31 @@
                         const el = document.createElement('div');
                         el.textContent = emojis[Math.floor(Math.random() * emojis.length)];
                         el.style.cssText = `
-                                position: fixed;
-                                font-size: ${20 + Math.random() * 30}px;
-                                left: ${10 + Math.random() * 80}%;
-                                top: ${10 + Math.random() * 80}%;
-                                pointer-events: none;
-                                z-index: 999;
-                                opacity: 0;
-                                animation: floatUp 1.5s ease forwards;
-                            `;
+                            position: fixed;
+                            font-size: ${20 + Math.random() * 30}px;
+                            left: ${10 + Math.random() * 80}%;
+                            top: ${10 + Math.random() * 80}%;
+                            pointer-events: none;
+                            z-index: 999;
+                            opacity: 0;
+                            animation: floatUp 1.5s ease forwards;
+                        `;
                         document.body.appendChild(el);
                         setTimeout(() => el.remove(), 1600);
                     }, i * 100);
                 }
-
                 const style = document.createElement('style');
                 style.textContent = `
-                        @keyframes floatUp {
-                            0% { opacity: 1; transform: translateY(0) scale(1) rotate(0deg); }
-                            100% { opacity: 0; transform: translateY(-200px) scale(0.5) rotate(720deg); }
-                        }
-                    `;
+                    @keyframes floatUp {
+                        0% { opacity: 1; transform: translateY(0) scale(1) rotate(0deg); }
+                        100% { opacity: 0; transform: translateY(-200px) scale(0.5) rotate(720deg); }
+                    }
+                `;
                 document.head.appendChild(style);
             }
 
             // ============================================================
-            //  STORAGE (localStorage)
+            //  STORAGE
             // ============================================================
             function saveData() {
                 localStorage.setItem('perfume_usage_history', JSON.stringify(usageHistory));
@@ -4019,32 +4146,17 @@
             function loadData() {
                 const history = localStorage.getItem('perfume_usage_history');
                 const dailyCount = localStorage.getItem('perfume_daily_count');
-
-                if (history) {
-                    try {
-                        usageHistory = JSON.parse(history);
-                    } catch (e) {
-                        usageHistory = [];
-                    }
-                } else {
-                    usageHistory = [];
-                }
-
+                usageHistory = history ? JSON.parse(history) : [];
                 dailyUsageCount = dailyCount ? parseInt(dailyCount, 10) : 0;
                 if (isNaN(dailyUsageCount)) dailyUsageCount = 0;
-
                 calculateTodayUsage();
             }
 
-            // ============================================================
-            //  CALCULATE TODAY'S USAGE
-            // ============================================================
             function calculateTodayUsage() {
                 const todayStr = new Date().toDateString();
-                const todayLogs = usageHistory.filter(entry => 
+                dailyUsageCount = usageHistory.filter(entry => 
                     new Date(entry.timestamp).toDateString() === todayStr
-                );
-                dailyUsageCount = todayLogs.length;
+                ).length;
                 saveData();
             }
 
@@ -4052,22 +4164,11 @@
             //  UTILITY FUNCTIONS
             // ============================================================
             function formatDate(date) {
-                return new Date(date).toLocaleDateString('en-US', {
-                    month: 'short',
-                    day: 'numeric',
-                    year: 'numeric'
-                });
+                return new Date(date).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
             }
 
             function formatTime(date) {
-                return new Date(date).toLocaleTimeString('en-US', {
-                    hour: '2-digit',
-                    minute: '2-digit'
-                });
-            }
-
-            function isToday(dateString) {
-                return new Date(dateString).toDateString() === new Date().toDateString();
+                return new Date(date).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
             }
 
             function getWeekDates(offset = 0) {
@@ -4075,7 +4176,6 @@
                 const currentDay = today.getDay();
                 const sunday = new Date(today);
                 sunday.setDate(today.getDate() - currentDay + (offset * 7));
-
                 const dates = [];
                 for (let i = 0; i < 7; i++) {
                     const date = new Date(sunday);
@@ -4097,9 +4197,7 @@
                 toast.textContent = message;
                 toast.classList.add('show');
                 clearTimeout(toastTimer);
-                toastTimer = setTimeout(() => {
-                    toast.classList.remove('show');
-                }, duration);
+                toastTimer = setTimeout(() => toast.classList.remove('show'), duration);
             }
 
             // ============================================================
@@ -4107,7 +4205,6 @@
             // ============================================================
             function updateUI() {
                 streakCountEl.textContent = dailyUsageCount;
-
                 if (usageHistory.length > 0) {
                     const lastEntry = usageHistory[usageHistory.length - 1];
                     const lastDate = new Date(lastEntry.timestamp);
@@ -4122,7 +4219,6 @@
                 } else {
                     lastUsedDateEl.textContent = 'Never';
                 }
-
                 totalUsesEl.textContent = usageHistory.length;
                 updateWeekView();
                 updateMonthView();
@@ -4135,7 +4231,6 @@
             function updateWeekView() {
                 const weekDates = getWeekDates(currentWeekOffset);
                 const today = new Date();
-
                 if (currentWeekOffset === 0) {
                     weekLabel.textContent = 'This Week';
                 } else if (currentWeekOffset === -1) {
@@ -4145,9 +4240,7 @@
                     const end = weekDates[6];
                     weekLabel.textContent = formatDate(start) + ' – ' + formatDate(end);
                 }
-
                 const days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
-
                 weekGrid.innerHTML = weekDates.map((date, index) => {
                     const isTodayDate = date.toDateString() === today.toDateString();
                     const logs = getLogsForDate(date, usageHistory);
@@ -4156,37 +4249,30 @@
                     const dayNumber = date.getDate();
                     const month = date.getMonth() + 1;
                     const dateStr = month + '/' + dayNumber;
-
                     let classes = 'week-day';
                     if (isTodayDate) classes += ' today';
                     if (isLogged && logs.length === 1) classes += ' logged';
                     if (isLogged && logs.length > 1) classes += ' multiple-logged';
                     if (isFuture) classes += ' future';
-
                     return `
-                            <div class="${classes}" data-date="${date.toISOString()}" onclick="window.showDateDetailFromClick ? window.showDateDetailFromClick('${date.toISOString()}') : null">
-                                <span class="day-name">${days[index]}</span>
-                                <span class="day-date">${dateStr}</span>
-                                ${isLogged ? '<span class="day-indicator">✓</span>' : ''}
-                                ${isLogged && logs.length > 1 ? `<span class="country-count">×${logs.length}</span>` : ''}
-                                ${isTodayDate && !isLogged ? '<span class="day-indicator">↓</span>' : ''}
-                            </div>
-                        `;
+                        <div class="${classes}" data-date="${date.toISOString()}">
+                            <span class="day-name">${days[index]}</span>
+                            <span class="day-date">${dateStr}</span>
+                            ${isLogged ? '<span class="day-indicator">✓</span>' : ''}
+                            ${isLogged && logs.length > 1 ? `<span class="country-count">×${logs.length}</span>` : ''}
+                            ${isTodayDate && !isLogged ? '<span class="day-indicator">↓</span>' : ''}
+                        </div>
+                    `;
                 }).join('');
-
-                // Add click listeners to week days
                 document.querySelectorAll('.week-day:not(.future)').forEach(el => {
                     el.addEventListener('click', function() {
                         const dateStr = this.dataset.date;
                         if (dateStr) {
                             const date = new Date(dateStr);
-                            if (!isNaN(date.getTime())) {
-                                showDateDetail(date);
-                            }
+                            if (!isNaN(date.getTime())) showDateDetail(date);
                         }
                     });
                 });
-
                 const weekLogs = weekDates.filter(date => getLogsForDate(date, usageHistory).length > 0);
                 weekStreakCount.textContent = weekLogs.length;
             }
@@ -4198,23 +4284,16 @@
                 const today = new Date();
                 const year = today.getFullYear();
                 const month = today.getMonth();
-                
                 const monthNames = ['January', 'February', 'March', 'April', 'May', 'June', 
                                    'July', 'August', 'September', 'October', 'November', 'December'];
                 monthNameEl.textContent = monthNames[month] + ' ' + year;
-
                 const firstDay = new Date(year, month, 1);
                 const lastDay = new Date(year, month + 1, 0);
                 const daysInMonth = lastDay.getDate();
                 const startingDay = firstDay.getDay();
-
                 const totalCells = Math.ceil((daysInMonth + startingDay) / 7) * 7;
                 const grid = [];
-
-                for (let i = 0; i < startingDay; i++) {
-                    grid.push({ day: null, empty: true });
-                }
-
+                for (let i = 0; i < startingDay; i++) grid.push({ day: null, empty: true });
                 for (let i = 1; i <= daysInMonth; i++) {
                     const date = new Date(year, month, i);
                     const isTodayDate = date.toDateString() === today.toDateString();
@@ -4224,40 +4303,28 @@
                     const isMultiple = logs.length > 1;
                     grid.push({ day: i, date, isToday: isTodayDate, isFuture, isLogged, isMultiple, count: logs.length });
                 }
-
-                while (grid.length < totalCells) {
-                    grid.push({ day: null, empty: true });
-                }
-
+                while (grid.length < totalCells) grid.push({ day: null, empty: true });
                 monthGrid.innerHTML = grid.map(cell => {
-                    if (cell.empty) {
-                        return '<div class="month-day empty"></div>';
-                    }
+                    if (cell.empty) return '<div class="month-day empty"></div>';
                     let classes = 'month-day';
                     if (cell.isLogged && !cell.isMultiple) classes += ' logged';
                     if (cell.isMultiple) classes += ' multiple-logged';
                     if (cell.isToday) classes += ' today';
                     if (cell.isFuture) classes += ' future';
-
                     const indicator = cell.isLogged ? (cell.isMultiple ? '✕' + cell.count : '✓') : '';
-
                     return `
-                            <div class="${classes}" data-date="${cell.date.toISOString()}" ${!cell.isFuture ? `onclick="window.showDateDetailFromClick ? window.showDateDetailFromClick('${cell.date.toISOString()}') : null"` : ''}>
-                                <span class="day-number">${cell.day}</span>
-                                ${indicator ? `<span class="mini-indicator">${indicator}</span>` : ''}
-                            </div>
-                        `;
+                        <div class="${classes}" data-date="${cell.date ? cell.date.toISOString() : ''}">
+                            <span class="day-number">${cell.day}</span>
+                            ${indicator ? `<span class="mini-indicator">${indicator}</span>` : ''}
+                        </div>
+                    `;
                 }).join('');
-
-                // Add click listeners to month days
                 document.querySelectorAll('.month-day:not(.empty):not(.future)').forEach(el => {
                     el.addEventListener('click', function() {
                         const dateStr = this.dataset.date;
                         if (dateStr) {
                             const date = new Date(dateStr);
-                            if (!isNaN(date.getTime())) {
-                                showDateDetail(date);
-                            }
+                            if (!isNaN(date.getTime())) showDateDetail(date);
                         }
                     });
                 });
@@ -4271,7 +4338,6 @@
                     bestWeekCount.textContent = '0';
                     return;
                 }
-
                 const weekMap = new Map();
                 usageHistory.forEach(entry => {
                     const date = new Date(entry.timestamp);
@@ -4279,20 +4345,11 @@
                     const monday = new Date(date);
                     monday.setDate(date.getDate() - currentDay + 1);
                     const weekKey = monday.toDateString();
-
-                    if (!weekMap.has(weekKey)) {
-                        weekMap.set(weekKey, new Set());
-                    }
+                    if (!weekMap.has(weekKey)) weekMap.set(weekKey, new Set());
                     weekMap.get(weekKey).add(date.toDateString());
                 });
-
                 let maxUses = 0;
-                weekMap.forEach((days) => {
-                    if (days.size > maxUses) {
-                        maxUses = days.size;
-                    }
-                });
-
+                weekMap.forEach(days => { if (days.size > maxUses) maxUses = days.size; });
                 bestWeekCount.textContent = maxUses;
             }
 
@@ -4304,12 +4361,9 @@
                     showToast('⚠️ Please complete the assessment first');
                     return;
                 }
-
                 if (isLoggingInProgress) return;
                 isLoggingInProgress = true;
-
                 saveLogWithoutRating();
-
                 setTimeout(() => {
                     openRatingPopup();
                     isLoggingInProgress = false;
@@ -4335,30 +4389,17 @@
             function exportData() {
                 const answersData = JSON.parse(localStorage.getItem('perfume_answers') || '{"country":"","condition":"","answers":[]}');
                 const profileData = JSON.parse(localStorage.getItem('user_profile') || '{}');
-                
                 const answerStrings = [];
                 const questionTexts = questions.map(q => q.question);
-                
-                if (answersData.country) {
-                    answerStrings.push(answersData.country);
-                } else {
-                    answerStrings.push('Not specified');
-                }
-                
-                if (answersData.condition) {
-                    answerStrings.push(answersData.condition);
-                } else {
-                    answerStrings.push('Not specified');
-                }
-                
+                answerStrings.push(answersData.country || 'Not specified');
+                answerStrings.push(answersData.condition || 'Not specified');
                 if (answersData.answers && answersData.answers.length > 0) {
                     for (let i = 0; i < answersData.answers.length; i++) {
-                        const qIndex = i + 2; // Skip country and condition
+                        const qIndex = i + 2;
                         if (qIndex < questions.length && answersData.answers[i] !== undefined) {
-                            const optionIndex = answersData.answers[i];
                             const options = questions[qIndex].options;
-                            if (options && options[optionIndex]) {
-                                answerStrings.push(options[optionIndex]);
+                            if (options && options[answersData.answers[i]]) {
+                                answerStrings.push(options[answersData.answers[i]]);
                             } else {
                                 answerStrings.push('Not answered');
                             }
@@ -4367,15 +4408,9 @@
                         }
                     }
                 } else {
-                    for (let i = 0; i < questions.length - 2; i++) {
-                        answerStrings.push('Not answered');
-                    }
+                    for (let i = 0; i < questions.length - 2; i++) answerStrings.push('Not answered');
                 }
-
-                while (answerStrings.length < questions.length) {
-                    answerStrings.push('Not answered');
-                }
-
+                while (answerStrings.length < questions.length) answerStrings.push('Not answered');
                 const exportData = {
                     exportedAt: new Date().toISOString(),
                     patientInfo: {
@@ -4398,13 +4433,12 @@
                         countriesLogged: [...new Set(usageHistory.map(e => e.country).filter(c => c))]
                     }
                 };
-
                 generatePDF(exportData);
                 showToast('📊 PDF report generated');
             }
 
             // ============================================================
-            //  GENERATE PDF
+            //  GENERATE PDF (simplified, keeps existing logic)
             // ============================================================
             function generatePDF(data) {
                 const { jsPDF } = window.jspdf;
@@ -4412,48 +4446,28 @@
                 const pageWidth = doc.internal.pageSize.getWidth();
                 const margin = 15;
                 let yPos = 20;
-
-                function addWrappedText(text, x, y, maxWidth, lineHeight) {
-                    const lines = doc.splitTextToSize(text, maxWidth);
-                    doc.text(lines, x, y);
-                    return y + (lines.length * lineHeight);
-                }
-
                 doc.setFontSize(22);
                 doc.setFont('helvetica', 'bold');
                 doc.text('Olfactory Health Report', pageWidth / 2, yPos, { align: 'center' });
                 yPos += 10;
-
                 const now = new Date();
-                const dateStr = now.toLocaleString('en-US', {
-                    weekday: 'long',
-                    year: 'numeric',
-                    month: 'long',
-                    day: 'numeric',
-                    hour: '2-digit',
-                    minute: '2-digit'
-                });
-                
+                const dateStr = now.toLocaleString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit' });
                 doc.setFontSize(10);
                 doc.setFont('helvetica', 'normal');
                 doc.text('Generated: ' + dateStr, pageWidth / 2, yPos, { align: 'center' });
                 yPos += 8;
-
                 doc.setDrawColor(180);
                 doc.line(margin, yPos, pageWidth - margin, yPos);
                 yPos += 10;
-
                 doc.setFontSize(14);
                 doc.setFont('helvetica', 'bold');
                 doc.text('Patient Information', margin, yPos);
                 yPos += 8;
-
                 const tableX = margin;
                 const tableWidth = pageWidth - (margin * 2);
                 const rowHeight = 8;
                 const col1Width = 50;
                 const col2Width = tableWidth - col1Width - 2;
-
                 doc.setDrawColor(200);
                 doc.setFillColor(245, 245, 245);
                 doc.rect(tableX, yPos, tableWidth, rowHeight, 'F');
@@ -4463,7 +4477,6 @@
                 doc.text('Field', tableX + 4, yPos + 5.5);
                 doc.text('Value', tableX + col1Width + 4, yPos + 5.5);
                 yPos += rowHeight;
-
                 doc.setFont('helvetica', 'normal');
                 const fields = [
                     ['Username', data.patientInfo.username],
@@ -4479,7 +4492,6 @@
                     ['Average Rating', data.summary.averageRating + ' / 5.0'],
                     ['Countries Logged', data.summary.countriesLogged.length > 0 ? data.summary.countriesLogged.join(', ') : 'None']
                 ];
-
                 for (const [label, value] of fields) {
                     doc.rect(tableX, yPos, tableWidth, rowHeight, 'D');
                     doc.text(label, tableX + 4, yPos + 5.5);
@@ -4487,17 +4499,11 @@
                     yPos += rowHeight;
                 }
                 yPos += 4;
-
-                if (yPos > 250) {
-                    doc.addPage();
-                    yPos = 20;
-                }
-
+                if (yPos > 250) { doc.addPage(); yPos = 20; }
                 doc.setFontSize(14);
                 doc.setFont('helvetica', 'bold');
                 doc.text('Assessment Answers', margin, yPos);
                 yPos += 8;
-
                 doc.setFillColor(240, 240, 240);
                 doc.rect(tableX, yPos, tableWidth, rowHeight, 'F');
                 doc.rect(tableX, yPos, tableWidth, rowHeight, 'D');
@@ -4506,13 +4512,11 @@
                 doc.text('Question', tableX + 4, yPos + 5.5);
                 doc.text('Answer', tableX + col1Width + 4, yPos + 5.5);
                 yPos += rowHeight;
-
                 doc.setFont('helvetica', 'normal');
                 doc.setFontSize(9);
                 for (let i = 0; i < data.patientInfo.questions.length; i++) {
                     const qText = data.patientInfo.questions[i];
                     const aText = data.patientInfo.answers[i] || 'Not answered';
-                    
                     if (yPos > 260) {
                         doc.addPage();
                         yPos = 20;
@@ -4531,32 +4535,23 @@
                         doc.setFont('helvetica', 'normal');
                         doc.setFontSize(9);
                     }
-
                     doc.rect(tableX, yPos, tableWidth, rowHeight, 'D');
-                    
                     const wrappedQ = doc.splitTextToSize(qText, col1Width - 4);
                     const wrappedA = doc.splitTextToSize(aText, col2Width - 4);
                     const maxLines = Math.max(wrappedQ.length, wrappedA.length);
                     const rowHeightAdjusted = maxLines * 4.5 + 2;
-                    
                     doc.rect(tableX, yPos, tableWidth, rowHeightAdjusted, 'D');
                     doc.text(wrappedQ, tableX + 4, yPos + 4);
                     doc.text(wrappedA, tableX + col1Width + 4, yPos + 4);
                     yPos += rowHeightAdjusted;
                 }
                 yPos += 4;
-
                 if (data.usageHistory.length > 0) {
-                    if (yPos > 200) {
-                        doc.addPage();
-                        yPos = 20;
-                    }
-
+                    if (yPos > 200) { doc.addPage(); yPos = 20; }
                     doc.setFontSize(14);
                     doc.setFont('helvetica', 'bold');
                     doc.text('Usage History', margin, yPos);
                     yPos += 8;
-
                     doc.setFillColor(240, 240, 240);
                     doc.rect(tableX, yPos, tableWidth, rowHeight, 'F');
                     doc.rect(tableX, yPos, tableWidth, rowHeight, 'D');
@@ -4570,7 +4565,6 @@
                         xPos += cols[i];
                     }
                     yPos += rowHeight;
-
                     doc.setFont('helvetica', 'normal');
                     doc.setFontSize(8);
                     const recentEntries = data.usageHistory.slice(-15).reverse();
@@ -4596,25 +4590,20 @@
                             doc.setFont('helvetica', 'normal');
                             doc.setFontSize(8);
                         }
-
                         const date = new Date(entry.timestamp);
                         const dateStr = date.toLocaleDateString();
                         const timeStr = date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
                         const ratingStr = entry.rating || 'N/A';
-                        
                         let starsStr = 'N/A';
                         if (entry.rating) {
                             const filled = '★'.repeat(entry.rating);
                             const empty = '☆'.repeat(5 - entry.rating);
                             starsStr = filled + empty;
                         }
-                        
                         const countryStr = entry.country || 'Unknown';
                         const notesStr = entry.notes || '';
-
                         const notesWrapped = doc.splitTextToSize(notesStr, cols[5] - 4);
                         const rowHeightAdjusted = Math.max(rowHeight, notesWrapped.length * 4.5 + 2);
-
                         doc.rect(tableX, yPos, tableWidth, rowHeightAdjusted, 'D');
                         xPos = tableX + 2;
                         doc.text(dateStr, xPos, yPos + 4);
@@ -4627,26 +4616,21 @@
                         xPos += cols[3];
                         doc.text(starsStr, xPos, yPos + 4);
                         xPos += cols[4];
-                        if (notesStr) {
-                            doc.text(notesWrapped, xPos, yPos + 4);
-                        }
+                        if (notesStr) doc.text(notesWrapped, xPos, yPos + 4);
                         yPos += rowHeightAdjusted;
                     }
                 }
-
                 const footerY = 280;
                 doc.setFontSize(8);
                 doc.setFont('helvetica', 'italic');
                 doc.setTextColor(150);
                 doc.text('This report was generated automatically by Olfactory Tracker Clinical Edition.', pageWidth / 2, footerY, { align: 'center' });
                 doc.text('Data is protected and confidential.', pageWidth / 2, footerY + 5, { align: 'center' });
-
                 const today = new Date();
                 const fileName = 'olfactory-report-' + 
                     today.getFullYear() + '-' + 
                     String(today.getMonth() + 1).padStart(2, '0') + '-' + 
                     String(today.getDate()).padStart(2, '0') + '.pdf';
-                
                 doc.save(fileName);
             }
 
@@ -4669,48 +4653,40 @@
                 updateWeekView();
             });
 
-            // Cart & Checkout Events
             cartBadge.addEventListener('click', openCheckout);
             checkoutCloseBtn.addEventListener('click', closeCheckout);
             checkoutSubmitBtn.addEventListener('click', completePurchase);
-
-            // Close checkout on overlay click
             checkoutOverlay.addEventListener('click', function(e) {
-                if (e.target === this) {
-                    closeCheckout();
-                }
+                if (e.target === this) closeCheckout();
             });
-
-            // Expose showDateDetail to global scope for inline onclick
-            window.showDateDetailFromClick = function(dateStr) {
-                const date = new Date(dateStr);
-                if (!isNaN(date.getTime())) {
-                    showDateDetail(date);
-                }
-            };
 
             document.addEventListener('keydown', (e) => {
                 if ((e.ctrlKey || e.metaKey) && e.shiftKey && (e.key === 'l' || e.key === 'L')) {
                     e.preventDefault();
-                    if (isLoggedIn && isQuestionnaireComplete) {
-                        logUsage();
-                    }
+                    if (isLoggedIn && isQuestionnaireComplete) logUsage();
                 }
                 if (e.key === 'Escape') {
-                    if (checkoutOverlay.classList.contains('active')) {
-                        closeCheckout();
-                    }
-                    if (profileOverlay.classList.contains('active')) {
-                        closeProfile();
-                    }
-                    if (userDropdown.classList.contains('active')) {
-                        closeDropdown();
-                    }
-                    if (dateDetailSection.classList.contains('active')) {
-                        closeDateDetail();
-                    }
+                    if (checkoutOverlay.classList.contains('active')) closeCheckout();
+                    if (profileOverlay.classList.contains('active')) closeProfile();
+                    if (userDropdown.classList.contains('active')) closeDropdown();
+                    if (dateDetailSection.classList.contains('active')) closeDateDetail();
+                    if (signupOverlay.classList.contains('active')) closeSignup();
                 }
             });
+
+            // ============================================================
+            //  SIGNUP EVENT LISTENERS
+            // ============================================================
+            showSignupLink.addEventListener('click', function(e) {
+                e.preventDefault();
+                openSignup();
+            });
+            closeSignupBtn.addEventListener('click', closeSignup);
+            gotoLoginLink.addEventListener('click', function(e) {
+                e.preventDefault();
+                closeSignup();
+            });
+            signupBtn.addEventListener('click', handleSignup);
 
             // ============================================================
             //  INIT
@@ -4718,11 +4694,12 @@
             loginScreen.classList.remove('hidden');
             questionnaireScreen.classList.add('hidden');
             appContainer.classList.remove('show');
-
             usernameInput.value = 'patient_001';
             passwordInput.value = 'smell2024';
-
             usernameInput.focus();
+
+            // Populate country dropdowns initially (even before login)
+            populateCountryDropdowns();
 
             console.log('👃 Olfactory Tracker - Clinical Edition');
 

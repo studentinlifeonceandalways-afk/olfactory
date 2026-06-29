@@ -1,0 +1,994 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Olfactory Tracker - User Personas</title>
+    <style>
+        /* ============================================
+                   RESET & BASE
+                ============================================ */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: #f5f7fa;
+            color: #1a1a2e;
+            padding: 50px 30px;
+            min-height: 100vh;
+        }
+
+        /* ============================================
+                   PRESENTATION CONTAINER
+                ============================================ */
+        .presentation-container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        /* ============================================
+                   HEADER
+                ============================================ */
+        .presentation-header {
+            text-align: center;
+            margin-bottom: 60px;
+            padding-bottom: 40px;
+            border-bottom: 2px solid #e8ecf1;
+        }
+
+        .presentation-header .badge {
+            display: inline-block;
+            background: #eef2f7;
+            border-radius: 20px;
+            padding: 6px 20px;
+            margin-bottom: 16px;
+        }
+
+        .presentation-header .badge span {
+            font-size: 11px;
+            font-weight: 700;
+            color: #5a6a7a;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+        }
+
+        .presentation-header h1 {
+            font-size: 44px;
+            font-weight: 800;
+            letter-spacing: -1.5px;
+            color: #1a1a2e;
+            margin-bottom: 8px;
+        }
+
+        .presentation-header .subtitle {
+            font-size: 18px;
+            color: #6a7a8a;
+            font-weight: 400;
+            letter-spacing: 0.3px;
+        }
+
+        /* ============================================
+                   PERSONA GRID
+                ============================================ */
+        .persona-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 50px;
+            margin-bottom: 50px;
+        }
+
+        @media (max-width: 1024px) {
+            .persona-grid {
+                gap: 40px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .persona-grid {
+                grid-template-columns: 1fr;
+                gap: 40px;
+            }
+        }
+
+        /* ============================================
+                   PERSONA CARD
+                ============================================ */
+        .persona-card {
+            background: #ffffff;
+            border-radius: 24px;
+            padding: 40px 36px 36px 36px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06), 0 1px 3px rgba(0, 0, 0, 0.04);
+            transition: all 0.3s ease;
+            border: 1px solid #eef0f2;
+        }
+
+        .persona-card:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.08), 0 8px 24px rgba(0, 0, 0, 0.04);
+        }
+
+        .persona-card.sarah {
+            border-top: 4px solid #2e7d32;
+        }
+
+        .persona-card.robert {
+            border-top: 4px solid #1565c0;
+        }
+
+        /* ============================================
+                   PERSONA HEADER
+                ============================================ */
+        .persona-header {
+            display: flex;
+            align-items: center;
+            gap: 24px;
+            margin-bottom: 28px;
+            padding-bottom: 24px;
+            border-bottom: 2px solid #f0f2f5;
+        }
+
+        .persona-avatar {
+            width: 88px;
+            height: 88px;
+            border-radius: 50%;
+            flex-shrink: 0;
+            overflow: hidden;
+            background: #f0f2f5;
+            border: 3px solid #e8ecf1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .persona-avatar svg {
+            width: 100%;
+            height: 100%;
+            display: block;
+        }
+
+        .persona-title h2 {
+            font-size: 26px;
+            font-weight: 700;
+            color: #1a1a2e;
+            letter-spacing: -0.5px;
+        }
+
+        .persona-title .tag {
+            display: inline-block;
+            padding: 4px 16px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            letter-spacing: 0.3px;
+            margin-top: 6px;
+        }
+
+        .persona-card.sarah .tag {
+            background: #e8f5e9;
+            color: #2e7d32;
+        }
+
+        .persona-card.robert .tag {
+            background: #e3f2fd;
+            color: #1565c0;
+        }
+
+        /* ============================================
+                   PERSONA BODY
+                ============================================ */
+        .persona-body {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 28px;
+        }
+
+        @media (max-width: 768px) {
+            .persona-body {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+        }
+
+        .persona-section {
+            margin-bottom: 18px;
+        }
+
+        .persona-section h3 {
+            font-size: 12px;
+            font-weight: 700;
+            color: #7a8a9a;
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+            margin-bottom: 10px;
+        }
+
+        .persona-section .info-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 6px 0;
+            font-size: 14px;
+            border-bottom: 1px solid #f0f2f5;
+        }
+
+        .persona-section .info-item .label {
+            color: #7a8a9a;
+        }
+
+        .persona-section .info-item .value {
+            color: #1a1a2e;
+            font-weight: 500;
+        }
+
+        /* ============================================
+                   SYMPTOM TAGS - Single Symptom Only
+                ============================================ */
+        .symptom-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 4px;
+        }
+
+        .symptom-tag {
+            padding: 4px 14px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 500;
+            background: #f0f2f5;
+            color: #3a4a5a;
+            border: 1px solid #e8ecf1;
+        }
+
+        .symptom-tag.severe {
+            background: #fce4ec;
+            color: #c62828;
+            border-color: #ef9a9a;
+        }
+
+        .symptom-tag.moderate {
+            background: #fff3e0;
+            color: #e65100;
+            border-color: #ffcc80;
+        }
+
+        .symptom-tag.mild {
+            background: #e8f5e9;
+            color: #2e7d32;
+            border-color: #a5d6a7;
+        }
+
+        .symptom-tag.ongoing {
+            background: #e3f2fd;
+            color: #0d47a1;
+            border-color: #90caf9;
+        }
+
+        /* ============================================
+                   GOALS & PAIN POINTS
+                ============================================ */
+        .goal-list,
+        .pain-list {
+            list-style: none;
+            padding: 0;
+        }
+
+        .goal-list li,
+        .pain-list li {
+            padding: 5px 0;
+            font-size: 14px;
+            color: #2a3a4a;
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            line-height: 1.5;
+        }
+
+        .goal-list li::before {
+            content: "▸";
+            color: #2e7d32;
+            font-weight: 700;
+            font-size: 16px;
+        }
+
+        .persona-card.robert .goal-list li::before {
+            color: #1565c0;
+        }
+
+        .pain-list li::before {
+            content: "▸";
+            color: #c62828;
+            font-weight: 700;
+            font-size: 16px;
+        }
+
+        /* ============================================
+                   FEATURE USAGE
+                ============================================ */
+        .feature-usage {
+            margin-top: 18px;
+            padding-top: 18px;
+            border-top: 2px solid #f0f2f5;
+        }
+
+        .feature-usage h4 {
+            font-size: 12px;
+            font-weight: 700;
+            color: #7a8a9a;
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+            margin-bottom: 12px;
+        }
+
+        .feature-bars {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+
+        @media (max-width: 600px) {
+            .feature-bars {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .feature-bar {
+            display: flex;
+            flex-direction: column;
+            gap: 3px;
+        }
+
+        .feature-bar .feature-label {
+            font-size: 12px;
+            color: #4a5a6a;
+            display: flex;
+            justify-content: space-between;
+            font-weight: 500;
+        }
+
+        .feature-bar .bar-track {
+            width: 100%;
+            height: 6px;
+            background: #eef0f2;
+            border-radius: 6px;
+            overflow: hidden;
+        }
+
+        .feature-bar .bar-fill {
+            height: 100%;
+            border-radius: 6px;
+            transition: width 0.8s ease;
+        }
+
+        .persona-card.sarah .bar-fill {
+            background: linear-gradient(90deg, #388e3c, #66bb6a);
+        }
+
+        .persona-card.robert .bar-fill {
+            background: linear-gradient(90deg, #1565c0, #42a5f5);
+        }
+
+        /* ============================================
+                   USAGE PATTERN
+                ============================================ */
+        .usage-pattern {
+            margin-top: 18px;
+            padding: 16px 20px;
+            background: #f8f9fb;
+            border-radius: 12px;
+            border: 1px solid #eef0f2;
+        }
+
+        .usage-pattern .usage-title {
+            font-size: 12px;
+            font-weight: 700;
+            color: #7a8a9a;
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+            margin-bottom: 6px;
+        }
+
+        .usage-pattern .usage-text {
+            font-size: 13px;
+            color: #3a4a5a;
+            line-height: 1.7;
+        }
+
+        .usage-pattern .usage-text strong {
+            color: #1a1a2e;
+            font-weight: 600;
+        }
+
+        /* ============================================
+                   QUOTE
+                ============================================ */
+        .persona-quote {
+            margin-top: 18px;
+            padding: 18px 22px;
+            border-radius: 12px;
+            background: #f8f9fb;
+            border-left: 4px solid;
+            font-style: italic;
+            font-size: 15px;
+            color: #2a3a4a;
+            line-height: 1.6;
+        }
+
+        .persona-card.sarah .persona-quote {
+            border-left-color: #388e3c;
+            background: #f5f8f5;
+        }
+
+        .persona-card.robert .persona-quote {
+            border-left-color: #1565c0;
+            background: #f5f7fa;
+        }
+
+        .persona-quote .quote-author {
+            display: block;
+            margin-top: 8px;
+            font-style: normal;
+            font-size: 13px;
+            color: #7a8a9a;
+            font-weight: 500;
+        }
+
+        /* ============================================
+                   FOOTER
+                ============================================ */
+        .presentation-footer {
+            text-align: center;
+            padding-top: 40px;
+            border-top: 2px solid #e8ecf1;
+            margin-top: 30px;
+        }
+
+        .presentation-footer p {
+            font-size: 14px;
+            color: #8a9aaa;
+            letter-spacing: 0.3px;
+        }
+
+        .presentation-footer .footer-highlight {
+            color: #2a3a4a;
+            font-weight: 600;
+        }
+
+        /* ============================================
+                   COMPARISON TABLE
+                ============================================ */
+        .app-preview {
+            margin-top: 50px;
+            padding: 40px 36px;
+            background: #ffffff;
+            border-radius: 24px;
+            border: 1px solid #eef0f2;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04);
+            text-align: center;
+        }
+
+        .app-preview h3 {
+            font-size: 24px;
+            font-weight: 700;
+            color: #1a1a2e;
+            margin-bottom: 8px;
+        }
+
+        .app-preview p {
+            color: #6a7a8a;
+            font-size: 15px;
+            margin-bottom: 28px;
+        }
+
+        .app-preview .phone-mockup-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 24px;
+            max-width: 960px;
+            margin: 0 auto;
+        }
+
+        .phone-mockup-mini {
+            background: #f8f9fb;
+            border-radius: 16px;
+            padding: 20px 22px;
+            border: 1px solid #eef0f2;
+            text-align: left;
+            transition: all 0.2s ease;
+        }
+
+        .phone-mockup-mini:hover {
+            background: #ffffff;
+            border-color: #d0d5dd;
+        }
+
+        .phone-mockup-mini .mockup-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 14px;
+        }
+
+        .phone-mockup-mini .mockup-header .mockup-title {
+            font-size: 15px;
+            font-weight: 600;
+            color: #1a1a2e;
+        }
+
+        .phone-mockup-mini .mockup-header .mockup-badge {
+            font-size: 11px;
+            padding: 4px 14px;
+            border-radius: 20px;
+            font-weight: 600;
+        }
+
+        .phone-mockup-mini .mockup-content {
+            font-size: 13px;
+            color: #4a5a6a;
+            line-height: 1.6;
+        }
+
+        .phone-mockup-mini .mockup-content .mockup-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 5px 0;
+            border-bottom: 1px solid #eef0f2;
+        }
+
+        .phone-mockup-mini .mockup-content .mockup-row:last-child {
+            border-bottom: none;
+        }
+
+        /* ============================================
+                   ANIMATIONS
+                ============================================ */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(40px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .persona-card {
+            animation: fadeInUp 0.7s ease forwards;
+            opacity: 0;
+        }
+
+        .persona-card:first-child {
+            animation-delay: 0.1s;
+        }
+
+        .persona-card:last-child {
+            animation-delay: 0.3s;
+        }
+
+        .app-preview {
+            animation: fadeInUp 0.7s ease 0.5s forwards;
+            opacity: 0;
+        }
+
+        .presentation-header {
+            animation: fadeInUp 0.7s ease forwards;
+            opacity: 0;
+            animation-delay: 0s;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="presentation-container">
+
+        <!-- ============================================
+        HEADER
+        ============================================ -->
+        <header class="presentation-header">
+            <div class="badge">
+                <span>🧬 User Personas</span>
+            </div>
+            <h1>Olfactory Tracker</h1>
+            <p class="subtitle">Understanding our users — two distinct journeys with olfactory disorders</p>
+        </header>
+
+        <!-- ============================================
+        PERSONA GRID
+        ============================================ -->
+        <div class="persona-grid">
+
+            <!-- ===== PERSONA 1: SARAH ===== -->
+            <div class="persona-card sarah">
+                <div class="persona-header">
+                    <div class="persona-avatar">
+                        <svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <circle cx="50" cy="50" r="50" fill="#e8f5e9"/>
+                            <ellipse cx="50" cy="38" rx="34" ry="32" fill="#4e342e"/>
+                            <ellipse cx="50" cy="42" rx="30" ry="26" fill="#5d4037"/>
+                            <ellipse cx="50" cy="50" rx="28" ry="30" fill="#fce4d6"/>
+                            <ellipse cx="40" cy="46" rx="5" ry="6" fill="white"/>
+                            <ellipse cx="60" cy="46" rx="5" ry="6" fill="white"/>
+                            <circle cx="41" cy="47" r="3" fill="#3e2723"/>
+                            <circle cx="61" cy="47" r="3" fill="#3e2723"/>
+                            <circle cx="42" cy="46" r="1.2" fill="white"/>
+                            <circle cx="62" cy="46" r="1.2" fill="white"/>
+                            <path d="M35 41 Q40 38 45 41" stroke="#3e2723" stroke-width="1.5" fill="none"/>
+                            <path d="M55 41 Q60 38 65 41" stroke="#3e2723" stroke-width="1.5" fill="none"/>
+                            <path d="M43 58 Q50 64 57 58" stroke="#c62828" stroke-width="2" fill="none" stroke-linecap="round"/>
+                            <ellipse cx="36" cy="56" rx="6" ry="4" fill="#ffcdd2" opacity="0.5"/>
+                            <ellipse cx="64" cy="56" rx="6" ry="4" fill="#ffcdd2" opacity="0.5"/>
+                            <circle cx="25" cy="50" r="3" fill="#ffd54f" stroke="#f9a825" stroke-width="0.5"/>
+                            <circle cx="75" cy="50" r="3" fill="#ffd54f" stroke="#f9a825" stroke-width="0.5"/>
+                            <rect x="43" y="78" width="14" height="10" fill="#fce4d6" rx="2"/>
+                            <rect x="25" y="86" width="50" height="14" fill="#388e3c" rx="4"/>
+                            <rect x="30" y="88" width="40" height="2" fill="#2e7d32" rx="1"/>
+                        </svg>
+                    </div>
+                    <div class="persona-title">
+                        <h2>Sarah Johnson</h2>
+                        <span class="tag">🌸 Post-COVID Parosmia</span>
+                    </div>
+                </div>
+
+                <div class="persona-body">
+                    <div>
+                        <div class="persona-section">
+                            <h3>📋 Basic Information</h3>
+                            <div class="info-item">
+                                <span class="label">Age</span>
+                                <span class="value">34</span>
+                            </div>
+                            <div class="info-item">
+                                <span class="label">Occupation</span>
+                                <span class="value">Marketing Manager</span>
+                            </div>
+                            <div class="info-item">
+                                <span class="label">Location</span>
+                                <span class="value">Chicago, IL</span>
+                            </div>
+                            <div class="info-item">
+                                <span class="label">Duration</span>
+                                <span class="value">14 months</span>
+                            </div>
+                            <div class="info-item">
+                                <span class="label">Tech Comfort</span>
+                                <span class="value">High</span>
+                            </div>
+                        </div>
+
+                        <div class="persona-section">
+                            <h3>🩺 Symptoms</h3>
+                            <div class="symptom-tags">
+                                <span class="symptom-tag severe">Parosmia</span>
+                            </div>
+                            <div style="margin-top:8px;font-size:13px;color:#5a6a7a;line-height:1.6;">
+                                <strong>Triggers:</strong> Coffee, onion, garlic, meat, mint
+                            </div>
+                        </div>
+
+                        <div class="persona-section">
+                            <h3>💪 Motivations</h3>
+                            <ul class="goal-list">
+                                <li>Track smell training progress</li>
+                                <li>Identify trigger foods</li>
+                                <li>Share data with her ENT specialist</li>
+                                <li>Find hope &amp; connection with others</li>
+                            </ul>
+                        </div>
+
+                        <div class="persona-section">
+                            <h3>💔 Pain Points</h3>
+                            <ul class="pain-list">
+                                <li>Embarrassment when dining socially</li>
+                                <li>Safety concerns — can't detect gas or smoke</li>
+                                <li>Depression from loss of scent enjoyment</li>
+                                <li>Isolation — family doesn't understand</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div>
+                        <div class="persona-section">
+                            <h3>🎯 Primary Goals</h3>
+                            <ul class="goal-list">
+                                <li>Document improvement over time</li>
+                                <li>Understand symptom patterns</li>
+                                <li>Identify triggers (stress, allergies, etc.)</li>
+                                <li>Generate clean reports for medical visits</li>
+                            </ul>
+                        </div>
+
+                        <div class="feature-usage">
+                            <h4>⚡ Key Feature Usage</h4>
+                            <div class="feature-bars">
+                                <div class="feature-bar">
+                                    <span class="feature-label">
+                                        <span>Rating System</span>
+                                        <span>Essential</span>
+                                    </span>
+                                    <div class="bar-track">
+                                        <div class="bar-fill" style="width:95%"></div>
+                                    </div>
+                                </div>
+                                <div class="feature-bar">
+                                    <span class="feature-label">
+                                        <span>Symptom Tracking</span>
+                                        <span>Essential</span>
+                                    </span>
+                                    <div class="bar-track">
+                                        <div class="bar-fill" style="width:90%"></div>
+                                    </div>
+                                </div>
+                                <div class="feature-bar">
+                                    <span class="feature-label">
+                                        <span>PDF Export</span>
+                                        <span>High</span>
+                                    </span>
+                                    <div class="bar-track">
+                                        <div class="bar-fill" style="width:85%"></div>
+                                    </div>
+                                </div>
+                                <div class="feature-bar">
+                                    <span class="feature-label">
+                                        <span>Scent Categories</span>
+                                        <span>High</span>
+                                    </span>
+                                    <div class="bar-track">
+                                        <div class="bar-fill" style="width:80%"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="usage-pattern">
+                            <div class="usage-title">🕐 Daily Usage Pattern</div>
+                            <div class="usage-text">
+                                <strong>Morning:</strong> Logs breakfast smells (coffee, toast)<br />
+                                <strong>Afternoon:</strong> Logs lunch &amp; distorted smells<br />
+                                <strong>Evening:</strong> Logs dinner &amp; smell training<br />
+                                <strong>Night:</strong> Reviews daily log &amp; rates perception
+                            </div>
+                        </div>
+
+                        <div class="persona-quote">
+                            "I used to love the smell of coffee. Now it smells like gasoline. I just want to enjoy my morning again."
+                            <span class="quote-author">— Sarah</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ===== PERSONA 2: ROBERT ===== -->
+            <div class="persona-card robert">
+                <div class="persona-header">
+                    <div class="persona-avatar">
+                        <svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <circle cx="50" cy="50" r="50" fill="#e3f2fd"/>
+                            <ellipse cx="50" cy="38" rx="34" ry="32" fill="#263238"/>
+                            <ellipse cx="50" cy="42" rx="30" ry="26" fill="#37474f"/>
+                            <ellipse cx="50" cy="50" rx="28" ry="30" fill="#fce4d6"/>
+                            <ellipse cx="40" cy="46" rx="5" ry="6" fill="white"/>
+                            <ellipse cx="60" cy="46" rx="5" ry="6" fill="white"/>
+                            <circle cx="41" cy="47" r="3" fill="#1a1a2e"/>
+                            <circle cx="61" cy="47" r="3" fill="#1a1a2e"/>
+                            <circle cx="42" cy="46" r="1.2" fill="white"/>
+                            <circle cx="62" cy="46" r="1.2" fill="white"/>
+                            <path d="M34 40 Q40 37 46 40" stroke="#1a1a2e" stroke-width="1.8" fill="none"/>
+                            <path d="M54 40 Q60 37 66 40" stroke="#1a1a2e" stroke-width="1.8" fill="none"/>
+                            <path d="M43 56 Q50 62 57 56" stroke="#1a1a2e" stroke-width="2" fill="none" stroke-linecap="round"/>
+                            <ellipse cx="40" cy="46" rx="9" ry="8" stroke="#37474f" stroke-width="1.5" fill="none"/>
+                            <ellipse cx="60" cy="46" rx="9" ry="8" stroke="#37474f" stroke-width="1.5" fill="none"/>
+                            <line x1="49" y1="46" x2="51" y2="46" stroke="#37474f" stroke-width="1.5"/>
+                            <line x1="31" y1="44" x2="22" y2="42" stroke="#37474f" stroke-width="1.5"/>
+                            <line x1="69" y1="44" x2="78" y2="42" stroke="#37474f" stroke-width="1.5"/>
+                            <rect x="43" y="78" width="14" height="10" fill="#fce4d6" rx="2"/>
+                            <rect x="25" y="86" width="50" height="14" fill="#1565c0" rx="4"/>
+                            <rect x="30" y="88" width="40" height="2" fill="#0d47a1" rx="1"/>
+                            <path d="M43 84 L47 88 L51 84" stroke="#0d47a1" stroke-width="1.5" fill="none"/>
+                        </svg>
+                    </div>
+                    <div class="persona-title">
+                        <h2>Robert Chen</h2>
+                        <span class="tag">🔬 Congenital Anosmia</span>
+                    </div>
+                </div>
+
+                <div class="persona-body">
+                    <div>
+                        <div class="persona-section">
+                            <h3>📋 Basic Information</h3>
+                            <div class="info-item">
+                                <span class="label">Age</span>
+                                <span class="value">28</span>
+                            </div>
+                            <div class="info-item">
+                                <span class="label">Occupation</span>
+                                <span class="value">Software Engineer</span>
+                            </div>
+                            <div class="info-item">
+                                <span class="label">Location</span>
+                                <span class="value">San Francisco, CA</span>
+                            </div>
+                            <div class="info-item">
+                                <span class="label">Duration</span>
+                                <span class="value">Lifetime (28 yrs)</span>
+                            </div>
+                            <div class="info-item">
+                                <span class="label">Tech Comfort</span>
+                                <span class="value">Very High</span>
+                            </div>
+                        </div>
+
+                        <div class="persona-section">
+                            <h3>🩺 Symptoms</h3>
+                            <div class="symptom-tags">
+                                <span class="symptom-tag severe">Congenital Anosmia</span>
+                            </div>
+                            <div style="margin-top:8px;font-size:13px;color:#5a6a7a;line-height:1.6;">
+                                <strong>Note:</strong> Complete inability to detect any odors since birth
+                            </div>
+                        </div>
+
+                        <div class="persona-section">
+                            <h3>💪 Motivations</h3>
+                            <ul class="goal-list">
+                                <li>Safety monitoring (gas, smoke, spoiled food)</li>
+                                <li>Build scent memory through technology</li>
+                                <li>Explain his condition to others</li>
+                                <li>Connect through scent alternatives</li>
+                            </ul>
+                        </div>
+
+                        <div class="persona-section">
+                            <h3>💔 Pain Points</h3>
+                            <ul class="pain-list">
+                                <li>Constant anxiety about gas leaks &amp; fire</li>
+                                <li>Social awkwardness when others expect him to smell</li>
+                                <li>Food disappointment — can't experience complex flavors</li>
+                                <li>No scent-related memories to connect with people</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div>
+                        <div class="persona-section">
+                            <h3>🎯 Primary Goals</h3>
+                            <ul class="goal-list">
+                                <li>Develop safety strategies</li>
+                                <li>Understand the scented world</li>
+                                <li>Raise awareness about congenital anosmia</li>
+                                <li>Participate in research studies</li>
+                            </ul>
+                        </div>
+
+                        <div class="feature-usage">
+                            <h4>⚡ Key Feature Usage</h4>
+                            <div class="feature-bars">
+                                <div class="feature-bar">
+                                    <span class="feature-label">
+                                        <span>Safety Logs</span>
+                                        <span>Critical</span>
+                                    </span>
+                                    <div class="bar-track">
+                                        <div class="bar-fill" style="width:100%"></div>
+                                    </div>
+                                </div>
+                                <div class="feature-bar">
+                                    <span class="feature-label">
+                                        <span>Scent Descriptions</span>
+                                        <span>High</span>
+                                    </span>
+                                    <div class="bar-track">
+                                        <div class="bar-fill" style="width:90%"></div>
+                                    </div>
+                                </div>
+                                <div class="feature-bar">
+                                    <span class="feature-label">
+                                        <span>PDF Export</span>
+                                        <span>Medium</span>
+                                    </span>
+                                    <div class="bar-track">
+                                        <div class="bar-fill" style="width:60%"></div>
+                                    </div>
+                                </div>
+                                <div class="feature-bar">
+                                    <span class="feature-label">
+                                        <span>Country Selection</span>
+                                        <span>Low</span>
+                                    </span>
+                                    <div class="bar-track">
+                                        <div class="bar-fill" style="width:30%"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="usage-pattern">
+                            <div class="usage-title">🕐 Daily Usage Pattern</div>
+                            <div class="usage-text">
+                                <strong>Morning:</strong> Logs any unusual experiences<br />
+                                <strong>Throughout Day:</strong> Logs when others mention smells<br />
+                                <strong>Evening:</strong> Reviews logs &amp; notes changes<br />
+                                <strong>Weekly:</strong> Reviews safety logs &amp; patterns
+                            </div>
+                        </div>
+
+                        <div class="persona-quote">
+                            "I've never known what a rose smells like. But I want to understand what I'm missing, and keep myself safe."
+                            <span class="quote-author">— Robert</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- ============================================
+        COMPARISON TABLE
+        ============================================ -->
+        <div class="app-preview">
+            <h3>🔄 Feature Comparison</h3>
+            <p>How the app serves each user's unique needs</p>
+
+            <div class="phone-mockup-grid">
+                <div class="phone-mockup-mini">
+                    <div class="mockup-header">
+                        <span class="mockup-title">🌸 Sarah's View</span>
+                        <span class="mockup-badge" style="background:#e8f5e9;color:#2e7d32;">Parosmia</span>
+                    </div>
+                    <div class="mockup-content">
+                        <div class="mockup-row"><span>Primary Focus</span><span style="font-weight:500;">Smell Training &amp; Tracking</span></div>
+                        <div class="mockup-row"><span>Key Feature</span><span style="font-weight:500;">⭐ Rating System</span></div>
+                        <div class="mockup-row"><span>Export Use</span><span style="font-weight:500;">📊 Doctor Reports</span></div>
+                        <div class="mockup-row"><span>Goal</span><span style="font-weight:500;">📈 Measure Improvement</span></div>
+                    </div>
+                </div>
+
+                <div class="phone-mockup-mini">
+                    <div class="mockup-header">
+                        <span class="mockup-title">🔬 Robert's View</span>
+                        <span class="mockup-badge" style="background:#e3f2fd;color:#1565c0;">Anosmia</span>
+                    </div>
+                    <div class="mockup-content">
+                        <div class="mockup-row"><span>Primary Focus</span><span style="font-weight:500;">Safety &amp; Learning</span></div>
+                        <div class="mockup-row"><span>Key Feature</span><span style="font-weight:500;">⚠️ Safety Logs</span></div>
+                        <div class="mockup-row"><span>Export Use</span><span style="font-weight:500;">📋 Personal Records</span></div>
+                        <div class="mockup-row"><span>Goal</span><span style="font-weight:500;">🧠 Build Scent Database</span></div>
+                    </div>
+                </div>
+
+                <div class="phone-mockup-mini">
+                    <div class="mockup-header">
+                        <span class="mockup-title">🌍 Shared Features</span>
+                        <span class="mockup-badge" style="background:#eef0f2;color:#5a6a7a;">Both</span>
+                    </div>
+                    <div class="mockup-content">
+                        <div class="mockup-row"><span>Rating System</span><span style="font-weight:500;">⭐ Both Use</span></div>
+                        <div class="mockup-row"><span>PDF Export</span><span style="font-weight:500;">📊 Both Use</span></div>
+                        <div class="mockup-row"><span>Country Selection</span><span style="font-weight:500;">🌍 Both Use</span></div>
+                        <div class="mockup-row"><span>Scent Categories</span><span style="font-weight:500;">📂 Both Use</span></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ============================================
+        FOOTER
+        ============================================ -->
+        <footer class="presentation-footer">
+            <p>
+                <span class="footer-highlight">Olfactory Tracker</span> — Designed for two distinct journeys
+            </p>
+            <p style="margin-top:6px;font-size:12px;color:#9aaaba;">
+                Personas created for presentation purposes • © 2026 Olfactory Tracker
+            </p>
+        </footer>
+
+    </div>
+
+</body>
+</html>

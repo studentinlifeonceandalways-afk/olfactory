@@ -1,0 +1,936 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Olfactory Tracker - Feature Mapping</title>
+    <style>
+        /* ============================================
+                   RESET & BASE
+                ============================================ */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: #f0f2f5;
+            color: #1a1a2e;
+            padding: 40px 30px;
+            min-height: 100vh;
+        }
+
+        /* ============================================
+                   CONTAINER
+                ============================================ */
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        /* ============================================
+                   HEADER
+                ============================================ */
+        .header {
+            text-align: center;
+            margin-bottom: 50px;
+            padding-bottom: 30px;
+            border-bottom: 2px solid #e8ecf1;
+        }
+
+        .header .badge {
+            display: inline-block;
+            background: #1a1a2e;
+            border-radius: 20px;
+            padding: 6px 20px;
+            margin-bottom: 16px;
+        }
+
+        .header .badge span {
+            font-size: 11px;
+            font-weight: 700;
+            color: #ffffff;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+        }
+
+        .header h1 {
+            font-size: 38px;
+            font-weight: 800;
+            letter-spacing: -1.5px;
+            color: #1a1a2e;
+            margin-bottom: 8px;
+        }
+
+        .header .subtitle {
+            font-size: 17px;
+            color: #6a7a8a;
+            font-weight: 400;
+            letter-spacing: 0.3px;
+        }
+
+        /* ============================================
+                   FEATURE SUMMARY TABLE
+                ============================================ */
+        .summary-section {
+            background: #ffffff;
+            border-radius: 20px;
+            padding: 30px 32px;
+            margin-bottom: 40px;
+            border: 1px solid #eef0f2;
+            box-shadow: 0 2px 12px rgba(0, 0, 0, 0.04);
+        }
+
+        .summary-section h2 {
+            font-size: 20px;
+            font-weight: 700;
+            color: #1a1a2e;
+            margin-bottom: 6px;
+        }
+
+        .summary-section .section-desc {
+            font-size: 14px;
+            color: #6a7a8a;
+            margin-bottom: 20px;
+        }
+
+        .summary-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 14px;
+        }
+
+        .summary-table thead th {
+            text-align: left;
+            padding: 14px 16px;
+            background: #f8f9fb;
+            font-weight: 700;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: #5a6a7a;
+            border-bottom: 2px solid #e8ecf1;
+        }
+
+        .summary-table tbody td {
+            padding: 12px 16px;
+            border-bottom: 1px solid #f0f2f5;
+            color: #2a3a4a;
+        }
+
+        .summary-table tbody tr:hover {
+            background: #f8f9fb;
+        }
+
+        .summary-table .feature-name {
+            font-weight: 600;
+            color: #1a1a2e;
+        }
+
+        .summary-table .check {
+            color: #2e7d32;
+            font-weight: 700;
+            font-size: 16px;
+        }
+
+        .summary-table .check.adapted {
+            color: #e65100;
+        }
+
+        .summary-table .badge-pill {
+            display: inline-block;
+            padding: 2px 12px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 600;
+        }
+
+        .badge-pill.essential {
+            background: #e8f5e9;
+            color: #2e7d32;
+        }
+
+        .badge-pill.high {
+            background: #e3f2fd;
+            color: #1565c0;
+        }
+
+        .badge-pill.medium {
+            background: #fff3e0;
+            color: #e65100;
+        }
+
+        .badge-pill.low {
+            background: #f5f5f5;
+            color: #888;
+        }
+
+        .badge-pill.adapted {
+            background: #fce4ec;
+            color: #c62828;
+        }
+
+        /* ============================================
+                   PERSONA SECTIONS
+                ============================================ */
+        .persona-section {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+
+        @media (max-width: 1024px) {
+            .persona-section {
+                grid-template-columns: 1fr;
+                gap: 30px;
+            }
+        }
+
+        .persona-card {
+            background: #ffffff;
+            border-radius: 20px;
+            padding: 28px 30px;
+            border: 1px solid #eef0f2;
+            box-shadow: 0 2px 12px rgba(0, 0, 0, 0.04);
+            transition: all 0.3s ease;
+        }
+
+        .persona-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.08);
+        }
+
+        .persona-card.sarah {
+            border-top: 4px solid #2e7d32;
+        }
+
+        .persona-card.robert {
+            border-top: 4px solid #1565c0;
+        }
+
+        .persona-card .card-header {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin-bottom: 20px;
+            padding-bottom: 16px;
+            border-bottom: 2px solid #f0f2f5;
+        }
+
+        .persona-card .card-header .avatar {
+            font-size: 42px;
+        }
+
+        .persona-card .card-header .info h3 {
+            font-size: 20px;
+            font-weight: 700;
+            color: #1a1a2e;
+        }
+
+        .persona-card .card-header .info .tag {
+            display: inline-block;
+            padding: 2px 14px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 600;
+            margin-top: 2px;
+        }
+
+        .persona-card.sarah .tag {
+            background: #e8f5e9;
+            color: #2e7d32;
+        }
+
+        .persona-card.robert .tag {
+            background: #e3f2fd;
+            color: #1565c0;
+        }
+
+        /* ============================================
+                   GOAL CARDS
+                ============================================ */
+        .goals-grid {
+            display: grid;
+            gap: 16px;
+        }
+
+        .goal-item {
+            background: #f8f9fb;
+            border-radius: 12px;
+            padding: 16px 18px;
+            border-left: 4px solid;
+            transition: all 0.2s ease;
+        }
+
+        .goal-item:hover {
+            background: #f0f2f5;
+        }
+
+        .persona-card.sarah .goal-item {
+            border-left-color: #2e7d32;
+        }
+
+        .persona-card.robert .goal-item {
+            border-left-color: #1565c0;
+        }
+
+        .goal-item .goal-title {
+            font-weight: 600;
+            font-size: 14px;
+            color: #1a1a2e;
+            margin-bottom: 6px;
+        }
+
+        .goal-item .goal-desc {
+            font-size: 13px;
+            color: #5a6a7a;
+            line-height: 1.6;
+        }
+
+        .goal-item .goal-features {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            margin-top: 8px;
+        }
+
+        .goal-item .goal-features .feature-tag {
+            display: inline-block;
+            padding: 2px 12px;
+            border-radius: 20px;
+            font-size: 10px;
+            font-weight: 600;
+            background: #eef0f2;
+            color: #4a5a6a;
+        }
+
+        .goal-item .goal-features .feature-tag.primary {
+            background: #1a1a2e;
+            color: #ffffff;
+        }
+
+        /* ============================================
+                   FEATURE DETAILS
+                ============================================ */
+        .feature-details {
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 2px solid #f0f2f5;
+        }
+
+        .feature-details h4 {
+            font-size: 14px;
+            font-weight: 700;
+            color: #1a1a2e;
+            margin-bottom: 12px;
+        }
+
+        .feature-comparison {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        @media (max-width: 600px) {
+            .feature-comparison {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .feature-comp-item {
+            background: #f8f9fb;
+            border-radius: 10px;
+            padding: 14px 16px;
+        }
+
+        .feature-comp-item .comp-label {
+            font-size: 11px;
+            font-weight: 700;
+            color: #7a8a9a;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 4px;
+        }
+
+        .feature-comp-item .comp-text {
+            font-size: 13px;
+            color: #2a3a4a;
+            line-height: 1.5;
+        }
+
+        /* ============================================
+                   SUCCESS METRICS
+                ============================================ */
+        .metrics-section {
+            background: #ffffff;
+            border-radius: 20px;
+            padding: 30px 32px;
+            margin-bottom: 40px;
+            border: 1px solid #eef0f2;
+            box-shadow: 0 2px 12px rgba(0, 0, 0, 0.04);
+        }
+
+        .metrics-section h2 {
+            font-size: 20px;
+            font-weight: 700;
+            color: #1a1a2e;
+            margin-bottom: 6px;
+        }
+
+        .metrics-section .section-desc {
+            font-size: 14px;
+            color: #6a7a8a;
+            margin-bottom: 20px;
+        }
+
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 24px;
+        }
+
+        @media (max-width: 768px) {
+            .metrics-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .metric-card {
+            background: #f8f9fb;
+            border-radius: 14px;
+            padding: 20px 22px;
+            border: 1px solid #eef0f2;
+        }
+
+        .metric-card .metric-persona {
+            font-size: 12px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 10px;
+        }
+
+        .metric-card.sarah-metric .metric-persona {
+            color: #2e7d32;
+        }
+
+        .metric-card.robert-metric .metric-persona {
+            color: #1565c0;
+        }
+
+        .metric-list {
+            list-style: none;
+            padding: 0;
+        }
+
+        .metric-list li {
+            padding: 5px 0;
+            font-size: 14px;
+            color: #2a3a4a;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            border-bottom: 1px solid #f0f2f5;
+        }
+
+        .metric-list li:last-child {
+            border-bottom: none;
+        }
+
+        .metric-list li .metric-icon {
+            font-size: 16px;
+            width: 28px;
+            text-align: center;
+        }
+
+        /* ============================================
+                   RECOMMENDATIONS
+                ============================================ */
+        .recommendations-section {
+            background: #1a1a2e;
+            border-radius: 20px;
+            padding: 32px 34px;
+            color: #ffffff;
+            margin-bottom: 30px;
+        }
+
+        .recommendations-section h2 {
+            font-size: 20px;
+            font-weight: 700;
+            margin-bottom: 6px;
+            color: #ffffff;
+        }
+
+        .recommendations-section .section-desc {
+            font-size: 14px;
+            color: #aab0c0;
+            margin-bottom: 20px;
+        }
+
+        .rec-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 24px;
+        }
+
+        @media (max-width: 768px) {
+            .rec-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .rec-card {
+            background: rgba(255, 255, 255, 0.06);
+            border-radius: 14px;
+            padding: 18px 22px;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        .rec-card .rec-title {
+            font-size: 15px;
+            font-weight: 600;
+            color: #ffffff;
+            margin-bottom: 6px;
+        }
+
+        .rec-card .rec-list {
+            list-style: none;
+            padding: 0;
+        }
+
+        .rec-card .rec-list li {
+            padding: 4px 0;
+            font-size: 13px;
+            color: #c8cedd;
+            display: flex;
+            align-items: flex-start;
+            gap: 8px;
+            line-height: 1.5;
+        }
+
+        .rec-card .rec-list li::before {
+            content: "▸";
+            color: #66bb6a;
+            font-weight: 700;
+        }
+
+        .rec-card.robert-rec .rec-list li::before {
+            color: #42a5f5;
+        }
+
+        /* ============================================
+                   FOOTER
+                ============================================ */
+        .footer {
+            text-align: center;
+            padding-top: 30px;
+            border-top: 2px solid #e8ecf1;
+            margin-top: 10px;
+        }
+
+        .footer p {
+            font-size: 14px;
+            color: #8a9aaa;
+            letter-spacing: 0.3px;
+        }
+
+        .footer .highlight {
+            color: #2a3a4a;
+            font-weight: 600;
+        }
+
+        /* ============================================
+                   ANIMATIONS
+                ============================================ */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .summary-section,
+        .persona-card,
+        .metrics-section,
+        .recommendations-section {
+            animation: fadeInUp 0.6s ease forwards;
+            opacity: 0;
+        }
+
+        .summary-section {
+            animation-delay: 0s;
+        }
+        .persona-card:first-child {
+            animation-delay: 0.1s;
+        }
+        .persona-card:last-child {
+            animation-delay: 0.2s;
+        }
+        .metrics-section {
+            animation-delay: 0.3s;
+        }
+        .recommendations-section {
+            animation-delay: 0.4s;
+        }
+        .header {
+            animation: fadeInUp 0.6s ease forwards;
+            opacity: 0;
+            animation-delay: 0s;
+        }
+
+        /* ============================================
+                   RESPONSIVE
+                ============================================ */
+        @media (max-width: 480px) {
+            body {
+                padding: 20px 16px;
+            }
+            .header h1 {
+                font-size: 28px;
+            }
+            .summary-section,
+            .metrics-section,
+            .recommendations-section {
+                padding: 20px 18px;
+            }
+            .persona-card {
+                padding: 20px 18px;
+            }
+            .summary-table {
+                font-size: 12px;
+            }
+            .summary-table thead th,
+            .summary-table tbody td {
+                padding: 8px 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+
+        <!-- ============================================
+        HEADER
+        ============================================ -->
+        <header class="header">
+            <div class="badge">
+                <span>🧬 Feature Mapping</span>
+            </div>
+            <h1>Olfactory Tracker</h1>
+            <p class="subtitle">How our features help each persona achieve their goals</p>
+        </header>
+
+        <!-- ============================================
+        FEATURE SUMMARY TABLE
+        ============================================ -->
+        <section class="summary-section">
+            <h2>📊 Feature Adoption Summary</h2>
+            <p class="section-desc">How each feature serves Sarah (Parosmia) and Robert (Anosmia)</p>
+
+            <table class="summary-table">
+                <thead>
+                    <tr>
+                        <th>Feature</th>
+                        <th>Sarah (Parosmia)</th>
+                        <th>Robert (Anosmia)</th>
+                        <th>Purpose</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="feature-name">Scent Logging</td>
+                        <td><span class="check">✅</span> <span class="badge-pill essential">Essential</span></td>
+                        <td><span class="check">✅</span> <span class="badge-pill essential">Essential</span></td>
+                        <td>Track daily scent exposures</td>
+                    </tr>
+                    <tr>
+                        <td class="feature-name">Rating System (1-5)</td>
+                        <td><span class="check">✅</span> <span class="badge-pill essential">Essential</span></td>
+                        <td><span class="check adapted">⚠️</span> <span class="badge-pill adapted">Adapted</span></td>
+                        <td>Quantify perception</td>
+                    </tr>
+                    <tr>
+                        <td class="feature-name">Weekly Sheet</td>
+                        <td><span class="check">✅</span> <span class="badge-pill high">High</span></td>
+                        <td><span class="check">✅</span> <span class="badge-pill high">High</span></td>
+                        <td>Visualize weekly patterns</td>
+                    </tr>
+                    <tr>
+                        <td class="feature-name">Monthly Heatmap</td>
+                        <td><span class="check">✅</span> <span class="badge-pill medium">Medium</span></td>
+                        <td><span class="check adapted">⚠️</span> <span class="badge-pill low">Low</span></td>
+                        <td>See long-term trends</td>
+                    </tr>
+                    <tr>
+                        <td class="feature-name">PDF Export</td>
+                        <td><span class="check">✅</span> <span class="badge-pill high">High</span></td>
+                        <td><span class="check">✅</span> <span class="badge-pill medium">Medium</span></td>
+                        <td>Generate reports</td>
+                    </tr>
+                    <tr>
+                        <td class="feature-name">Country Selection</td>
+                        <td><span class="check">✅</span> <span class="badge-pill medium">Medium</span></td>
+                        <td><span class="check adapted">⚠️</span> <span class="badge-pill low">Low</span></td>
+                        <td>Track environmental factors</td>
+                    </tr>
+                    <tr>
+                        <td class="feature-name">Questionnaire</td>
+                        <td><span class="check">✅</span> <span class="badge-pill high">High</span></td>
+                        <td><span class="check">✅</span> <span class="badge-pill medium">Medium</span></td>
+                        <td>Initial assessment</td>
+                    </tr>
+                    <tr>
+                        <td class="feature-name">Skip Quiz</td>
+                        <td><span class="check">✅</span> <span class="badge-pill medium">Medium</span></td>
+                        <td><span class="check">✅</span> <span class="badge-pill high">High</span></td>
+                        <td>Quick start option</td>
+                    </tr>
+                    <tr>
+                        <td class="feature-name">Rating Popup</td>
+                        <td><span class="check">✅</span> <span class="badge-pill essential">Essential</span></td>
+                        <td><span class="check adapted">⚠️</span> <span class="badge-pill adapted">Adapted</span></td>
+                        <td>Immediate feedback</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div style="margin-top:16px;font-size:12px;color:#8a9aaa;">
+                <span style="display:inline-block;margin-right:16px;">✅ = Used</span>
+                <span style="display:inline-block;margin-right:16px;">⚠️ = Adapted</span>
+                <span class="badge-pill essential" style="margin-right:8px;">Essential</span>
+                <span class="badge-pill high" style="margin-right:8px;">High</span>
+                <span class="badge-pill medium" style="margin-right:8px;">Medium</span>
+                <span class="badge-pill low" style="margin-right:8px;">Low</span>
+                <span class="badge-pill adapted">Adapted</span>
+            </div>
+        </section>
+
+        <!-- ============================================
+        PERSONA SECTIONS
+        ============================================ -->
+        <div class="persona-section">
+
+            <!-- ===== SARAH ===== -->
+            <div class="persona-card sarah">
+                <div class="card-header">
+                    <div class="avatar">🌸</div>
+                    <div class="info">
+                        <h3>Sarah Johnson</h3>
+                        <span class="tag">Post-COVID Parosmia</span>
+                    </div>
+                </div>
+
+                <div class="goals-grid">
+                    <div class="goal-item">
+                        <div class="goal-title">🎯 Track smell training progress</div>
+                        <div class="goal-desc">Logs scents daily, rates them 1-5, and visualizes improvement over time.</div>
+                        <div class="goal-features">
+                            <span class="feature-tag primary">Scent Logging</span>
+                            <span class="feature-tag">Rating System</span>
+                            <span class="feature-tag">Weekly Sheet</span>
+                        </div>
+                    </div>
+
+                    <div class="goal-item">
+                        <div class="goal-title">🎯 Identify trigger foods</div>
+                        <div class="goal-desc">Tracks which foods cause distorted smells and identifies patterns.</div>
+                        <div class="goal-features">
+                            <span class="feature-tag primary">Scent Logging</span>
+                            <span class="feature-tag">Country Selection</span>
+                            <span class="feature-tag">Monthly Heatmap</span>
+                        </div>
+                    </div>
+
+                    <div class="goal-item">
+                        <div class="goal-title">🎯 Share data with ENT specialist</div>
+                        <div class="goal-desc">Generates clean PDF reports with statistics and history for doctor visits.</div>
+                        <div class="goal-features">
+                            <span class="feature-tag primary">PDF Export</span>
+                            <span class="feature-tag">Questionnaire</span>
+                            <span class="feature-tag">Rating System</span>
+                        </div>
+                    </div>
+
+                    <div class="goal-item">
+                        <div class="goal-title">🎯 Find hope & connection with others</div>
+                        <div class="goal-desc">Completes assessment, shares data, and connects with similar users.</div>
+                        <div class="goal-features">
+                            <span class="feature-tag primary">Questionnaire</span>
+                            <span class="feature-tag">Country Selection</span>
+                            <span class="feature-tag">Export Data</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="feature-details">
+                    <h4>🔄 Feature Comparison</h4>
+                    <div class="feature-comparison">
+                        <div class="feature-comp-item">
+                            <div class="comp-label">⭐ Rating System</div>
+                            <div class="comp-text">Rates scent quality (1 = distorted, 5 = normal) • Tracks improvement</div>
+                        </div>
+                        <div class="feature-comp-item">
+                            <div class="comp-label">📊 Weekly Sheet</div>
+                            <div class="comp-text">Visualizes rating patterns • Identifies good/bad days • Shares with doctor</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ===== ROBERT ===== -->
+            <div class="persona-card robert">
+                <div class="card-header">
+                    <div class="avatar">🔬</div>
+                    <div class="info">
+                        <h3>Robert Chen</h3>
+                        <span class="tag">Congenital Anosmia</span>
+                    </div>
+                </div>
+
+                <div class="goals-grid">
+                    <div class="goal-item">
+                        <div class="goal-title">🎯 Safety monitoring</div>
+                        <div class="goal-desc">Logs when others alert him to smells (gas, smoke, spoiled food).</div>
+                        <div class="goal-features">
+                            <span class="feature-tag primary">Scent Logging</span>
+                            <span class="feature-tag">Rating System</span>
+                            <span class="feature-tag">Weekly Sheet</span>
+                        </div>
+                    </div>
+
+                    <div class="goal-item">
+                        <div class="goal-title">🎯 Understand the scented world</div>
+                        <div class="goal-desc">Builds a "scent dictionary" from others' descriptions and ratings.</div>
+                        <div class="goal-features">
+                            <span class="feature-tag primary">Scent Logging</span>
+                            <span class="feature-tag">Rating System</span>
+                            <span class="feature-tag">Weekly Sheet</span>
+                        </div>
+                    </div>
+
+                    <div class="goal-item">
+                        <div class="goal-title">🎯 Raise awareness about anosmia</div>
+                        <div class="goal-desc">Creates educational materials and shares his lifelong experience.</div>
+                        <div class="goal-features">
+                            <span class="feature-tag primary">PDF Export</span>
+                            <span class="feature-tag">Questionnaire</span>
+                            <span class="feature-tag">Country Selection</span>
+                        </div>
+                    </div>
+
+                    <div class="goal-item">
+                        <div class="goal-title">🎯 Participate in research studies</div>
+                        <div class="goal-desc">Contributes longitudinal data and clean datasets for researchers.</div>
+                        <div class="goal-features">
+                            <span class="feature-tag primary">Scent Logging</span>
+                            <span class="feature-tag">Rating System</span>
+                            <span class="feature-tag">Export Data</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="feature-details">
+                    <h4>🔄 Feature Comparison</h4>
+                    <div class="feature-comparison">
+                        <div class="feature-comp-item">
+                            <div class="comp-label">⭐ Rating System</div>
+                            <div class="comp-text">Rates intensity based on others' descriptions • Creates scent profiles</div>
+                        </div>
+                        <div class="feature-comp-item">
+                            <div class="comp-label">📊 Weekly Sheet</div>
+                            <div class="comp-text">Visualizes scent database • Identifies patterns • Shares with researchers</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- ============================================
+        SUCCESS METRICS
+        ============================================ -->
+        <section class="metrics-section">
+            <h2>📈 Success Metrics</h2>
+            <p class="section-desc">How we measure success for each persona</p>
+
+            <div class="metrics-grid">
+                <!-- Sarah's Metrics -->
+                <div class="metric-card sarah-metric">
+                    <div class="metric-persona">🌸 Sarah's Success</div>
+                    <ul class="metric-list">
+                        <li><span class="metric-icon">📈</span> Rating improvement: <strong>1/5 → 3/5</strong> average</li>
+                        <li><span class="metric-icon">🔍</span> Trigger identification: <strong>5+ triggers</strong> identified</li>
+                        <li><span class="metric-icon">📋</span> Doctor reports: <strong>3+</strong> successful consultations</li>
+                        <li><span class="metric-icon">🤝</span> Community connection: <strong>10+</strong> shared experiences</li>
+                    </ul>
+                </div>
+
+                <!-- Robert's Metrics -->
+                <div class="metric-card robert-metric">
+                    <div class="metric-persona">🔬 Robert's Success</div>
+                    <ul class="metric-list">
+                        <li><span class="metric-icon">🛡️</span> Safety incidents: <strong>0</strong> gas/smoke incidents</li>
+                        <li><span class="metric-icon">📚</span> Scent database: <strong>50+</strong> scent descriptions</li>
+                        <li><span class="metric-icon">📢</span> Awareness raised: <strong>20+</strong> people educated</li>
+                        <li><span class="metric-icon">🧬</span> Research participation: <strong>2+</strong> studies contributed</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- ============================================
+        RECOMMENDATIONS
+        ============================================ -->
+        <section class="recommendations-section">
+            <h2>🚀 Future Feature Recommendations</h2>
+            <p class="section-desc">Suggested enhancements to better serve each persona</p>
+
+            <div class="rec-grid">
+                <!-- For Sarah -->
+                <div class="rec-card">
+                    <div class="rec-title">🌸 For Sarah (Parosmia)</div>
+                    <ul class="rec-list">
+                        <li><strong>Scent Training Module:</strong> Daily exercises with guided ratings</li>
+                        <li><strong>Trigger Alerts:</strong> Reminders when entering trigger-heavy environments</li>
+                        <li><strong>Community Forum:</strong> Connect with other parosmia patients</li>
+                        <li><strong>Progress Dashboard:</strong> Visual improvement charts</li>
+                    </ul>
+                </div>
+
+                <!-- For Robert -->
+                <div class="rec-card robert-rec">
+                    <div class="rec-title">🔬 For Robert (Anosmia)</div>
+                    <ul class="rec-list">
+                        <li><strong>Safety Alerts:</strong> Real-time notifications for gas/smoke detectors</li>
+                        <li><strong>Scent Dictionary:</strong> Crowdsourced scent descriptions</li>
+                        <li><strong>Educational Resources:</strong> Anosmia awareness materials</li>
+                        <li><strong>Research Portal:</strong> Connect with ongoing studies</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- ============================================
+        FOOTER
+        ============================================ -->
+        <footer class="footer">
+            <p>
+                <span class="highlight">Olfactory Tracker</span> — Designed for two distinct journeys
+            </p>
+            <p style="margin-top:6px;font-size:12px;color:#9aaaba;">
+                Feature mapping for presentation purposes • © 2026 Olfactory Tracker
+            </p>
+        </footer>
+
+    </div>
+
+</body>
+</html>

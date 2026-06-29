@@ -1,0 +1,648 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Olfactory Tracker - Home</title>
+    <style>
+        /* ============================================
+                   RESET & BASE
+                ============================================ */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: #0a0a0a;
+            color: #ffffff;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* ============================================
+                   ANIMATED BACKGROUND
+                ============================================ */
+        .bg-animation {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            overflow: hidden;
+            pointer-events: none;
+        }
+
+        .bg-animation .orb {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(80px);
+            opacity: 0.15;
+            animation: floatOrb 20s ease-in-out infinite;
+        }
+
+        .bg-animation .orb:nth-child(1) {
+            width: 600px;
+            height: 600px;
+            background: #667eea;
+            top: -200px;
+            left: -200px;
+            animation-delay: 0s;
+        }
+
+        .bg-animation .orb:nth-child(2) {
+            width: 500px;
+            height: 500px;
+            background: #764ba2;
+            bottom: -200px;
+            right: -200px;
+            animation-delay: -7s;
+        }
+
+        .bg-animation .orb:nth-child(3) {
+            width: 400px;
+            height: 400px;
+            background: #f093fb;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            animation-delay: -14s;
+        }
+
+        @keyframes floatOrb {
+            0%, 100% { transform: translate(0, 0) scale(1); }
+            25% { transform: translate(100px, -80px) scale(1.1); }
+            50% { transform: translate(-50px, 100px) scale(0.9); }
+            75% { transform: translate(80px, 50px) scale(1.05); }
+        }
+
+        /* ============================================
+                   CONTAINER
+                ============================================ */
+        .container {
+            position: relative;
+            z-index: 1;
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 40px 30px;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        /* ============================================
+                   HEADER
+                ============================================ */
+        .header {
+            text-align: center;
+            margin-bottom: 60px;
+        }
+
+        .header .badge {
+            display: inline-block;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 20px;
+            padding: 6px 20px;
+            margin-bottom: 20px;
+        }
+
+        .header .badge span {
+            font-size: 11px;
+            font-weight: 700;
+            color: #888;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+        }
+
+        .header .logo-icon {
+            font-size: 64px;
+            display: block;
+            margin-bottom: 12px;
+            animation: floatIcon 3s ease-in-out infinite;
+        }
+
+        @keyframes floatIcon {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+        }
+
+        .header h1 {
+            font-size: 52px;
+            font-weight: 800;
+            letter-spacing: -1.5px;
+            background: linear-gradient(135deg, #ffffff 0%, #aab0c0 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 8px;
+        }
+
+        .header .subtitle {
+            font-size: 18px;
+            color: #888;
+            font-weight: 300;
+            letter-spacing: 0.3px;
+        }
+
+        .header .subtitle strong {
+            color: #fff;
+            font-weight: 500;
+        }
+
+        /* ============================================
+                   DIVIDER
+                ============================================ */
+        .divider {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 16px;
+            margin-bottom: 50px;
+        }
+
+        .divider .line {
+            flex: 1;
+            max-width: 200px;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.15), transparent);
+        }
+
+        .divider .diamond {
+            width: 8px;
+            height: 8px;
+            background: rgba(255, 255, 255, 0.2);
+            transform: rotate(45deg);
+        }
+
+        /* ============================================
+                   CARDS GRID
+                ============================================ */
+        .cards-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 30px;
+            margin-bottom: 50px;
+        }
+
+        @media (max-width: 1024px) {
+            .cards-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .cards-grid {
+                grid-template-columns: 1fr;
+                gap: 24px;
+            }
+            .header h1 {
+                font-size: 36px;
+            }
+            .header .logo-icon {
+                font-size: 48px;
+            }
+        }
+
+        /* ============================================
+                   CARD
+                ============================================ */
+        .card {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            border-radius: 24px;
+            padding: 36px 32px 32px;
+            text-decoration: none;
+            color: #ffffff;
+            transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            cursor: pointer;
+        }
+
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.03) 0%, transparent 100%);
+            opacity: 0;
+            transition: opacity 0.4s ease;
+            border-radius: 24px;
+        }
+
+        .card:hover {
+            transform: translateY(-8px);
+            border-color: rgba(255, 255, 255, 0.15);
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        }
+
+        .card:hover::before {
+            opacity: 1;
+        }
+
+        .card .card-glow {
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle at center, rgba(255, 255, 255, 0.03) 0%, transparent 70%);
+            opacity: 0;
+            transition: opacity 0.6s ease;
+            pointer-events: none;
+        }
+
+        .card:hover .card-glow {
+            opacity: 1;
+        }
+
+        .card .card-icon {
+            font-size: 48px;
+            margin-bottom: 16px;
+            position: relative;
+            z-index: 1;
+            transition: transform 0.3s ease;
+        }
+
+        .card:hover .card-icon {
+            transform: scale(1.1) rotate(-5deg);
+        }
+
+        .card .card-number {
+            font-size: 12px;
+            font-weight: 700;
+            color: #666;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            margin-bottom: 8px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .card .card-title {
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 10px;
+            position: relative;
+            z-index: 1;
+            line-height: 1.2;
+        }
+
+        .card .card-desc {
+            font-size: 14px;
+            color: #999;
+            line-height: 1.7;
+            margin-bottom: 20px;
+            position: relative;
+            z-index: 1;
+            flex: 1;
+        }
+
+        .card .card-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            margin-bottom: 16px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .card .card-tags .tag {
+            font-size: 10px;
+            font-weight: 600;
+            padding: 4px 14px;
+            border-radius: 20px;
+            background: rgba(255, 255, 255, 0.06);
+            color: #aaa;
+            border: 1px solid rgba(255, 255, 255, 0.06);
+        }
+
+        .card .card-arrow {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            color: #888;
+            position: relative;
+            z-index: 1;
+            transition: all 0.3s ease;
+        }
+
+        .card:hover .card-arrow {
+            color: #ffffff;
+            gap: 14px;
+        }
+
+        .card .card-arrow .arrow-icon {
+            font-size: 18px;
+            transition: transform 0.3s ease;
+        }
+
+        .card:hover .card-arrow .arrow-icon {
+            transform: translateX(4px);
+        }
+
+        /* ============================================
+                   CARD VARIANTS
+                ============================================ */
+        .card.personas {
+            border-color: rgba(46, 125, 50, 0.2);
+        }
+
+        .card.personas:hover {
+            border-color: rgba(46, 125, 50, 0.4);
+            box-shadow: 0 20px 60px rgba(46, 125, 50, 0.1);
+        }
+
+        .card.personas .card-title {
+            color: #66bb6a;
+        }
+
+        .card.personas .card-tags .tag {
+            background: rgba(46, 125, 50, 0.1);
+            color: #66bb6a;
+            border-color: rgba(46, 125, 50, 0.15);
+        }
+
+        .card.features {
+            border-color: rgba(21, 101, 192, 0.2);
+        }
+
+        .card.features:hover {
+            border-color: rgba(21, 101, 192, 0.4);
+            box-shadow: 0 20px 60px rgba(21, 101, 192, 0.1);
+        }
+
+        .card.features .card-title {
+            color: #42a5f5;
+        }
+
+        .card.features .card-tags .tag {
+            background: rgba(21, 101, 192, 0.1);
+            color: #42a5f5;
+            border-color: rgba(21, 101, 192, 0.15);
+        }
+
+        .card.app {
+            border-color: rgba(156, 39, 176, 0.2);
+        }
+
+        .card.app:hover {
+            border-color: rgba(156, 39, 176, 0.4);
+            box-shadow: 0 20px 60px rgba(156, 39, 176, 0.1);
+        }
+
+        .card.app .card-title {
+            color: #ce93d8;
+        }
+
+        .card.app .card-tags .tag {
+            background: rgba(156, 39, 176, 0.1);
+            color: #ce93d8;
+            border-color: rgba(156, 39, 176, 0.15);
+        }
+
+        /* ============================================
+                   FOOTER
+                ============================================ */
+        .footer {
+            text-align: center;
+            padding-top: 30px;
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .footer p {
+            font-size: 13px;
+            color: #555;
+            letter-spacing: 0.3px;
+        }
+
+        .footer .footer-highlight {
+            color: #888;
+            font-weight: 500;
+        }
+
+        .footer .footer-links {
+            display: flex;
+            justify-content: center;
+            gap: 24px;
+            margin-top: 12px;
+            flex-wrap: wrap;
+        }
+
+        .footer .footer-links a {
+            color: #555;
+            text-decoration: none;
+            font-size: 12px;
+            transition: color 0.3s ease;
+            letter-spacing: 0.3px;
+        }
+
+        .footer .footer-links a:hover {
+            color: #aaa;
+        }
+
+        /* ============================================
+                   ANIMATIONS
+                ============================================ */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(40px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .header {
+            animation: fadeInUp 0.8s ease forwards;
+            opacity: 0;
+            animation-delay: 0s;
+        }
+
+        .divider {
+            animation: fadeInUp 0.8s ease forwards;
+            opacity: 0;
+            animation-delay: 0.2s;
+        }
+
+        .card {
+            animation: fadeInUp 0.8s ease forwards;
+            opacity: 0;
+        }
+
+        .card:nth-child(1) {
+            animation-delay: 0.3s;
+        }
+        .card:nth-child(2) {
+            animation-delay: 0.5s;
+        }
+        .card:nth-child(3) {
+            animation-delay: 0.7s;
+        }
+
+        .footer {
+            animation: fadeInUp 0.8s ease forwards;
+            opacity: 0;
+            animation-delay: 0.9s;
+        }
+
+        /* ============================================
+                   SCROLLBAR
+                ============================================ */
+        ::-webkit-scrollbar {
+            width: 4px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #0a0a0a;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #333;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #555;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ============================================
+    BACKGROUND ANIMATION
+    ============================================ -->
+    <div class="bg-animation">
+        <div class="orb"></div>
+        <div class="orb"></div>
+        <div class="orb"></div>
+    </div>
+
+    <!-- ============================================
+    MAIN CONTAINER
+    ============================================ -->
+    <div class="container">
+
+        <!-- ===== HEADER ===== -->
+        <header class="header">
+            <div class="badge">
+                <span>🧬 Olfactory Health Platform</span>
+            </div>
+            <span class="logo-icon">👃</span>
+            <h1>Olfactory Tracker</h1>
+            <p class="subtitle">
+                A complete solution for <strong>olfactory health monitoring</strong> — 
+                designed for people with smell disorders
+            </p>
+        </header>
+
+        <!-- ===== DIVIDER ===== -->
+        <div class="divider">
+            <span class="line"></span>
+            <span class="diamond"></span>
+            <span class="line"></span>
+        </div>
+
+        <!-- ===== CARDS GRID ===== -->
+        <div class="cards-grid">
+
+            <!-- Card 1: Personas -->
+            <a href="personas.html" class="card personas">
+                <div class="card-glow"></div>
+                <span class="card-icon">👤</span>
+                <span class="card-number">01 — Research</span>
+                <h2 class="card-title">User Personas</h2>
+                <p class="card-desc">
+                    Meet Sarah and Robert — two individuals with distinct olfactory disorders. 
+                    Understand their journeys, challenges, and how our platform serves their unique needs.
+                </p>
+                <div class="card-tags">
+                    <span class="tag">Parosmia</span>
+                    <span class="tag">Anosmia</span>
+                    <span class="tag">Post-COVID</span>
+                    <span class="tag">Congenital</span>
+                </div>
+                <div class="card-arrow">
+                    <span>View Personas</span>
+                    <span class="arrow-icon">→</span>
+                </div>
+            </a>
+
+            <!-- Card 2: Feature Mapping -->
+            <a href="feature-mapping.html" class="card features">
+                <div class="card-glow"></div>
+                <span class="card-icon">📊</span>
+                <span class="card-number">02 — Analysis</span>
+                <h2 class="card-title">Feature Mapping</h2>
+                <p class="card-desc">
+                    Discover how each feature of the Olfactory Tracker app aligns with 
+                    user goals. From scent logging to PDF export — see the full picture.
+                </p>
+                <div class="card-tags">
+                    <span class="tag">Scent Logging</span>
+                    <span class="tag">Rating System</span>
+                    <span class="tag">PDF Export</span>
+                    <span class="tag">Analytics</span>
+                </div>
+                <div class="card-arrow">
+                    <span>Explore Features</span>
+                    <span class="arrow-icon">→</span>
+                </div>
+            </a>
+
+            <!-- Card 3: Olfactory App -->
+            <a href="index.html" class="card app">
+                <div class="card-glow"></div>
+                <span class="card-icon">📱</span>
+                <span class="card-number">03 — Product</span>
+                <h2 class="card-title">Olfactory App</h2>
+                <p class="card-desc">
+                    Experience the full Olfactory Tracker application — a clinical-grade 
+                    tool for tracking scent reception, rating perceptions, and monitoring 
+                    olfactory health over time.
+                </p>
+                <div class="card-tags">
+                    <span class="tag">🧬 Clinical</span>
+                    <span class="tag">⭐ Rating</span>
+                    <span class="tag">📊 Analytics</span>
+                    <span class="tag">🛍️ Shop</span>
+                </div>
+                <div class="card-arrow">
+                    <span>Launch App</span>
+                    <span class="arrow-icon">→</span>
+                </div>
+            </a>
+
+        </div>
+
+        <!-- ===== FOOTER ===== -->
+        <footer class="footer">
+            <p>
+                <span class="footer-highlight">Olfactory Tracker</span> — 
+                Empowering individuals with olfactory disorders
+            </p>
+            <div class="footer-links">
+                <a href="personas.html">Personas</a>
+                <a href="feature-mapping.html">Feature Mapping</a>
+                <a href="index.html">Olfactory App</a>
+            </div>
+            <p style="margin-top:12px;font-size:11px;color:#444;">
+                © 2026 Olfactory Tracker • Clinical Edition
+            </p>
+        </footer>
+
+    </div>
+
+</body>
+</html>

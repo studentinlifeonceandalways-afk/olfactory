@@ -2208,6 +2208,148 @@
         }
 
         /* ============================================
+                   TRAINING PROGRAMS SECTION
+                ============================================ */
+        .training-section {
+            background: #f8f8f8;
+            border-radius: 12px;
+            padding: 14px;
+            margin-bottom: 14px;
+            border: 1px solid #e8e8e8;
+        }
+
+        .training-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+
+        .training-header h2 {
+            font-size: 15px;
+            color: #1a1a1a;
+            font-weight: 700;
+        }
+
+        .training-header .training-badge {
+            font-size: 10px;
+            background: #4a6a8c;
+            color: #ffffff;
+            padding: 2px 12px;
+            border-radius: 20px;
+            font-weight: 600;
+        }
+
+        .training-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+
+        .training-card {
+            background: #ffffff;
+            border-radius: 10px;
+            padding: 12px;
+            border: 1px solid #e8e8e8;
+            transition: all 0.3s ease;
+            text-align: center;
+        }
+
+        .training-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.06);
+        }
+
+        .training-card .training-icon {
+            font-size: 32px;
+            display: block;
+            margin-bottom: 4px;
+        }
+
+        .training-card .training-name {
+            font-size: 13px;
+            font-weight: 600;
+            color: #1a1a1a;
+            margin-bottom: 2px;
+        }
+
+        .training-card .training-desc {
+            font-size: 10px;
+            color: #888;
+            line-height: 1.4;
+            margin-bottom: 6px;
+        }
+
+        .training-card .training-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 3px;
+            justify-content: center;
+            margin-bottom: 8px;
+        }
+
+        .training-card .training-tags .tag {
+            font-size: 8px;
+            background: #f0f0f0;
+            padding: 1px 8px;
+            border-radius: 12px;
+            color: #666;
+            font-weight: 500;
+        }
+
+        .training-card .training-tags .tag.beginner {
+            background: #e8f5e9;
+            color: #2e7d32;
+        }
+
+        .training-card .training-tags .tag.intermediate {
+            background: #fff3e0;
+            color: #e65100;
+        }
+
+        .training-card .training-tags .tag.advanced {
+            background: #fce4ec;
+            color: #c62828;
+        }
+
+        .training-card .training-tags .tag.clinical {
+            background: #e3f2fd;
+            color: #1565c0;
+        }
+
+        .training-card .training-duration {
+            font-size: 10px;
+            color: #999;
+            margin-bottom: 8px;
+        }
+
+        .training-card .btn-start-training {
+            width: 100%;
+            padding: 8px;
+            border: none;
+            border-radius: 8px;
+            background: #4a6a8c;
+            color: #ffffff;
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .training-card .btn-start-training:hover {
+            background: #3a5a7c;
+            transform: scale(1.02);
+        }
+
+        .training-card .btn-start-training:active {
+            transform: scale(0.98);
+        }
+
+        .training-card .btn-start-training.active {
+            background: #2e7d32;
+        }
+
+        /* ============================================
                    FOOTER
                 ============================================ */
         .app-footer {
@@ -2414,6 +2556,19 @@
             .profile-prompt .prompt-text {
                 font-size: 10px;
             }
+            .training-grid {
+                grid-template-columns: 1fr 1fr;
+                gap: 8px;
+            }
+            .training-card {
+                padding: 10px;
+            }
+            .training-card .training-icon {
+                font-size: 28px;
+            }
+            .training-card .training-name {
+                font-size: 12px;
+            }
         }
 
         @media (max-height: 700px) {
@@ -2577,6 +2732,25 @@
             }
             .profile-prompt .prompt-text {
                 font-size: 10px;
+            }
+            .training-grid {
+                grid-template-columns: 1fr 1fr;
+                gap: 6px;
+            }
+            .training-card {
+                padding: 8px;
+            }
+            .training-card .training-icon {
+                font-size: 24px;
+            }
+            .training-card .training-name {
+                font-size: 11px;
+            }
+            .training-card .training-desc {
+                font-size: 9px;
+            }
+            .training-section {
+                padding: 10px;
             }
         }
 
@@ -2999,6 +3173,17 @@
                     </div>
                 </section>
 
+                <!-- ===== TRAINING PROGRAMS SECTION ===== -->
+                <section class="training-section">
+                    <div class="training-header">
+                        <h2>🧠 Olfactory Training Programs</h2>
+                        <span class="training-badge">🏥 Clinical</span>
+                    </div>
+                    <div class="training-grid" id="trainingGrid">
+                        <!-- Training programs will be generated by JS -->
+                    </div>
+                </section>
+
                 <!-- ===== FOOTER ===== -->
                 <footer class="app-footer">
                     <p class="footer-text">👃 Monitor your olfactory health daily</p>
@@ -3074,6 +3259,43 @@
                 category: 'Floral',
                 color: '#e8a0b4',
                 glassColor: '#f5d4dc'
+            }];
+
+            // ============================================================
+            //  TRAINING PROGRAMS DATA
+            // ============================================================
+            const trainingPrograms = [{
+                id: 1,
+                name: 'Scent Reintroduction',
+                icon: '🌿',
+                desc: 'Gradual exposure to common scents',
+                tags: ['Beginner', 'Clinical'],
+                duration: '8 weeks',
+                color: '#4a6a8c'
+            }, {
+                id: 2,
+                name: 'Olfactory Memory',
+                icon: '🧠',
+                desc: 'Strengthen scent recognition skills',
+                tags: ['Intermediate', 'Clinical'],
+                duration: '6 weeks',
+                color: '#6a4a8c'
+            }, {
+                id: 3,
+                name: 'Distortion Correction',
+                icon: '🔄',
+                desc: 'Retrain parosmia perception',
+                tags: ['Advanced', 'Clinical'],
+                duration: '10 weeks',
+                color: '#8c4a4a'
+            }, {
+                id: 4,
+                name: 'Daily Sensory Reset',
+                icon: '🌅',
+                desc: 'Quick daily olfactory exercises',
+                tags: ['Beginner', 'Gentle'],
+                duration: '4 weeks',
+                color: '#4a8c6a'
             }];
 
             // Perfume bottle SVG generator
@@ -3247,6 +3469,7 @@
             const toast = document.getElementById('toast');
             const cartToast = document.getElementById('cartToast');
             const productGrid = document.getElementById('productGrid');
+            const trainingGrid = document.getElementById('trainingGrid');
 
             // ============================================================
             //  STATE
@@ -3264,6 +3487,7 @@
             let cart = [];
             let isProfilePromptDismissed = false;
             let hasProfileBeenShown = false;
+            let activeTraining = null;
 
             // ============================================================
             //  CONDITION-SPECIFIC RATING LABELS
@@ -3760,6 +3984,52 @@
             });
 
             // ============================================================
+            //  RENDER TRAINING PROGRAMS
+            // ============================================================
+            function renderTrainingPrograms() {
+                trainingGrid.innerHTML = trainingPrograms.map(program => {
+                    const isActive = activeTraining === program.id;
+                    return `
+                        <div class="training-card">
+                            <span class="training-icon">${program.icon}</span>
+                            <div class="training-name">${program.name}</div>
+                            <div class="training-desc">${program.desc}</div>
+                            <div class="training-tags">
+                                ${program.tags.map(tag => `<span class="tag ${tag.toLowerCase()}">${tag}</span>`).join('')}
+                            </div>
+                            <div class="training-duration">⏱ ${program.duration}</div>
+                            <button class="btn-start-training ${isActive ? 'active' : ''}" data-id="${program.id}">
+                                ${isActive ? '✓ Active' : 'Start Program'}
+                            </button>
+                        </div>
+                    `;
+                }).join('');
+
+                document.querySelectorAll('.btn-start-training').forEach(btn => {
+                    btn.addEventListener('click', function() {
+                        const programId = parseInt(this.dataset.id);
+                        toggleTrainingProgram(programId);
+                    });
+                });
+            }
+
+            function toggleTrainingProgram(programId) {
+                if (activeTraining === programId) {
+                    // Deactivate
+                    activeTraining = null;
+                    showToast('⏹ Training program paused');
+                } else {
+                    // Activate new program
+                    const program = trainingPrograms.find(p => p.id === programId);
+                    activeTraining = programId;
+                    showToast(`🧠 Started "${program.name}" training program!`);
+                }
+                renderTrainingPrograms();
+                // Store active training in localStorage
+                localStorage.setItem('active_training', JSON.stringify(activeTraining));
+            }
+
+            // ============================================================
             //  ECOMMERCE RENDER
             // ============================================================
             function renderProducts() {
@@ -3950,6 +4220,7 @@
                 loadData();
                 updateUI();
                 renderProducts();
+                renderTrainingPrograms();
                 updateCartUI();
                 loadProfileData();
                 if (selectedCondition) {
@@ -3966,6 +4237,14 @@
                     profileCountry.value = selectedCountry;
                 }
                 updateRatingLabels(); // Update rating labels when questionnaire completes
+
+                // Load active training from localStorage
+                const savedTraining = localStorage.getItem('active_training');
+                if (savedTraining) {
+                    activeTraining = JSON.parse(savedTraining);
+                    renderTrainingPrograms();
+                }
+
                 const profileData = JSON.parse(localStorage.getItem('user_profile') || '{}');
                 const isComplete = profileData.fullName && profileData.fullName.trim() !== '' &&
                                   profileData.email && profileData.email.trim() !== '';
@@ -4003,9 +4282,18 @@
                     loadData();
                     updateUI();
                     renderProducts();
+                    renderTrainingPrograms();
                     updateCartUI();
                     loadProfileData();
                     updateRatingLabels();
+
+                    // Load active training from localStorage
+                    const savedTraining = localStorage.getItem('active_training');
+                    if (savedTraining) {
+                        activeTraining = JSON.parse(savedTraining);
+                        renderTrainingPrograms();
+                    }
+
                     const profileData = JSON.parse(localStorage.getItem('user_profile') || '{}');
                     const isComplete = profileData.fullName && profileData.fullName.trim() !== '' &&
                                       profileData.email && profileData.email.trim() !== '';
@@ -4164,6 +4452,11 @@
                     pendingLogEntry.conditionContext = labels.context;
                     pendingLogEntry.conditionType = condition;
                     pendingLogEntry.ratingLabels = labels.labels;
+                    // Include active training context if any
+                    if (activeTraining) {
+                        const program = trainingPrograms.find(p => p.id === activeTraining);
+                        pendingLogEntry.activeTraining = program ? program.name : null;
+                    }
                     saveData();
                     updateUI();
                     showRatingToast(selectedRating);
@@ -4206,7 +4499,8 @@
                     notes: '',
                     conditionContext: labels.context,
                     conditionType: condition,
-                    ratingLabels: labels.labels
+                    ratingLabels: labels.labels,
+                    activeTraining: activeTraining ? trainingPrograms.find(p => p.id === activeTraining)?.name : null
                 };
                 usageHistory.push(entry);
                 pendingLogEntry = entry;
@@ -4226,11 +4520,12 @@
                 const profileData = JSON.parse(localStorage.getItem('user_profile') || '{}');
                 const condition = profileData.condition || selectedCondition || 'Unknown';
                 const labels = getConditionRatingLabels(condition);
+                const trainingInfo = activeTraining ? ` • 🧠 ${trainingPrograms.find(p => p.id === activeTraining)?.name}` : '';
                 
                 if (dailyUsageCount > 1) {
-                    showToast('👃 ' + dailyUsageCount + ' exposures today • Rating: ' + starDisplay + ' • ' + labels.context);
+                    showToast('👃 ' + dailyUsageCount + ' exposures today • Rating: ' + starDisplay + ' • ' + labels.context + trainingInfo);
                 } else {
-                    showToast('👃 Scent logged • Rating: ' + starDisplay + ' • ' + labels.context);
+                    showToast('👃 Scent logged • Rating: ' + starDisplay + ' • ' + labels.context + trainingInfo);
                 }
             }
 
@@ -4348,7 +4643,8 @@
                     const countryDisplay = lastEntry.country ? ' • ' + lastEntry.country : '';
                     const notesDisplay = lastEntry.notes ? ' • 📝 ' + lastEntry.notes : '';
                     const contextDisplay = lastEntry.conditionContext ? ' • ' + lastEntry.conditionContext : '';
-                    lastUsedDateEl.textContent = formatDate(lastDate) + ' at ' + formatTime(lastDate) + countryDisplay + ratingDisplay + notesDisplay + contextDisplay;
+                    const trainingDisplay = lastEntry.activeTraining ? ' • 🧠 ' + lastEntry.activeTraining : '';
+                    lastUsedDateEl.textContent = formatDate(lastDate) + ' at ' + formatTime(lastDate) + countryDisplay + ratingDisplay + notesDisplay + contextDisplay + trainingDisplay;
                 } else {
                     lastUsedDateEl.textContent = 'Never';
                 }
@@ -4559,6 +4855,7 @@
                     todayUsage: dailyUsageCount,
                     totalUses: usageHistory.length,
                     usageHistory: usageHistory,
+                    activeTraining: activeTraining ? trainingPrograms.find(p => p.id === activeTraining)?.name : 'None',
                     summary: {
                         uniqueDays: new Set(usageHistory.map(e => new Date(e.timestamp).toDateString())).size,
                         averageRating: usageHistory.length > 0 ? 
@@ -4618,6 +4915,7 @@
                     ['Phone', data.patientInfo.phone || 'Not provided'],
                     ['Country', data.patientInfo.country],
                     ['Olfactory Condition', data.patientInfo.condition || 'Not specified'],
+                    ['Active Training Program', data.activeTraining || 'None'],
                     ['Assessment Date', new Date(data.exportedAt).toLocaleDateString()],
                     ['Today\'s Exposures', String(data.todayUsage)],
                     ['Total Exposures', String(data.totalUses)],
@@ -4690,9 +4988,9 @@
                     doc.rect(tableX, yPos, tableWidth, rowHeight, 'D');
                     doc.setFont('helvetica', 'bold');
                     doc.setFontSize(8);
-                    const cols = [18, 18, 22, 16, 18, 20, 40];
+                    const cols = [16, 16, 18, 14, 16, 18, 20, 30];
                     let xPos = tableX + 2;
-                    const headers = ['Date', 'Time', 'Country', 'Rating', 'Stars', 'Context', 'Notes'];
+                    const headers = ['Date', 'Time', 'Country', 'Rating', 'Stars', 'Context', 'Training', 'Notes'];
                     for (let i = 0; i < headers.length; i++) {
                         doc.text(headers[i], xPos, yPos + 5.5);
                         xPos += cols[i];
@@ -4735,8 +5033,9 @@
                         }
                         const countryStr = entry.country || 'Unknown';
                         const contextStr = entry.conditionContext || 'Standard';
+                        const trainingStr = entry.activeTraining || 'None';
                         const notesStr = entry.notes || '';
-                        const notesWrapped = doc.splitTextToSize(notesStr, cols[6] - 4);
+                        const notesWrapped = doc.splitTextToSize(notesStr, cols[7] - 4);
                         const rowHeightAdjusted = Math.max(rowHeight, notesWrapped.length * 4.5 + 2);
                         doc.rect(tableX, yPos, tableWidth, rowHeightAdjusted, 'D');
                         xPos = tableX + 2;
@@ -4752,6 +5051,8 @@
                         xPos += cols[4];
                         doc.text(contextStr, xPos, yPos + 4);
                         xPos += cols[5];
+                        doc.text(trainingStr, xPos, yPos + 4);
+                        xPos += cols[6];
                         if (notesStr) doc.text(notesWrapped, xPos, yPos + 4);
                         yPos += rowHeightAdjusted;
                     }

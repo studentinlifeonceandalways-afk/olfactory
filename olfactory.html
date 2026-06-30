@@ -3693,16 +3693,10 @@
                         const starsStr = log.rating ? '★'.repeat(log.rating) + '☆'.repeat(5 - log.rating) : 'N/A';
                         const countryStr = log.country || 'Unknown';
                         const notesStr = log.notes || 'No notes';
-                        // Show condition context in detail view if available
-                        const conditionContext = log.conditionContext || 'Standard';
                         html += `
                             <div class="detail-item">
                                 <span class="detail-label">#${index + 1} • ${timeStr}</span>
                                 <span class="detail-value">${countryStr} • ${ratingStr}/5 ${starsStr}</span>
-                            </div>
-                            <div class="detail-item" style="border-bottom:1px solid #e8e8e8;padding-bottom:4px;font-size:10px;color:#999;">
-                                <span class="detail-label">Context</span>
-                                <span class="detail-value" style="font-weight:400;">${conditionContext}</span>
                             </div>
                             <div class="detail-item" style="border-bottom:1px solid #e8e8e8;padding-bottom:8px;">
                                 <span class="detail-label">📝 Notes</span>
@@ -4966,7 +4960,7 @@
             }
 
             // ============================================================
-            //  GENERATE PDF (simplified, keeps existing logic)
+            //  GENERATE PDF — CONTEXT AND TRAINING REMOVED
             // ============================================================
             function generatePDF(data) {
                 const { jsPDF } = window.jspdf;
@@ -4974,28 +4968,38 @@
                 const pageWidth = doc.internal.pageSize.getWidth();
                 const margin = 15;
                 let yPos = 20;
+                
+                // Title
                 doc.setFontSize(22);
                 doc.setFont('helvetica', 'bold');
                 doc.text('Olfactory Health Report', pageWidth / 2, yPos, { align: 'center' });
                 yPos += 10;
+                
+                // Date
                 const now = new Date();
                 const dateStr = now.toLocaleString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit' });
                 doc.setFontSize(10);
                 doc.setFont('helvetica', 'normal');
                 doc.text('Generated: ' + dateStr, pageWidth / 2, yPos, { align: 'center' });
                 yPos += 8;
+                
+                // Separator line
                 doc.setDrawColor(180);
                 doc.line(margin, yPos, pageWidth - margin, yPos);
                 yPos += 10;
+                
+                // Patient Information Section
                 doc.setFontSize(14);
                 doc.setFont('helvetica', 'bold');
                 doc.text('Patient Information', margin, yPos);
                 yPos += 8;
+                
                 const tableX = margin;
                 const tableWidth = pageWidth - (margin * 2);
                 const rowHeight = 8;
                 const col1Width = 50;
                 const col2Width = tableWidth - col1Width - 2;
+                
                 doc.setDrawColor(200);
                 doc.setFillColor(245, 245, 245);
                 doc.rect(tableX, yPos, tableWidth, rowHeight, 'F');
@@ -5006,6 +5010,7 @@
                 doc.text('Value', tableX + col1Width + 4, yPos + 5.5);
                 yPos += rowHeight;
                 doc.setFont('helvetica', 'normal');
+                
                 const fields = [
                     ['Username', data.patientInfo.username],
                     ['Full Name', data.patientInfo.fullName || 'Not provided'],
@@ -5021,6 +5026,7 @@
                     ['Average Rating', data.summary.averageRating + ' / 5.0'],
                     ['Countries Logged', data.summary.countriesLogged.length > 0 ? data.summary.countriesLogged.join(', ') : 'None']
                 ];
+                
                 for (const [label, value] of fields) {
                     doc.rect(tableX, yPos, tableWidth, rowHeight, 'D');
                     doc.text(label, tableX + 4, yPos + 5.5);
@@ -5028,11 +5034,14 @@
                     yPos += rowHeight;
                 }
                 yPos += 4;
+                
+                // Assessment Answers Section
                 if (yPos > 250) { doc.addPage(); yPos = 20; }
                 doc.setFontSize(14);
                 doc.setFont('helvetica', 'bold');
                 doc.text('Assessment Answers', margin, yPos);
                 yPos += 8;
+                
                 doc.setFillColor(240, 240, 240);
                 doc.rect(tableX, yPos, tableWidth, rowHeight, 'F');
                 doc.rect(tableX, yPos, tableWidth, rowHeight, 'D');
@@ -5043,6 +5052,7 @@
                 yPos += rowHeight;
                 doc.setFont('helvetica', 'normal');
                 doc.setFontSize(9);
+                
                 for (let i = 0; i < data.patientInfo.questions.length; i++) {
                     const qText = data.patientInfo.questions[i];
                     const aText = data.patientInfo.answers[i] || 'Not answered';
@@ -5068,35 +5078,71 @@
                     const wrappedQ = doc.splitTextToSize(qText, col1Width - 4);
                     const wrappedA = doc.splitTextToSize(aText, col2Width - 4);
                     const maxLines = Math.max(wrappedQ.length, wrappedA.length);
-                    const rowHeightAdjusted = maxLines * 4.5 + 2;
+                    const rowHeightAdjusted = Math.max(rowHeight, maxLines * 4.5 + 2);
                     doc.rect(tableX, yPos, tableWidth, rowHeightAdjusted, 'D');
                     doc.text(wrappedQ, tableX + 4, yPos + 4);
                     doc.text(wrappedA, tableX + col1Width + 4, yPos + 4);
                     yPos += rowHeightAdjusted;
                 }
                 yPos += 4;
+                
+                // Usage History Section - CONTEXT AND TRAINING REMOVED
                 if (data.usageHistory.length > 0) {
                     if (yPos > 200) { doc.addPage(); yPos = 20; }
                     doc.setFontSize(14);
                     doc.setFont('helvetica', 'bold');
                     doc.text('Usage History', margin, yPos);
                     yPos += 8;
+                    
+                    // Define column widths - 6 columns (removed Context and Training)
+                    const colWidths = {
+                        date: 22,
+                        time: 18,
+                        country: 24,
+                        rating: 14,
+                        stars: 24,
+                        notes: 48
+                    };
+                    
+                    // Calculate total width and adjust
+                    let totalColWidth = 0;
+                    for (const key in colWidths) {
+                        totalColWidth += colWidths[key];
+                    }
+                    // Add some padding
+                    const availableWidth = tableWidth - 4;
+                    const scaleFactor = availableWidth / totalColWidth;
+                    
+                    const finalCols = {
+                        date: Math.max(18, colWidths.date * scaleFactor),
+                        time: Math.max(14, colWidths.time * scaleFactor),
+                        country: Math.max(20, colWidths.country * scaleFactor),
+                        rating: Math.max(12, colWidths.rating * scaleFactor),
+                        stars: Math.max(20, colWidths.stars * scaleFactor),
+                        notes: Math.max(30, colWidths.notes * scaleFactor)
+                    };
+                    
+                    // Header
                     doc.setFillColor(240, 240, 240);
                     doc.rect(tableX, yPos, tableWidth, rowHeight, 'F');
                     doc.rect(tableX, yPos, tableWidth, rowHeight, 'D');
                     doc.setFont('helvetica', 'bold');
                     doc.setFontSize(8);
-                    const cols = [16, 16, 18, 14, 16, 18, 20, 30];
                     let xPos = tableX + 2;
-                    const headers = ['Date', 'Time', 'Country', 'Rating', 'Stars', 'Context', 'Training', 'Notes'];
+                    const headers = ['Date', 'Time', 'Country', 'Rating', 'Stars', 'Notes'];
+                    const colKeys = ['date', 'time', 'country', 'rating', 'stars', 'notes'];
+                    
                     for (let i = 0; i < headers.length; i++) {
                         doc.text(headers[i], xPos, yPos + 5.5);
-                        xPos += cols[i];
+                        xPos += finalCols[colKeys[i]];
                     }
                     yPos += rowHeight;
+                    
+                    // Data rows
                     doc.setFont('helvetica', 'normal');
                     doc.setFontSize(8);
                     const recentEntries = data.usageHistory.slice(-15).reverse();
+                    
                     for (const entry of recentEntries) {
                         if (yPos > 250) {
                             doc.addPage();
@@ -5113,12 +5159,13 @@
                             xPos = tableX + 2;
                             for (let i = 0; i < headers.length; i++) {
                                 doc.text(headers[i], xPos, yPos + 5.5);
-                                xPos += cols[i];
+                                xPos += finalCols[colKeys[i]];
                             }
                             yPos += rowHeight;
                             doc.setFont('helvetica', 'normal');
                             doc.setFontSize(8);
                         }
+                        
                         const date = new Date(entry.timestamp);
                         const dateStr = date.toLocaleDateString();
                         const timeStr = date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
@@ -5130,37 +5177,51 @@
                             starsStr = filled + empty;
                         }
                         const countryStr = entry.country || 'Unknown';
-                        const contextStr = entry.conditionContext || 'Standard';
-                        const trainingStr = entry.activeTraining || 'None';
-                        const notesStr = entry.notes || 'No notes';
-                        const notesWrapped = doc.splitTextToSize(notesStr, cols[7] - 4);
-                        const rowHeightAdjusted = Math.max(rowHeight, notesWrapped.length * 4.5 + 2);
+                        const notesStr = entry.notes || '';
+                        
+                        // Calculate row height based on notes content
+                        const notesWrapped = doc.splitTextToSize(notesStr, finalCols.notes - 3);
+                        const rowHeightAdjusted = Math.max(rowHeight, notesWrapped.length * 4 + 2);
+                        
                         doc.rect(tableX, yPos, tableWidth, rowHeightAdjusted, 'D');
                         xPos = tableX + 2;
+                        
+                        // Date
                         doc.text(dateStr, xPos, yPos + 4);
-                        xPos += cols[0];
+                        xPos += finalCols.date;
+                        
+                        // Time
                         doc.text(timeStr, xPos, yPos + 4);
-                        xPos += cols[1];
+                        xPos += finalCols.time;
+                        
+                        // Country
                         doc.text(countryStr, xPos, yPos + 4);
-                        xPos += cols[2];
+                        xPos += finalCols.country;
+                        
+                        // Rating
                         doc.text(String(ratingStr), xPos, yPos + 4);
-                        xPos += cols[3];
+                        xPos += finalCols.rating;
+                        
+                        // Stars
                         doc.text(starsStr, xPos, yPos + 4);
-                        xPos += cols[4];
-                        doc.text(contextStr, xPos, yPos + 4);
-                        xPos += cols[5];
-                        doc.text(trainingStr, xPos, yPos + 4);
-                        xPos += cols[6];
-                        if (notesStr) doc.text(notesWrapped, xPos, yPos + 4);
+                        xPos += finalCols.stars;
+                        
+                        // Notes
+                        if (notesStr) {
+                            doc.text(notesWrapped, xPos, yPos + 4);
+                        }
                         yPos += rowHeightAdjusted;
                     }
                 }
-                const footerY = 280;
+                
+                // Footer
+                const footerY = Math.min(yPos + 10, 280);
                 doc.setFontSize(8);
                 doc.setFont('helvetica', 'italic');
                 doc.setTextColor(150);
                 doc.text('This report was generated automatically by Olfactory Tracker Clinical Edition.', pageWidth / 2, footerY, { align: 'center' });
                 doc.text('Data is protected and confidential.', pageWidth / 2, footerY + 5, { align: 'center' });
+                
                 const today = new Date();
                 const fileName = 'olfactory-report-' + 
                     today.getFullYear() + '-' + 

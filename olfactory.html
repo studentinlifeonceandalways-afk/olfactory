@@ -801,6 +801,11 @@
             margin-bottom: 6px;
         }
 
+        .notes-container label .required-asterisk {
+            color: #c62828;
+            margin-left: 2px;
+        }
+
         .notes-container textarea {
             width: 100%;
             padding: 10px 12px;
@@ -825,6 +830,22 @@
         .notes-container textarea::placeholder {
             color: #aaa;
             font-size: 13px;
+        }
+
+        .notes-container textarea.required-empty {
+            border-color: #c62828;
+            background: #fff5f5;
+        }
+
+        .notes-container .required-hint {
+            font-size: 10px;
+            color: #c62828;
+            display: none;
+            margin-top: 2px;
+        }
+
+        .notes-container .required-hint.visible {
+            display: block;
         }
 
         .notes-character-count {
@@ -2925,8 +2946,9 @@
                 </div>
 
                 <div class="notes-container">
-                    <label for="ratingNotes">📝 Notes</label>
-                    <textarea id="ratingNotes" placeholder="Add any observations about this scent..." maxlength="500"></textarea>
+                    <label for="ratingNotes">📝 Notes <span class="required-asterisk">*</span></label>
+                    <textarea id="ratingNotes" placeholder="Please describe your scent perception experience..." maxlength="500"></textarea>
+                    <div class="required-hint" id="notesRequiredHint">⚠️ Notes are required before submitting</div>
                     <div class="notes-character-count"><span id="charCount">0</span>/500</div>
                 </div>
 
@@ -3407,6 +3429,7 @@
             const ratingCancelBtn = document.getElementById('ratingCancelBtn');
             const ratingNotes = document.getElementById('ratingNotes');
             const charCount = document.getElementById('charCount');
+            const notesRequiredHint = document.getElementById('notesRequiredHint');
 
             // Checkout Elements
             const checkoutOverlay = document.getElementById('checkoutOverlay');
@@ -3669,7 +3692,7 @@
                         const ratingStr = log.rating || 'N/A';
                         const starsStr = log.rating ? '★'.repeat(log.rating) + '☆'.repeat(5 - log.rating) : 'N/A';
                         const countryStr = log.country || 'Unknown';
-                        const notesStr = log.notes || '';
+                        const notesStr = log.notes || 'No notes';
                         // Show condition context in detail view if available
                         const conditionContext = log.conditionContext || 'Standard';
                         html += `
@@ -3681,11 +3704,10 @@
                                 <span class="detail-label">Context</span>
                                 <span class="detail-value" style="font-weight:400;">${conditionContext}</span>
                             </div>
-                            ${notesStr ? `
                             <div class="detail-item" style="border-bottom:1px solid #e8e8e8;padding-bottom:8px;">
                                 <span class="detail-label">📝 Notes</span>
                                 <span class="detail-value" style="font-weight:400;color:#666;">${notesStr}</span>
-                            </div>` : ''}
+                            </div>
                         `;
                     });
                     detailContent.innerHTML = html;
@@ -4057,7 +4079,7 @@
             }
 
             // ============================================================
-            //  CHARACTER COUNT FOR NOTES
+            //  CHARACTER COUNT FOR NOTES & VALIDATION
             // ============================================================
             ratingNotes.addEventListener('input', function() {
                 const length = this.value.length;
@@ -4066,7 +4088,33 @@
                     this.value = this.value.substring(0, 500);
                     charCount.textContent = 500;
                 }
+                // Check if notes are filled
+                validateNotes();
             });
+
+            ratingNotes.addEventListener('blur', function() {
+                validateNotes();
+            });
+
+            function validateNotes() {
+                const notes = ratingNotes.value.trim();
+                const isValid = notes.length > 0;
+                
+                if (!isValid) {
+                    ratingNotes.classList.add('required-empty');
+                    notesRequiredHint.classList.add('visible');
+                } else {
+                    ratingNotes.classList.remove('required-empty');
+                    notesRequiredHint.classList.remove('visible');
+                }
+                
+                // Update submit button state
+                if (selectedRating > 0 && isValid) {
+                    ratingSubmitBtn.disabled = false;
+                } else {
+                    ratingSubmitBtn.disabled = true;
+                }
+            }
 
             // ============================================================
             //  QUESTIONNAIRE FUNCTIONS
@@ -4398,6 +4446,8 @@
                 ratingSubmitBtn.disabled = true;
                 ratingNotes.value = '';
                 charCount.textContent = '0';
+                notesRequiredHint.classList.remove('visible');
+                ratingNotes.classList.remove('required-empty');
                 // Update labels before showing
                 updateRatingLabels();
                 ratingOverlay.classList.add('active');
@@ -4407,9 +4457,10 @@
             function closeRatingPopup() {
                 ratingOverlay.classList.remove('active');
                 selectedRating = 0;
-                pendingLogEntry = null;
                 ratingNotes.value = '';
                 charCount.textContent = '0';
+                notesRequiredHint.classList.remove('visible');
+                ratingNotes.classList.remove('required-empty');
             }
 
             ratingStarsContainer.addEventListener('click', function(e) {
@@ -4421,17 +4472,27 @@
                     const btnValue = parseInt(btn.dataset.value);
                     btn.classList.toggle('active', btnValue <= value);
                 });
-                ratingSubmitBtn.disabled = false;
+                // Check if notes are filled before enabling submit
+                const notes = ratingNotes.value.trim();
+                if (selectedRating > 0 && notes.length > 0) {
+                    ratingSubmitBtn.disabled = false;
+                } else {
+                    ratingSubmitBtn.disabled = true;
+                }
             });
 
             ratingCancelBtn.addEventListener('click', function() {
                 closeRatingPopup();
                 showToast('❌ Rating cancelled');
+                // Remove the pending entry that was added when opening the popup
                 if (pendingLogEntry) {
+                    // Remove the last entry from usageHistory if it matches the pending one
                     if (usageHistory.length > 0 && usageHistory[usageHistory.length - 1] === pendingLogEntry) {
                         usageHistory.pop();
+                        // Recalculate daily count
+                        const todayStr = new Date().toDateString();
                         dailyUsageCount = usageHistory.filter(entry => 
-                            new Date(entry.timestamp).toDateString() === new Date().toDateString()
+                            new Date(entry.timestamp).toDateString() === todayStr
                         ).length;
                         saveData();
                         updateUI();
@@ -4442,13 +4503,22 @@
 
             ratingSubmitBtn.addEventListener('click', function() {
                 if (selectedRating > 0 && pendingLogEntry) {
+                    // Validate notes again before submitting
+                    const notes = ratingNotes.value.trim();
+                    if (notes.length === 0) {
+                        validateNotes();
+                        showToast('⚠️ Please add your observations before submitting');
+                        return;
+                    }
+                    
                     // Get current condition context
                     const profileData = JSON.parse(localStorage.getItem('user_profile') || '{}');
                     const condition = profileData.condition || selectedCondition || 'Unknown';
                     const labels = getConditionRatingLabels(condition);
                     
+                    // Update the pending entry with rating and notes
                     pendingLogEntry.rating = selectedRating;
-                    pendingLogEntry.notes = ratingNotes.value.trim() || '';
+                    pendingLogEntry.notes = notes;
                     pendingLogEntry.conditionContext = labels.context;
                     pendingLogEntry.conditionType = condition;
                     pendingLogEntry.ratingLabels = labels.labels;
@@ -4457,6 +4527,16 @@
                         const program = trainingPrograms.find(p => p.id === activeTraining);
                         pendingLogEntry.activeTraining = program ? program.name : null;
                     }
+                    
+                    // Remove the isPending flag
+                    delete pendingLogEntry.isPending;
+                    
+                    // Now increment the daily count since the user confirmed the entry
+                    const todayStr = new Date().toDateString();
+                    dailyUsageCount = usageHistory.filter(entry => 
+                        new Date(entry.timestamp).toDateString() === todayStr && !entry.isPending
+                    ).length;
+                    
                     saveData();
                     updateUI();
                     showRatingToast(selectedRating);
@@ -4472,8 +4552,9 @@
                     if (pendingLogEntry) {
                         if (usageHistory.length > 0 && usageHistory[usageHistory.length - 1] === pendingLogEntry) {
                             usageHistory.pop();
+                            const todayStr = new Date().toDateString();
                             dailyUsageCount = usageHistory.filter(entry => 
-                                new Date(entry.timestamp).toDateString() === new Date().toDateString()
+                                new Date(entry.timestamp).toDateString() === todayStr
                             ).length;
                             saveData();
                             updateUI();
@@ -4484,7 +4565,7 @@
             });
 
             // ============================================================
-            //  SAVE LOG WITHOUT RATING
+            //  SAVE LOG WITHOUT RATING - CREATES PENDING ENTRY
             // ============================================================
             function saveLogWithoutRating() {
                 const now = new Date().toISOString();
@@ -4496,18 +4577,16 @@
                     timestamp: now,
                     country: selectedCountry || 'Unknown',
                     rating: null,
-                    notes: '',
+                    notes: '', // Will be filled when rating is submitted
                     conditionContext: labels.context,
                     conditionType: condition,
                     ratingLabels: labels.labels,
-                    activeTraining: activeTraining ? trainingPrograms.find(p => p.id === activeTraining)?.name : null
+                    activeTraining: activeTraining ? trainingPrograms.find(p => p.id === activeTraining)?.name : null,
+                    isPending: true // Mark as pending until submitted
                 };
                 usageHistory.push(entry);
                 pendingLogEntry = entry;
-                const todayStr = new Date().toDateString();
-                dailyUsageCount = usageHistory.filter(entry => 
-                    new Date(entry.timestamp).toDateString() === todayStr
-                ).length;
+                // Don't increment daily count yet - wait for submit
                 saveData();
                 updateUI();
                 streakCountEl.classList.add('pulse');
@@ -4566,7 +4645,9 @@
             //  STORAGE
             // ============================================================
             function saveData() {
-                localStorage.setItem('perfume_usage_history', JSON.stringify(usageHistory));
+                // Save only non-pending entries
+                const historyToSave = usageHistory.filter(entry => !entry.isPending);
+                localStorage.setItem('perfume_usage_history', JSON.stringify(historyToSave));
                 localStorage.setItem('perfume_daily_count', String(dailyUsageCount));
             }
 
@@ -4581,8 +4662,9 @@
 
             function calculateTodayUsage() {
                 const todayStr = new Date().toDateString();
+                // Only count non-pending entries
                 dailyUsageCount = usageHistory.filter(entry => 
-                    new Date(entry.timestamp).toDateString() === todayStr
+                    new Date(entry.timestamp).toDateString() === todayStr && !entry.isPending
                 ).length;
                 saveData();
             }
@@ -4614,7 +4696,10 @@
 
             function getLogsForDate(date, history) {
                 const dateString = date.toDateString();
-                return history.filter(entry => new Date(entry.timestamp).toDateString() === dateString);
+                // Only include non-pending entries in display
+                return history.filter(entry => 
+                    new Date(entry.timestamp).toDateString() === dateString && !entry.isPending
+                );
             }
 
             // ============================================================
@@ -4631,9 +4716,17 @@
             //  UPDATE UI
             // ============================================================
             function updateUI() {
-                streakCountEl.textContent = dailyUsageCount;
-                if (usageHistory.length > 0) {
-                    const lastEntry = usageHistory[usageHistory.length - 1];
+                // Count only non-pending entries for today
+                const todayStr = new Date().toDateString();
+                const todayCount = usageHistory.filter(entry => 
+                    new Date(entry.timestamp).toDateString() === todayStr && !entry.isPending
+                ).length;
+                streakCountEl.textContent = todayCount;
+                
+                // Find the last non-pending entry
+                const nonPendingEntries = usageHistory.filter(entry => !entry.isPending);
+                if (nonPendingEntries.length > 0) {
+                    const lastEntry = nonPendingEntries[nonPendingEntries.length - 1];
                     const lastDate = new Date(lastEntry.timestamp);
                     let ratingDisplay = '';
                     if (lastEntry.rating) {
@@ -4648,7 +4741,7 @@
                 } else {
                     lastUsedDateEl.textContent = 'Never';
                 }
-                totalUsesEl.textContent = usageHistory.length;
+                totalUsesEl.textContent = nonPendingEntries.length;
                 updateWeekView();
                 updateMonthView();
                 updateBestWeek();
@@ -4763,12 +4856,13 @@
             //  BEST WEEK
             // ============================================================
             function updateBestWeek() {
-                if (usageHistory.length === 0) {
+                const nonPending = usageHistory.filter(entry => !entry.isPending);
+                if (nonPending.length === 0) {
                     bestWeekCount.textContent = '0';
                     return;
                 }
                 const weekMap = new Map();
-                usageHistory.forEach(entry => {
+                nonPending.forEach(entry => {
                     const date = new Date(entry.timestamp);
                     const currentDay = date.getDay() || 7;
                     const monday = new Date(date);
@@ -4840,6 +4934,10 @@
                     for (let i = 0; i < questions.length - 2; i++) answerStrings.push('Not answered');
                 }
                 while (answerStrings.length < questions.length) answerStrings.push('Not answered');
+                
+                // Filter out pending entries for export
+                const exportHistory = usageHistory.filter(entry => !entry.isPending);
+                
                 const exportData = {
                     exportedAt: new Date().toISOString(),
                     patientInfo: {
@@ -4853,14 +4951,14 @@
                         questions: questionTexts
                     },
                     todayUsage: dailyUsageCount,
-                    totalUses: usageHistory.length,
-                    usageHistory: usageHistory,
+                    totalUses: exportHistory.length,
+                    usageHistory: exportHistory,
                     activeTraining: activeTraining ? trainingPrograms.find(p => p.id === activeTraining)?.name : 'None',
                     summary: {
-                        uniqueDays: new Set(usageHistory.map(e => new Date(e.timestamp).toDateString())).size,
-                        averageRating: usageHistory.length > 0 ? 
-                            (usageHistory.reduce((sum, e) => sum + (e.rating || 0), 0) / usageHistory.length).toFixed(1) : 0,
-                        countriesLogged: [...new Set(usageHistory.map(e => e.country).filter(c => c))]
+                        uniqueDays: new Set(exportHistory.map(e => new Date(e.timestamp).toDateString())).size,
+                        averageRating: exportHistory.length > 0 ? 
+                            (exportHistory.reduce((sum, e) => sum + (e.rating || 0), 0) / exportHistory.length).toFixed(1) : 0,
+                        countriesLogged: [...new Set(exportHistory.map(e => e.country).filter(c => c))]
                     }
                 };
                 generatePDF(exportData);
@@ -5034,7 +5132,7 @@
                         const countryStr = entry.country || 'Unknown';
                         const contextStr = entry.conditionContext || 'Standard';
                         const trainingStr = entry.activeTraining || 'None';
-                        const notesStr = entry.notes || '';
+                        const notesStr = entry.notes || 'No notes';
                         const notesWrapped = doc.splitTextToSize(notesStr, cols[7] - 4);
                         const rowHeightAdjusted = Math.max(rowHeight, notesWrapped.length * 4.5 + 2);
                         doc.rect(tableX, yPos, tableWidth, rowHeightAdjusted, 'D');

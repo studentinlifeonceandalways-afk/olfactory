@@ -728,6 +728,17 @@
             font-weight: 400;
         }
 
+        .rating-popup-header .condition-context {
+            font-size: 11px;
+            color: #666;
+            background: #f0f0f0;
+            padding: 4px 12px;
+            border-radius: 12px;
+            display: inline-block;
+            margin-top: 4px;
+            font-weight: 500;
+        }
+
         .rating-stars-container {
             display: flex;
             justify-content: center;
@@ -796,7 +807,7 @@
             border: 2px solid #e0e0e0;
             border-radius: 10px;
             font-size: 14px;
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+            font-family: -apple-system, BlinkMacFontSystem, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
             color: #1a1a1a;
             background: #fafafa;
             resize: vertical;
@@ -2720,8 +2731,9 @@
             <div class="rating-popup">
                 <div class="rating-popup-header">
                     <span class="rating-icon">👃</span>
-                    <h2>Rate Your Scent Reception</h2>
-                    <p>How well can you smell this scent?</p>
+                    <h2 id="ratingPopupTitle">Rate Your Scent Reception</h2>
+                    <p id="ratingPopupSubtitle">How well can you smell this scent?</p>
+                    <div class="condition-context" id="ratingConditionContext">Context: Normal olfactory function</div>
                 </div>
 
                 <div class="rating-stars-container" id="ratingStarsContainer">
@@ -2732,7 +2744,7 @@
                     <button class="rating-star-btn" data-value="5">★</button>
                 </div>
 
-                <div class="rating-labels">
+                <div class="rating-labels" id="ratingLabels">
                     <span>Very Weak</span>
                     <span>Moderate</span>
                     <span>Very Strong</span>
@@ -3164,6 +3176,10 @@
             const skipQuizBtn = document.getElementById('skipQuizBtn');
 
             const ratingOverlay = document.getElementById('ratingOverlay');
+            const ratingPopupTitle = document.getElementById('ratingPopupTitle');
+            const ratingPopupSubtitle = document.getElementById('ratingPopupSubtitle');
+            const ratingConditionContext = document.getElementById('ratingConditionContext');
+            const ratingLabels = document.getElementById('ratingLabels');
             const ratingStarsContainer = document.getElementById('ratingStarsContainer');
             const ratingSubmitBtn = document.getElementById('ratingSubmitBtn');
             const ratingCancelBtn = document.getElementById('ratingCancelBtn');
@@ -3248,6 +3264,86 @@
             let cart = [];
             let isProfilePromptDismissed = false;
             let hasProfileBeenShown = false;
+
+            // ============================================================
+            //  CONDITION-SPECIFIC RATING LABELS
+            // ============================================================
+            function getConditionRatingLabels(condition) {
+                const conditionMap = {
+                    'Anosmia - Complete loss of smell': {
+                        title: '👃 Scent Perception Assessment',
+                        subtitle: 'Rate your ability to perceive this scent',
+                        labels: ['Unable to Detect', 'Faint Trace', 'Moderate', 'Strong', 'Very Strong'],
+                        context: 'Context: Anosmia - Complete loss of smell'
+                    },
+                    'Hyposmia - Reduced sense of smell': {
+                        title: '👃 Scent Detection Level',
+                        subtitle: 'Rate how strongly you perceive this scent',
+                        labels: ['Very Weak', 'Weak', 'Moderate', 'Strong', 'Very Strong'],
+                        context: 'Context: Hyposmia - Reduced sense of smell'
+                    },
+                    'Parosmia - Distorted sense of smell': {
+                        title: '👃 Scent Quality Assessment',
+                        subtitle: 'Rate the distortion level of this scent',
+                        labels: ['Severely Distorted', 'Moderately Distorted', 'Mildly Distorted', 'Slightly Distorted', 'Normal'],
+                        context: 'Context: Parosmia - Distorted sense of smell'
+                    },
+                    'Phantosmia - Phantom smells': {
+                        title: '👃 Phantom Scent Detection',
+                        subtitle: 'Rate the intensity of phantom perception',
+                        labels: ['No Phantom', 'Very Faint', 'Moderate', 'Strong', 'Very Strong'],
+                        context: 'Context: Phantosmia - Phantom smells'
+                    },
+                    'Post-COVID Olfactory Dysfunction': {
+                        title: '👃 Post-COVID Scent Recovery',
+                        subtitle: 'Rate your current scent perception ability',
+                        labels: ['No Perception', 'Very Weak', 'Moderate', 'Good', 'Excellent'],
+                        context: 'Context: Post-COVID Olfactory Dysfunction'
+                    }
+                };
+
+                // Default for "Other" or unknown conditions
+                const defaultLabels = {
+                    title: '👃 Scent Reception Assessment',
+                    subtitle: 'Rate your perception of this scent',
+                    labels: ['Very Weak', 'Weak', 'Moderate', 'Strong', 'Very Strong'],
+                    context: 'Context: Olfactory function assessment'
+                };
+
+                // Check if condition matches any in the map (exact or partial match)
+                let matchedKey = null;
+                for (const key of Object.keys(conditionMap)) {
+                    if (condition && condition.includes(key.split(' - ')[0])) {
+                        matchedKey = key;
+                        break;
+                    }
+                }
+
+                if (matchedKey && conditionMap[matchedKey]) {
+                    return conditionMap[matchedKey];
+                }
+
+                // If condition is "Other" or empty, use default
+                return defaultLabels;
+            }
+
+            function updateRatingLabels() {
+                const profileData = JSON.parse(localStorage.getItem('user_profile') || '{}');
+                const condition = profileData.condition || selectedCondition || '';
+                const labels = getConditionRatingLabels(condition);
+
+                ratingPopupTitle.textContent = labels.title;
+                ratingPopupSubtitle.textContent = labels.subtitle;
+                ratingConditionContext.textContent = labels.context;
+
+                // Update the three label positions
+                const labelSpans = ratingLabels.querySelectorAll('span');
+                if (labelSpans.length === 3) {
+                    labelSpans[0].textContent = labels.labels[0];
+                    labelSpans[1].textContent = labels.labels[2];
+                    labelSpans[2].textContent = labels.labels[4];
+                }
+            }
 
             // ============================================================
             //  POPULATE COUNTRY DROPDOWNS (shared)
@@ -3350,10 +3446,16 @@
                         const starsStr = log.rating ? '★'.repeat(log.rating) + '☆'.repeat(5 - log.rating) : 'N/A';
                         const countryStr = log.country || 'Unknown';
                         const notesStr = log.notes || '';
+                        // Show condition context in detail view if available
+                        const conditionContext = log.conditionContext || 'Standard';
                         html += `
                             <div class="detail-item">
                                 <span class="detail-label">#${index + 1} • ${timeStr}</span>
                                 <span class="detail-value">${countryStr} • ${ratingStr}/5 ${starsStr}</span>
+                            </div>
+                            <div class="detail-item" style="border-bottom:1px solid #e8e8e8;padding-bottom:4px;font-size:10px;color:#999;">
+                                <span class="detail-label">Context</span>
+                                <span class="detail-value" style="font-weight:400;">${conditionContext}</span>
                             </div>
                             ${notesStr ? `
                             <div class="detail-item" style="border-bottom:1px solid #e8e8e8;padding-bottom:8px;">
@@ -3422,7 +3524,12 @@
                     // Update quiz dropdown as well
                     countrySelect.value = selectedCountry;
                 }
+                // Update selectedCondition
+                if (profileData.condition) {
+                    selectedCondition = profileData.condition;
+                }
                 updateUserProfile(profileData.username);
+                updateRatingLabels(); // Update rating labels when profile is saved
                 showToast('✅ Profile saved successfully!');
                 closeProfile();
                 checkProfileComplete();
@@ -3732,6 +3839,7 @@
                             localStorage.setItem('user_profile', JSON.stringify(profileData));
                             const profileCond = document.getElementById('profileCondition');
                             if (profileCond) profileCond.value = value;
+                            updateRatingLabels(); // Update rating labels when condition is selected
                             nextQuestionBtn.disabled = false;
                         });
                     });
@@ -3857,6 +3965,7 @@
                     localStorage.setItem('user_profile', JSON.stringify(profileData));
                     profileCountry.value = selectedCountry;
                 }
+                updateRatingLabels(); // Update rating labels when questionnaire completes
                 const profileData = JSON.parse(localStorage.getItem('user_profile') || '{}');
                 const isComplete = profileData.fullName && profileData.fullName.trim() !== '' &&
                                   profileData.email && profileData.email.trim() !== '';
@@ -3896,6 +4005,7 @@
                     renderProducts();
                     updateCartUI();
                     loadProfileData();
+                    updateRatingLabels();
                     const profileData = JSON.parse(localStorage.getItem('user_profile') || '{}');
                     const isComplete = profileData.fullName && profileData.fullName.trim() !== '' &&
                                       profileData.email && profileData.email.trim() !== '';
@@ -4000,6 +4110,8 @@
                 ratingSubmitBtn.disabled = true;
                 ratingNotes.value = '';
                 charCount.textContent = '0';
+                // Update labels before showing
+                updateRatingLabels();
                 ratingOverlay.classList.add('active');
                 document.querySelectorAll('.rating-star-btn').forEach(btn => btn.classList.remove('active'));
             }
@@ -4042,8 +4154,16 @@
 
             ratingSubmitBtn.addEventListener('click', function() {
                 if (selectedRating > 0 && pendingLogEntry) {
+                    // Get current condition context
+                    const profileData = JSON.parse(localStorage.getItem('user_profile') || '{}');
+                    const condition = profileData.condition || selectedCondition || 'Unknown';
+                    const labels = getConditionRatingLabels(condition);
+                    
                     pendingLogEntry.rating = selectedRating;
                     pendingLogEntry.notes = ratingNotes.value.trim() || '';
+                    pendingLogEntry.conditionContext = labels.context;
+                    pendingLogEntry.conditionType = condition;
+                    pendingLogEntry.ratingLabels = labels.labels;
                     saveData();
                     updateUI();
                     showRatingToast(selectedRating);
@@ -4075,11 +4195,18 @@
             // ============================================================
             function saveLogWithoutRating() {
                 const now = new Date().toISOString();
+                const profileData = JSON.parse(localStorage.getItem('user_profile') || '{}');
+                const condition = profileData.condition || selectedCondition || 'Unknown';
+                const labels = getConditionRatingLabels(condition);
+                
                 const entry = {
                     timestamp: now,
                     country: selectedCountry || 'Unknown',
                     rating: null,
-                    notes: ''
+                    notes: '',
+                    conditionContext: labels.context,
+                    conditionType: condition,
+                    ratingLabels: labels.labels
                 };
                 usageHistory.push(entry);
                 pendingLogEntry = entry;
@@ -4095,10 +4222,15 @@
 
             function showRatingToast(rating) {
                 const starDisplay = '★'.repeat(rating) + '☆'.repeat(5 - rating);
+                // Get condition context for toast
+                const profileData = JSON.parse(localStorage.getItem('user_profile') || '{}');
+                const condition = profileData.condition || selectedCondition || 'Unknown';
+                const labels = getConditionRatingLabels(condition);
+                
                 if (dailyUsageCount > 1) {
-                    showToast('👃 ' + dailyUsageCount + ' exposures today • Rating: ' + starDisplay);
+                    showToast('👃 ' + dailyUsageCount + ' exposures today • Rating: ' + starDisplay + ' • ' + labels.context);
                 } else {
-                    showToast('👃 Scent logged • Rating: ' + starDisplay);
+                    showToast('👃 Scent logged • Rating: ' + starDisplay + ' • ' + labels.context);
                 }
             }
 
@@ -4215,7 +4347,8 @@
                     }
                     const countryDisplay = lastEntry.country ? ' • ' + lastEntry.country : '';
                     const notesDisplay = lastEntry.notes ? ' • 📝 ' + lastEntry.notes : '';
-                    lastUsedDateEl.textContent = formatDate(lastDate) + ' at ' + formatTime(lastDate) + countryDisplay + ratingDisplay + notesDisplay;
+                    const contextDisplay = lastEntry.conditionContext ? ' • ' + lastEntry.conditionContext : '';
+                    lastUsedDateEl.textContent = formatDate(lastDate) + ' at ' + formatTime(lastDate) + countryDisplay + ratingDisplay + notesDisplay + contextDisplay;
                 } else {
                     lastUsedDateEl.textContent = 'Never';
                 }
@@ -4557,9 +4690,9 @@
                     doc.rect(tableX, yPos, tableWidth, rowHeight, 'D');
                     doc.setFont('helvetica', 'bold');
                     doc.setFontSize(8);
-                    const cols = [20, 20, 25, 18, 20, 50];
+                    const cols = [18, 18, 22, 16, 18, 20, 40];
                     let xPos = tableX + 2;
-                    const headers = ['Date', 'Time', 'Country', 'Rating', 'Stars', 'Notes'];
+                    const headers = ['Date', 'Time', 'Country', 'Rating', 'Stars', 'Context', 'Notes'];
                     for (let i = 0; i < headers.length; i++) {
                         doc.text(headers[i], xPos, yPos + 5.5);
                         xPos += cols[i];
@@ -4601,8 +4734,9 @@
                             starsStr = filled + empty;
                         }
                         const countryStr = entry.country || 'Unknown';
+                        const contextStr = entry.conditionContext || 'Standard';
                         const notesStr = entry.notes || '';
-                        const notesWrapped = doc.splitTextToSize(notesStr, cols[5] - 4);
+                        const notesWrapped = doc.splitTextToSize(notesStr, cols[6] - 4);
                         const rowHeightAdjusted = Math.max(rowHeight, notesWrapped.length * 4.5 + 2);
                         doc.rect(tableX, yPos, tableWidth, rowHeightAdjusted, 'D');
                         xPos = tableX + 2;
@@ -4616,6 +4750,8 @@
                         xPos += cols[3];
                         doc.text(starsStr, xPos, yPos + 4);
                         xPos += cols[4];
+                        doc.text(contextStr, xPos, yPos + 4);
+                        xPos += cols[5];
                         if (notesStr) doc.text(notesWrapped, xPos, yPos + 4);
                         yPos += rowHeightAdjusted;
                     }
@@ -4700,6 +4836,9 @@
 
             // Populate country dropdowns initially (even before login)
             populateCountryDropdowns();
+
+            // Initialize rating labels with default
+            updateRatingLabels();
 
             console.log('👃 Olfactory Tracker - Clinical Edition');
 

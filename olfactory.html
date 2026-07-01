@@ -1047,7 +1047,7 @@
             background: #ffffff;
             border: 1px solid #e0e0e0;
             border-radius: 12px;
-            min-width: 160px;
+            min-width: 180px;
             box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
             opacity: 0;
             visibility: hidden;
@@ -1090,6 +1090,150 @@
 
         .user-dropdown .dropdown-item.logout:hover {
             background: #fce4ec;
+        }
+
+        .user-dropdown .dropdown-item .order-count {
+            background: #1a1a1a;
+            color: #ffffff;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 10px;
+            font-weight: 700;
+            margin-left: auto;
+        }
+
+        /* ============================================
+                   ORDER HISTORY OVERLAY / POPUP
+                ============================================ */
+        .order-history-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 350;
+            animation: fadeInOverlay 0.3s ease;
+        }
+
+        .order-history-overlay.active {
+            display: flex;
+        }
+
+        .order-history-popup {
+            background: #ffffff;
+            border-radius: 20px;
+            padding: 28px 24px;
+            max-width: 380px;
+            width: 92%;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4);
+            animation: slideUp 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+        }
+
+        .order-history-popup .order-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+            padding-bottom: 12px;
+            border-bottom: 2px solid #e8e8e8;
+        }
+
+        .order-history-popup .order-header h2 {
+            font-size: 20px;
+            font-weight: 700;
+            color: #1a1a1a;
+        }
+
+        .order-history-popup .order-close {
+            background: none;
+            border: none;
+            font-size: 24px;
+            color: #888;
+            cursor: pointer;
+            padding: 4px 8px;
+            transition: all 0.2s ease;
+        }
+
+        .order-history-popup .order-close:hover {
+            color: #1a1a1a;
+        }
+
+        .order-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px solid #f0f0f0;
+        }
+
+        .order-item:last-child {
+            border-bottom: none;
+        }
+
+        .order-item .order-info {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex: 1;
+        }
+
+        .order-item .order-info .order-icon {
+            font-size: 24px;
+        }
+
+        .order-item .order-info .order-details {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .order-item .order-info .order-details .order-name {
+            font-weight: 600;
+            color: #1a1a1a;
+            font-size: 14px;
+        }
+
+        .order-item .order-info .order-details .order-meta {
+            font-size: 11px;
+            color: #888;
+        }
+
+        .order-item .order-price {
+            font-weight: 600;
+            color: #1a1a1a;
+            font-size: 14px;
+        }
+
+        .order-empty {
+            text-align: center;
+            color: #888;
+            font-size: 14px;
+            padding: 30px 0;
+        }
+
+        .order-total-orders {
+            text-align: center;
+            padding-top: 12px;
+            border-top: 2px solid #e8e8e8;
+            font-size: 13px;
+            color: #666;
+            font-weight: 500;
+        }
+
+        .order-total-orders span {
+            font-weight: 700;
+            color: #1a1a1a;
         }
 
         /* ============================================
@@ -2590,6 +2734,12 @@
             .training-card .training-name {
                 font-size: 12px;
             }
+            .order-history-popup {
+                padding: 20px 16px;
+            }
+            .order-item .order-info .order-details .order-name {
+                font-size: 13px;
+            }
         }
 
         @media (max-height: 700px) {
@@ -2772,6 +2922,15 @@
             }
             .training-section {
                 padding: 10px;
+            }
+            .order-history-popup {
+                padding: 16px 14px;
+            }
+            .order-item .order-info .order-details .order-name {
+                font-size: 12px;
+            }
+            .order-item .order-info .order-details .order-meta {
+                font-size: 10px;
             }
         }
 
@@ -3003,6 +3162,19 @@
             </div>
         </div>
 
+        <!-- ===== ORDER HISTORY OVERLAY ===== -->
+        <div class="order-history-overlay" id="orderHistoryOverlay">
+            <div class="order-history-popup">
+                <div class="order-header">
+                    <h2>📦 Order History</h2>
+                    <button class="order-close" id="orderHistoryCloseBtn">✕</button>
+                </div>
+                <div id="orderHistoryContent">
+                    <!-- Generated by JS -->
+                </div>
+            </div>
+        </div>
+
         <!-- ===== PROFILE OVERLAY ===== -->
         <div class="profile-overlay" id="profileOverlay">
             <div class="profile-popup">
@@ -3075,6 +3247,10 @@
                     <div class="user-dropdown" id="userDropdown">
                         <div class="dropdown-item" id="profileMenuItem">
                             <span>👤 My Profile</span>
+                        </div>
+                        <div class="dropdown-item" id="orderHistoryMenuItem">
+                            <span>📦 Order History</span>
+                            <span class="order-count" id="orderCountBadge">0</span>
                         </div>
                         <div class="dropdown-item logout" id="logoutBtn">
                             <span>🚪 Logout</span>
@@ -3253,7 +3429,8 @@
                 price: 45,
                 category: 'Relaxation',
                 color: '#7b5a8c',
-                glassColor: '#d4c5d9'
+                glassColor: '#d4c5d9',
+                icon: '🌸'
             }, {
                 id: 2,
                 name: 'Fresh Awakening',
@@ -3262,7 +3439,8 @@
                 price: 38,
                 category: 'Energy',
                 color: '#f4a460',
-                glassColor: '#f5d5b8'
+                glassColor: '#f5d5b8',
+                icon: '🍊'
             }, {
                 id: 3,
                 name: 'Woodland Serenity',
@@ -3271,7 +3449,8 @@
                 price: 52,
                 category: 'Grounding',
                 color: '#5d6d4a',
-                glassColor: '#c8d4b8'
+                glassColor: '#c8d4b8',
+                icon: '🌲'
             }, {
                 id: 4,
                 name: 'Gentle Bloom',
@@ -3280,7 +3459,8 @@
                 price: 48,
                 category: 'Floral',
                 color: '#e8a0b4',
-                glassColor: '#f5d4dc'
+                glassColor: '#f5d4dc',
+                icon: '🌹'
             }];
 
             // ============================================================
@@ -3453,6 +3633,8 @@
             const userAvatar = document.getElementById('userAvatar');
             const logoutBtn = document.getElementById('logoutBtn');
             const profileMenuItem = document.getElementById('profileMenuItem');
+            const orderHistoryMenuItem = document.getElementById('orderHistoryMenuItem');
+            const orderCountBadge = document.getElementById('orderCountBadge');
 
             // Profile Overlay Elements
             const profileOverlay = document.getElementById('profileOverlay');
@@ -3465,6 +3647,11 @@
             const profilePhone = document.getElementById('profilePhone');
             const profileCountry = document.getElementById('profileCountry');
             const profileCondition = document.getElementById('profileCondition');
+
+            // Order History Elements
+            const orderHistoryOverlay = document.getElementById('orderHistoryOverlay');
+            const orderHistoryCloseBtn = document.getElementById('orderHistoryCloseBtn');
+            const orderHistoryContent = document.getElementById('orderHistoryContent');
 
             // Profile Prompt Elements
             const profilePrompt = document.getElementById('profilePrompt');
@@ -3508,6 +3695,7 @@
             let pendingLogEntry = null;
             let isLoggingInProgress = false;
             let cart = [];
+            let orderHistory = [];
             let isProfilePromptDismissed = false;
             let hasProfileBeenShown = false;
             let activeTraining = null;
@@ -3837,6 +4025,120 @@
             }
 
             // ============================================================
+            //  ORDER HISTORY FUNCTIONS
+            // ============================================================
+            function loadOrderHistory() {
+                const saved = localStorage.getItem('order_history');
+                orderHistory = saved ? JSON.parse(saved) : [];
+                updateOrderBadge();
+            }
+
+            function saveOrderHistory() {
+                localStorage.setItem('order_history', JSON.stringify(orderHistory));
+                updateOrderBadge();
+            }
+
+            function updateOrderBadge() {
+                const count = orderHistory.length;
+                orderCountBadge.textContent = count;
+                orderCountBadge.style.display = count > 0 ? 'flex' : 'none';
+            }
+
+            function addOrder(orderItems, total, customerName) {
+                const order = {
+                    id: Date.now(),
+                    date: new Date().toISOString(),
+                    items: orderItems.map(item => ({
+                        id: item.id,
+                        name: item.name,
+                        price: item.price,
+                        icon: item.icon || '🧴'
+                    })),
+                    total: total,
+                    customer: customerName || 'Guest'
+                };
+                orderHistory.unshift(order); // Add to beginning (newest first)
+                saveOrderHistory();
+                showToast('📦 Order placed successfully! View in Order History.');
+            }
+
+            function openOrderHistory() {
+                renderOrderHistory();
+                orderHistoryOverlay.classList.add('active');
+                closeDropdown();
+            }
+
+            function closeOrderHistory() {
+                orderHistoryOverlay.classList.remove('active');
+            }
+
+            function renderOrderHistory() {
+                if (orderHistory.length === 0) {
+                    orderHistoryContent.innerHTML = `
+                        <div class="order-empty">
+                            <span style="font-size:48px;display:block;margin-bottom:12px;">📭</span>
+                            No orders yet.<br>
+                            Visit the Olfactory Wellness Shop to make a purchase.
+                        </div>
+                    `;
+                    return;
+                }
+
+                let html = '';
+                orderHistory.forEach(order => {
+                    const orderDate = new Date(order.date);
+                    const dateStr = orderDate.toLocaleDateString('en-US', { 
+                        month: 'short', 
+                        day: 'numeric', 
+                        year: 'numeric' 
+                    });
+                    const timeStr = orderDate.toLocaleTimeString('en-US', { 
+                        hour: '2-digit', 
+                        minute: '2-digit' 
+                    });
+                    
+                    html += `
+                        <div style="margin-bottom:16px;background:#f8f8f8;border-radius:10px;padding:12px;">
+                            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
+                                <span style="font-size:12px;color:#888;">Order #${order.id.toString().slice(-6)}</span>
+                                <span style="font-size:11px;color:#999;">${dateStr} at ${timeStr}</span>
+                            </div>
+                    `;
+                    
+                    order.items.forEach(item => {
+                        html += `
+                            <div class="order-item">
+                                <div class="order-info">
+                                    <span class="order-icon">${item.icon || '🧴'}</span>
+                                    <div class="order-details">
+                                        <span class="order-name">${item.name}</span>
+                                        <span class="order-meta">$${item.price.toFixed(2)}</span>
+                                    </div>
+                                </div>
+                                <span class="order-price">$${item.price.toFixed(2)}</span>
+                            </div>
+                        `;
+                    });
+                    
+                    html += `
+                            <div style="display:flex;justify-content:space-between;padding-top:8px;border-top:1px solid #e0e0e0;margin-top:4px;">
+                                <span style="font-size:12px;color:#888;">Customer: ${order.customer}</span>
+                                <span style="font-weight:700;color:#1a1a1a;">Total: $${order.total.toFixed(2)}</span>
+                            </div>
+                        </div>
+                    `;
+                });
+                
+                html += `
+                    <div class="order-total-orders">
+                        Total Orders: <span>${orderHistory.length}</span>
+                    </div>
+                `;
+                
+                orderHistoryContent.innerHTML = html;
+            }
+
+            // ============================================================
             //  CART FUNCTIONS
             // ============================================================
             function updateCartUI() {
@@ -3853,7 +4155,7 @@
                         html += `
                             <div class="checkout-item">
                                 <div class="item-info">
-                                    <span class="item-icon">${getProductIcon(item.id)}</span>
+                                    <span class="item-icon">${item.icon || '🧴'}</span>
                                     <span class="item-name">${item.name}</span>
                                 </div>
                                 <div style="display:flex;align-items:center;gap:8px;">
@@ -3915,7 +4217,7 @@
             }
 
             // ============================================================
-            //  CHECKOUT FUNCTIONS
+            //  CHECKOUT FUNCTIONS - MODIFIED TO SAVE ORDER HISTORY
             // ============================================================
             function openCheckout() {
                 if (cart.length === 0) {
@@ -3958,8 +4260,13 @@
                 }
                 checkoutSubmitBtn.textContent = 'Processing...';
                 checkoutSubmitBtn.disabled = true;
+                
                 setTimeout(() => {
                     const total = cart.reduce((sum, item) => sum + item.price, 0);
+                    
+                    // Save order to history
+                    addOrder(cart, total, name);
+                    
                     showToast(`✅ Purchase complete! Thank you, ${name}! Total: $${total.toFixed(2)}`);
                     cart = [];
                     updateCartUI();
@@ -4265,6 +4572,7 @@
                 renderTrainingPrograms();
                 updateCartUI();
                 loadProfileData();
+                loadOrderHistory();
                 if (selectedCondition) {
                     const profileData = JSON.parse(localStorage.getItem('user_profile') || '{}');
                     profileData.condition = selectedCondition;
@@ -4327,6 +4635,7 @@
                     renderTrainingPrograms();
                     updateCartUI();
                     loadProfileData();
+                    loadOrderHistory();
                     updateRatingLabels();
 
                     // Load active training from localStorage
@@ -4416,11 +4725,18 @@
 
             logoutBtn.addEventListener('click', logoutUser);
             profileMenuItem.addEventListener('click', openProfile);
+            orderHistoryMenuItem.addEventListener('click', openOrderHistory);
             profileCloseBtn.addEventListener('click', closeProfile);
             profileSaveBtn.addEventListener('click', saveProfileData);
 
             profileOverlay.addEventListener('click', function(e) {
                 if (e.target === this) closeProfile();
+            });
+
+            // Order History event listeners
+            orderHistoryCloseBtn.addEventListener('click', closeOrderHistory);
+            orderHistoryOverlay.addEventListener('click', function(e) {
+                if (e.target === this) closeOrderHistory();
             });
 
             profilePrompt.addEventListener('click', function() {
@@ -4948,6 +5264,8 @@
                     totalUses: exportHistory.length,
                     usageHistory: exportHistory,
                     activeTraining: activeTraining ? trainingPrograms.find(p => p.id === activeTraining)?.name : 'None',
+                    orderHistory: orderHistory,
+                    totalOrders: orderHistory.length,
                     summary: {
                         uniqueDays: new Set(exportHistory.map(e => new Date(e.timestamp).toDateString())).size,
                         averageRating: exportHistory.length > 0 ? 
@@ -4960,7 +5278,7 @@
             }
 
             // ============================================================
-            //  GENERATE PDF — CONTEXT AND TRAINING REMOVED
+            //  GENERATE PDF
             // ============================================================
             function generatePDF(data) {
                 const { jsPDF } = window.jspdf;
@@ -5019,6 +5337,7 @@
                     ['Country', data.patientInfo.country],
                     ['Olfactory Condition', data.patientInfo.condition || 'Not specified'],
                     ['Active Training Program', data.activeTraining || 'None'],
+                    ['Total Orders', String(data.totalOrders || 0)],
                     ['Assessment Date', new Date(data.exportedAt).toLocaleDateString()],
                     ['Today\'s Exposures', String(data.todayUsage)],
                     ['Total Exposures', String(data.totalUses)],
@@ -5086,7 +5405,7 @@
                 }
                 yPos += 4;
                 
-                // Usage History Section - CONTEXT AND TRAINING REMOVED
+                // Usage History Section
                 if (data.usageHistory.length > 0) {
                     if (yPos > 200) { doc.addPage(); yPos = 20; }
                     doc.setFontSize(14);
@@ -5094,7 +5413,6 @@
                     doc.text('Usage History', margin, yPos);
                     yPos += 8;
                     
-                    // Define column widths - 6 columns (removed Context and Training)
                     const colWidths = {
                         date: 22,
                         time: 18,
@@ -5104,12 +5422,10 @@
                         notes: 48
                     };
                     
-                    // Calculate total width and adjust
                     let totalColWidth = 0;
                     for (const key in colWidths) {
                         totalColWidth += colWidths[key];
                     }
-                    // Add some padding
                     const availableWidth = tableWidth - 4;
                     const scaleFactor = availableWidth / totalColWidth;
                     
@@ -5122,7 +5438,6 @@
                         notes: Math.max(30, colWidths.notes * scaleFactor)
                     };
                     
-                    // Header
                     doc.setFillColor(240, 240, 240);
                     doc.rect(tableX, yPos, tableWidth, rowHeight, 'F');
                     doc.rect(tableX, yPos, tableWidth, rowHeight, 'D');
@@ -5138,7 +5453,6 @@
                     }
                     yPos += rowHeight;
                     
-                    // Data rows
                     doc.setFont('helvetica', 'normal');
                     doc.setFontSize(8);
                     const recentEntries = data.usageHistory.slice(-15).reverse();
@@ -5179,37 +5493,117 @@
                         const countryStr = entry.country || 'Unknown';
                         const notesStr = entry.notes || '';
                         
-                        // Calculate row height based on notes content
                         const notesWrapped = doc.splitTextToSize(notesStr, finalCols.notes - 3);
                         const rowHeightAdjusted = Math.max(rowHeight, notesWrapped.length * 4 + 2);
                         
                         doc.rect(tableX, yPos, tableWidth, rowHeightAdjusted, 'D');
                         xPos = tableX + 2;
                         
-                        // Date
                         doc.text(dateStr, xPos, yPos + 4);
                         xPos += finalCols.date;
-                        
-                        // Time
                         doc.text(timeStr, xPos, yPos + 4);
                         xPos += finalCols.time;
-                        
-                        // Country
                         doc.text(countryStr, xPos, yPos + 4);
                         xPos += finalCols.country;
-                        
-                        // Rating
                         doc.text(String(ratingStr), xPos, yPos + 4);
                         xPos += finalCols.rating;
-                        
-                        // Stars
                         doc.text(starsStr, xPos, yPos + 4);
                         xPos += finalCols.stars;
-                        
-                        // Notes
                         if (notesStr) {
                             doc.text(notesWrapped, xPos, yPos + 4);
                         }
+                        yPos += rowHeightAdjusted;
+                    }
+                }
+                
+                // Order History Section
+                if (data.orderHistory && data.orderHistory.length > 0) {
+                    if (yPos > 200) { doc.addPage(); yPos = 20; }
+                    doc.setFontSize(14);
+                    doc.setFont('helvetica', 'bold');
+                    doc.text('Order History', margin, yPos);
+                    yPos += 8;
+                    
+                    const orderCols = {
+                        date: 25,
+                        orderId: 25,
+                        items: 50,
+                        total: 30
+                    };
+                    
+                    let totalOrderColWidth = 0;
+                    for (const key in orderCols) {
+                        totalOrderColWidth += orderCols[key];
+                    }
+                    const orderScaleFactor = (tableWidth - 4) / totalOrderColWidth;
+                    
+                    const finalOrderCols = {
+                        date: Math.max(20, orderCols.date * orderScaleFactor),
+                        orderId: Math.max(20, orderCols.orderId * orderScaleFactor),
+                        items: Math.max(35, orderCols.items * orderScaleFactor),
+                        total: Math.max(25, orderCols.total * orderScaleFactor)
+                    };
+                    
+                    doc.setFillColor(240, 240, 240);
+                    doc.rect(tableX, yPos, tableWidth, rowHeight, 'F');
+                    doc.rect(tableX, yPos, tableWidth, rowHeight, 'D');
+                    doc.setFont('helvetica', 'bold');
+                    doc.setFontSize(8);
+                    xPos = tableX + 2;
+                    const orderHeaders = ['Date', 'Order #', 'Items', 'Total'];
+                    const orderKeys = ['date', 'orderId', 'items', 'total'];
+                    
+                    for (let i = 0; i < orderHeaders.length; i++) {
+                        doc.text(orderHeaders[i], xPos, yPos + 5.5);
+                        xPos += finalOrderCols[orderKeys[i]];
+                    }
+                    yPos += rowHeight;
+                    
+                    doc.setFont('helvetica', 'normal');
+                    doc.setFontSize(8);
+                    
+                    const recentOrders = data.orderHistory.slice(0, 10);
+                    for (const order of recentOrders) {
+                        if (yPos > 250) {
+                            doc.addPage();
+                            yPos = 20;
+                            doc.setFontSize(14);
+                            doc.setFont('helvetica', 'bold');
+                            doc.text('Order History (continued)', margin, yPos);
+                            yPos += 8;
+                            doc.setFillColor(240, 240, 240);
+                            doc.rect(tableX, yPos, tableWidth, rowHeight, 'F');
+                            doc.rect(tableX, yPos, tableWidth, rowHeight, 'D');
+                            doc.setFont('helvetica', 'bold');
+                            doc.setFontSize(8);
+                            xPos = tableX + 2;
+                            for (let i = 0; i < orderHeaders.length; i++) {
+                                doc.text(orderHeaders[i], xPos, yPos + 5.5);
+                                xPos += finalOrderCols[orderKeys[i]];
+                            }
+                            yPos += rowHeight;
+                            doc.setFont('helvetica', 'normal');
+                            doc.setFontSize(8);
+                        }
+                        
+                        const orderDate = new Date(order.date);
+                        const dateStr = orderDate.toLocaleDateString();
+                        const itemsStr = order.items.map(item => item.name).join(', ');
+                        const totalStr = '$' + order.total.toFixed(2);
+                        
+                        const itemsWrapped = doc.splitTextToSize(itemsStr, finalOrderCols.items - 3);
+                        const rowHeightAdjusted = Math.max(rowHeight, itemsWrapped.length * 4 + 2);
+                        
+                        doc.rect(tableX, yPos, tableWidth, rowHeightAdjusted, 'D');
+                        xPos = tableX + 2;
+                        
+                        doc.text(dateStr, xPos, yPos + 4);
+                        xPos += finalOrderCols.date;
+                        doc.text('#' + String(order.id).slice(-6), xPos, yPos + 4);
+                        xPos += finalOrderCols.orderId;
+                        doc.text(itemsWrapped, xPos, yPos + 4);
+                        xPos += finalOrderCols.items;
+                        doc.text(totalStr, xPos, yPos + 4);
                         yPos += rowHeightAdjusted;
                     }
                 }
@@ -5264,6 +5658,7 @@
                 if (e.key === 'Escape') {
                     if (checkoutOverlay.classList.contains('active')) closeCheckout();
                     if (profileOverlay.classList.contains('active')) closeProfile();
+                    if (orderHistoryOverlay.classList.contains('active')) closeOrderHistory();
                     if (userDropdown.classList.contains('active')) closeDropdown();
                     if (dateDetailSection.classList.contains('active')) closeDateDetail();
                     if (signupOverlay.classList.contains('active')) closeSignup();
@@ -5299,6 +5694,9 @@
 
             // Initialize rating labels with default
             updateRatingLabels();
+
+            // Load order history
+            loadOrderHistory();
 
             console.log('👃 Olfactory Tracker - Clinical Edition');
 

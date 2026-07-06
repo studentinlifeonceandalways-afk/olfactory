@@ -1,0 +1,1569 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Olfactory Tracker - Rewards System Presentation</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+            background: #f5f5f5;
+            color: #1a1a1a;
+        }
+
+        /* ============================================
+                   PRESENTATION CONTAINER
+                ============================================ */
+        .presentation {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+
+        /* ============================================
+                   SLIDES
+                ============================================ */
+        .slide {
+            background: #ffffff;
+            border-radius: 20px;
+            padding: 40px 45px;
+            margin-bottom: 30px;
+            box-shadow: 0 2px 20px rgba(0,0,0,0.06);
+            border: 1px solid #e8e8e8;
+            transition: box-shadow 0.3s ease;
+        }
+
+        .slide:hover {
+            box-shadow: 0 4px 40px rgba(0,0,0,0.08);
+        }
+
+        .slide-number {
+            font-size: 12px;
+            color: #bbb;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            margin-bottom: 8px;
+        }
+
+        .slide-title {
+            font-size: 28px;
+            font-weight: 700;
+            color: #1a1a1a;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .slide-title .icon {
+            font-size: 32px;
+        }
+
+        .slide-subtitle {
+            font-size: 16px;
+            color: #666;
+            margin-bottom: 20px;
+            line-height: 1.6;
+        }
+
+        /* ============================================
+                   GRIDS
+                ============================================ */
+        .grid-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 24px;
+        }
+
+        .grid-3 {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 20px;
+        }
+
+        .grid-4 {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr 1fr;
+            gap: 16px;
+        }
+
+        /* ============================================
+                   CARDS
+                ============================================ */
+        .stat-card {
+            background: #f8f8f8;
+            border-radius: 12px;
+            padding: 20px;
+            border: 1px solid #e8e8e8;
+            text-align: center;
+        }
+
+        .stat-card .number {
+            font-size: 32px;
+            font-weight: 800;
+            color: #1a1a1a;
+            display: block;
+        }
+
+        .stat-card .label {
+            font-size: 13px;
+            color: #888;
+            margin-top: 4px;
+        }
+
+        .stat-card .sub {
+            font-size: 11px;
+            color: #bbb;
+            margin-top: 2px;
+        }
+
+        .stat-card .highlight {
+            color: #d4a017;
+        }
+
+        .stat-card .highlight-green {
+            color: #2e7d32;
+        }
+
+        .stat-card .highlight-red {
+            color: #c62828;
+        }
+
+        /* ============================================
+                   TABLES
+                ============================================ */
+        .table-wrap {
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 14px;
+        }
+
+        table thead th {
+            text-align: left;
+            padding: 10px 12px;
+            background: #f5f5f5;
+            color: #666;
+            font-weight: 600;
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            border-bottom: 2px solid #e0e0e0;
+        }
+
+        table tbody td {
+            padding: 10px 12px;
+            border-bottom: 1px solid #f0f0f0;
+            color: #333;
+        }
+
+        table tbody tr:hover td {
+            background: #fafafa;
+        }
+
+        table tbody tr:last-child td {
+            border-bottom: none;
+        }
+
+        table tbody tr.highlight-row td {
+            background: #fff8e1;
+            font-weight: 600;
+        }
+
+        .tag {
+            display: inline-block;
+            padding: 2px 10px;
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: 600;
+        }
+
+        .tag-green { background: #e8f5e9; color: #2e7d32; }
+        .tag-yellow { background: #fff8e1; color: #e65100; }
+        .tag-red { background: #fce4ec; color: #c62828; }
+        .tag-blue { background: #e3f2fd; color: #1565c0; }
+        .tag-purple { background: #f3e5f5; color: #7b1fa2; }
+        .tag-gray { background: #f5f5f5; color: #888; }
+
+        /* ============================================
+                   TIER BADGES
+                ============================================ */
+        .tier-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .tier-bronze { background: #f5ede6; color: #8d6e3f; }
+        .tier-silver { background: #f0f0f0; color: #757575; }
+        .tier-gold { background: #fff8e1; color: #f9a825; }
+        .tier-platinum { background: #e8f0fe; color: #5c6bc0; }
+
+        /* ============================================
+                   CALCULATOR
+                ============================================ */
+        .calculator {
+            background: #f8f8f8;
+            border-radius: 16px;
+            padding: 24px 28px;
+            border: 2px solid #e0e0e0;
+            margin-top: 10px;
+        }
+
+        .calculator .calc-row {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            padding: 10px 0;
+            border-bottom: 1px solid #e8e8e8;
+            flex-wrap: wrap;
+        }
+
+        .calculator .calc-row:last-child {
+            border-bottom: none;
+        }
+
+        .calculator .calc-label {
+            font-size: 14px;
+            font-weight: 600;
+            color: #1a1a1a;
+            min-width: 180px;
+        }
+
+        .calculator .calc-label .calc-icon {
+            font-size: 18px;
+            margin-right: 8px;
+        }
+
+        .calculator .calc-input {
+            flex: 1;
+            min-width: 120px;
+            padding: 8px 14px;
+            border: 2px solid #d0d0d0;
+            border-radius: 8px;
+            font-size: 15px;
+            font-weight: 600;
+            color: #1a1a1a;
+            background: #ffffff;
+            transition: border-color 0.3s ease;
+            outline: none;
+        }
+
+        .calculator .calc-input:focus {
+            border-color: #1a1a1a;
+        }
+
+        .calculator .calc-input:disabled {
+            background: #f0f0f0;
+            color: #888;
+        }
+
+        .calculator .calc-input.editable {
+            background: #ffffff;
+            color: #1a1a1a;
+        }
+
+        .calculator .calc-value {
+            font-size: 16px;
+            font-weight: 700;
+            color: #1a1a1a;
+            min-width: 80px;
+            text-align: right;
+        }
+
+        .calculator .calc-value.positive {
+            color: #2e7d32;
+        }
+
+        .calculator .calc-value.negative {
+            color: #c62828;
+        }
+
+        .calculator .calc-value.highlight {
+            color: #d4a017;
+            font-size: 20px;
+        }
+
+        .calculator .add-cost-btn {
+            padding: 6px 16px;
+            border: 2px dashed #888;
+            border-radius: 8px;
+            background: transparent;
+            color: #888;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .calculator .add-cost-btn:hover {
+            border-color: #1a1a1a;
+            color: #1a1a1a;
+            background: #f0f0f0;
+        }
+
+        .calculator .remove-cost-btn {
+            padding: 4px 10px;
+            border: none;
+            border-radius: 6px;
+            background: #fce4ec;
+            color: #c62828;
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .calculator .remove-cost-btn:hover {
+            background: #f8d7da;
+        }
+
+        .calc-cost-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .calc-cost-item input {
+            flex: 1;
+            min-width: 100px;
+            padding: 6px 12px;
+            border: 2px solid #d0d0d0;
+            border-radius: 6px;
+            font-size: 14px;
+            outline: none;
+            transition: border-color 0.3s ease;
+        }
+
+        .calc-cost-item input:focus {
+            border-color: #1a1a1a;
+        }
+
+        .calc-cost-item .cost-label-input {
+            min-width: 120px;
+        }
+
+        .calc-cost-item .cost-amount-input {
+            min-width: 100px;
+        }
+
+        /* ============================================
+                   PROGRESS BARS
+                ============================================ */
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: #f0f0f0;
+            border-radius: 4px;
+            overflow: hidden;
+            margin-top: 6px;
+        }
+
+        .progress-bar .fill {
+            height: 100%;
+            border-radius: 4px;
+            transition: width 0.8s ease;
+        }
+
+        .progress-bar .fill-bronze { background: #cd7f32; }
+        .progress-bar .fill-silver { background: #c0c0c0; }
+        .progress-bar .fill-gold { background: #ffd700; }
+        .progress-bar .fill-platinum { background: #e5e4e2; }
+
+        /* ============================================
+                   PRODUCT DISPLAY
+                ============================================ */
+        .product-showcase {
+            display: flex;
+            align-items: center;
+            gap: 40px;
+            padding: 20px;
+            background: #fafafa;
+            border-radius: 16px;
+            border: 1px solid #e8e8e8;
+        }
+
+        .product-showcase .product-image {
+            flex-shrink: 0;
+            width: 200px;
+            height: auto;
+        }
+
+        .product-showcase .product-image img {
+            width: 100%;
+            height: auto;
+            display: block;
+            border-radius: 8px;
+        }
+
+        .product-showcase .product-info {
+            flex: 1;
+        }
+
+        .product-showcase .product-info .name {
+            font-size: 22px;
+            font-weight: 700;
+            color: #1a1a1a;
+        }
+
+        .product-showcase .product-info .desc {
+            font-size: 14px;
+            color: #666;
+            margin-top: 4px;
+        }
+
+        .product-showcase .product-info .price {
+            font-size: 28px;
+            font-weight: 800;
+            color: #d4a017;
+            margin-top: 8px;
+        }
+
+        .product-showcase .product-info .price .currency {
+            font-size: 16px;
+            font-weight: 500;
+            color: #888;
+        }
+
+        /* ============================================
+                   TIER PROFIT CARDS
+                ============================================ */
+        .tier-profit-card {
+            background: #fafafa;
+            border-radius: 12px;
+            padding: 16px;
+            border: 2px solid #e8e8e8;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        .tier-profit-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+        }
+
+        .tier-profit-card .tier-icon {
+            font-size: 28px;
+            display: block;
+            margin-bottom: 4px;
+        }
+
+        .tier-profit-card .tier-name {
+            font-size: 14px;
+            font-weight: 700;
+            color: #1a1a1a;
+            margin-bottom: 2px;
+        }
+
+        .tier-profit-card .discount-rate {
+            font-size: 12px;
+            color: #888;
+            margin-bottom: 8px;
+        }
+
+        .tier-profit-card .profit-amount {
+            font-size: 22px;
+            font-weight: 800;
+            display: block;
+        }
+
+        .tier-profit-card .profit-amount.positive {
+            color: #2e7d32;
+        }
+
+        .tier-profit-card .profit-amount.negative {
+            color: #c62828;
+        }
+
+        .tier-profit-card .profit-margin {
+            font-size: 13px;
+            color: #666;
+            margin-top: 2px;
+        }
+
+        .tier-profit-card .final-price {
+            font-size: 12px;
+            color: #999;
+            margin-top: 4px;
+        }
+
+        .tier-profit-card .calc-detail {
+            font-size: 10px;
+            color: #aaa;
+            margin-top: 4px;
+            line-height: 1.5;
+            border-top: 1px solid #eee;
+            padding-top: 4px;
+        }
+
+        .tier-profit-card.bronze { border-color: #cd7f32; }
+        .tier-profit-card.silver { border-color: #c0c0c0; }
+        .tier-profit-card.gold { border-color: #ffd700; }
+        .tier-profit-card.platinum { border-color: #5c6bc0; }
+
+        /* ============================================
+                   RESPONSIVE
+                ============================================ */
+        @media (max-width: 768px) {
+            .slide {
+                padding: 24px 20px;
+            }
+
+            .grid-2, .grid-3, .grid-4 {
+                grid-template-columns: 1fr;
+            }
+
+            .slide-title {
+                font-size: 22px;
+            }
+
+            .product-showcase {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .product-showcase .product-image {
+                width: 150px;
+            }
+
+            .calculator .calc-row {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .calculator .calc-label {
+                min-width: auto;
+            }
+
+            .calculator .calc-value {
+                text-align: left;
+            }
+
+            .calc-cost-item {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .calc-cost-item .cost-label-input,
+            .calc-cost-item .cost-amount-input {
+                min-width: auto;
+            }
+
+            .grid-4 {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .slide {
+                padding: 16px 14px;
+            }
+
+            .slide-title {
+                font-size: 18px;
+            }
+
+            .stat-card .number {
+                font-size: 24px;
+            }
+
+            table {
+                font-size: 12px;
+            }
+
+            table thead th,
+            table tbody td {
+                padding: 6px 8px;
+            }
+
+            .product-showcase .product-info .price {
+                font-size: 22px;
+            }
+
+            .grid-4 {
+                grid-template-columns: 1fr;
+            }
+
+            .product-showcase .product-image {
+                width: 120px;
+            }
+        }
+
+        /* ============================================
+                   DIVIDER
+                ============================================ */
+        .divider {
+            border: none;
+            height: 1px;
+            background: #e8e8e8;
+            margin: 24px 0;
+        }
+
+        /* ============================================
+                   HIGHLIGHT BOX
+                ============================================ */
+        .highlight-box {
+            background: #fff8e1;
+            border: 2px solid #d4a017;
+            border-radius: 12px;
+            padding: 16px 20px;
+            margin: 12px 0;
+        }
+
+        .highlight-box .title {
+            font-weight: 700;
+            color: #1a1a1a;
+            font-size: 14px;
+            margin-bottom: 4px;
+        }
+
+        .highlight-box .desc {
+            font-size: 13px;
+            color: #555;
+        }
+
+        /* ============================================
+                   SECTION HEADER
+                ============================================ */
+        .section-header {
+            font-size: 18px;
+            font-weight: 700;
+            color: #1a1a1a;
+            margin: 20px 0 12px 0;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .section-header .icon {
+            font-size: 22px;
+        }
+
+        /* Scrollbar */
+        ::-webkit-scrollbar { width: 4px; height: 4px; }
+        ::-webkit-scrollbar-track { background: #f5f5f5; }
+        ::-webkit-scrollbar-thumb { background: #d0d0d0; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #b0b0b0; }
+    </style>
+</head>
+<body>
+
+    <div class="presentation">
+
+        <!-- ============================================
+        SLIDE 1: TITLE
+        ============================================ -->
+        <div class="slide">
+            <div class="slide-number">Slide 1</div>
+            <div class="slide-title">
+                <span class="icon">⭐</span>
+                Rewards System Presentation
+            </div>
+            <div class="slide-subtitle">
+                A comprehensive overview of the <strong>Strict Rewards System</strong> for the Olfactory Tracker app.
+                <br />Designed for sustainability, user engagement, and profitability.
+            </div>
+
+            <div class="grid-3" style="margin-top:20px;">
+                <div class="stat-card">
+                    <span class="number">1</span>
+                    <span class="label">Point per Log</span>
+                    <span class="sub">👃 Scent exposure</span>
+                </div>
+                <div class="stat-card">
+                    <span class="number">90</span>
+                    <span class="label">Days to Expire</span>
+                    <span class="sub">⏰ Points lifetime</span>
+                </div>
+                <div class="stat-card">
+                    <span class="number">4</span>
+                    <span class="label">Tier Levels</span>
+                    <span class="sub">🏆 Bronze → Platinum</span>
+                </div>
+            </div>
+
+            <div style="margin-top:16px;padding:12px 16px;background:#fafafa;border-radius:8px;border:1px solid #e8e8e8;text-align:center;font-size:13px;color:#888;">
+                <strong style="color:#1a1a1a;">Product Price:</strong> $245 • 
+                <strong style="color:#1a1a1a;">Points per Log:</strong> 1 • 
+                <strong style="color:#1a1a1a;">Weekly Streak:</strong> 7 pts • 
+                <strong style="color:#1a1a1a;">Monthly Streak:</strong> 30 pts
+            </div>
+        </div>
+
+        <!-- ============================================
+        SLIDE 2: PRODUCT SHOWCASE (UPDATED WITH NEW IMAGE)
+        ============================================ -->
+        <div class="slide">
+            <div class="slide-number">Slide 2</div>
+            <div class="slide-title">
+                <span class="icon">🛍️</span>
+                Olfactory Wellness Product
+            </div>
+            <div class="slide-subtitle">
+                Premium olfactory health supplement designed for clinical use.
+            </div>
+
+            <div class="product-showcase">
+                <div class="product-image">
+                    <img src="https://neuraci.com/cdn/shop/files/nidra_v2_cd5473d2-ac16-4bc2-8e4c-d20c4de7e78f.png?v=1780602211&width=1000" alt="Neuraci Nidrā Eau De Parfum" />
+                </div>
+                <div class="product-info">
+                    <div class="name">🌸 Neuraci™ Nidrā</div>
+                    <div class="desc">Rest &amp; Calm &amp; Restore</div>
+                    <div class="price"><span class="currency">$</span>245.00</div>
+                    <div style="margin-top:10px;display:flex;gap:8px;flex-wrap:wrap;">
+                        <span class="tag tag-green">Safe</span>
+                        <span class="tag tag-blue">Gentle</span>
+                        <span class="tag tag-purple">Therapeutic</span>
+                        <span class="tag tag-yellow">Clinical Grade</span>
+                    </div>
+                    <div style="margin-top:10px;font-size:13px;color:#666;">
+                        ⭐ Premium olfactory wellness supplement • 30-day supply
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ============================================
+        SLIDE 3: REWARDS OVERVIEW
+        ============================================ -->
+        <div class="slide">
+            <div class="slide-number">Slide 3</div>
+            <div class="slide-title">
+                <span class="icon">📋</span>
+                Rewards System Overview
+            </div>
+            <div class="slide-subtitle">
+                A gamified loyalty program designed to incentivize consistent tracking.
+            </div>
+
+            <div class="grid-3">
+                <div class="stat-card" style="border-left:3px solid #d4a017;">
+                    <span class="number">1</span>
+                    <span class="label">Point per Log</span>
+                    <span class="sub">👃 Each scent exposure</span>
+                </div>
+                <div class="stat-card" style="border-left:3px solid #2e7d32;">
+                    <span class="number">7</span>
+                    <span class="label">Weekly Streak</span>
+                    <span class="sub">🔥 7 consecutive days</span>
+                </div>
+                <div class="stat-card" style="border-left:3px solid #1565c0;">
+                    <span class="number">30</span>
+                    <span class="label">Monthly Streak</span>
+                    <span class="sub">🏆 30 consecutive days</span>
+                </div>
+            </div>
+
+            <div class="grid-3" style="margin-top:16px;">
+                <div class="stat-card" style="border-left:3px solid #c62828;">
+                    <span class="number">3</span>
+                    <span class="label">Points per $1</span>
+                    <span class="sub">💳 Discount rate</span>
+                </div>
+                <div class="stat-card" style="border-left:3px solid #e65100;">
+                    <span class="number">50</span>
+                    <span class="label">Min Points for Discount</span>
+                    <span class="sub">🎯 Entry requirement</span>
+                </div>
+                <div class="stat-card" style="border-left:3px solid #7b1fa2;">
+                    <span class="number">90</span>
+                    <span class="label">Days to Expire</span>
+                    <span class="sub">⏰ Points lifetime</span>
+                </div>
+            </div>
+
+            <div style="margin-top:16px;padding:12px 16px;background:#fafafa;border-radius:8px;border:1px solid #e8e8e8;">
+                <div style="display:flex;flex-wrap:wrap;gap:16px;justify-content:center;font-size:13px;color:#888;">
+                    <span>⏳ <strong style="color:#555;">Log Cooldown:</strong> 30 minutes</span>
+                    <span>📝 <strong style="color:#555;">Min Notes:</strong> 20 characters</span>
+                    <span>🔄 <strong style="color:#555;">Discount Cooldown:</strong> 7 days</span>
+                    <span>⭐ <strong style="color:#555;">Rating Variety:</strong> Required</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- ============================================
+        SLIDE 4: TIER SYSTEM
+        ============================================ -->
+        <div class="slide">
+            <div class="slide-number">Slide 4</div>
+            <div class="slide-title">
+                <span class="icon">🏆</span>
+                Tier System
+            </div>
+            <div class="slide-subtitle">
+                Higher tiers unlock better discounts and rewards. Each tier has a maximum discount cap.
+            </div>
+
+            <div class="grid-4">
+                <div class="stat-card" style="border-left:3px solid #cd7f32;">
+                    <span class="number" style="font-size:28px;">🥉</span>
+                    <span class="label" style="font-size:14px;font-weight:600;color:#8d6e3f;">Bronze</span>
+                    <span class="number" style="font-size:18px;color:#8d6e3f;">0–99 pts</span>
+                    <span class="sub">5% discount</span>
+                    <span class="sub" style="font-weight:700;color:#c62828;">Max $10</span>
+                </div>
+                <div class="stat-card" style="border-left:3px solid #c0c0c0;">
+                    <span class="number" style="font-size:28px;">🥈</span>
+                    <span class="label" style="font-size:14px;font-weight:600;color:#757575;">Silver</span>
+                    <span class="number" style="font-size:18px;color:#757575;">100–249 pts</span>
+                    <span class="sub">8% discount</span>
+                    <span class="sub" style="font-weight:700;color:#c62828;">Max $20</span>
+                </div>
+                <div class="stat-card" style="border-left:3px solid #ffd700;">
+                    <span class="number" style="font-size:28px;">🥇</span>
+                    <span class="label" style="font-size:14px;font-weight:600;color:#f9a825;">Gold</span>
+                    <span class="number" style="font-size:18px;color:#f9a825;">250–499 pts</span>
+                    <span class="sub">10% discount</span>
+                    <span class="sub" style="font-weight:700;color:#c62828;">Max $30</span>
+                </div>
+                <div class="stat-card" style="border-left:3px solid #5c6bc0;">
+                    <span class="number" style="font-size:28px;">👑</span>
+                    <span class="label" style="font-size:14px;font-weight:600;color:#5c6bc0;">Platinum</span>
+                    <span class="number" style="font-size:18px;color:#5c6bc0;">500+ pts</span>
+                    <span class="sub">12% discount</span>
+                    <span class="sub" style="font-weight:700;color:#c62828;">Max $40</span>
+                </div>
+            </div>
+
+            <div style="margin-top:16px;padding:12px 16px;background:#fafafa;border-radius:8px;border:1px solid #e8e8e8;">
+                <div style="font-size:12px;color:#888;display:flex;flex-wrap:wrap;gap:12px;justify-content:center;">
+                    <span>🥉 Bronze: 5% off (max $10)</span>
+                    <span>🥈 Silver: 8% off (max $20)</span>
+                    <span>🥇 Gold: 10% off (max $30)</span>
+                    <span>👑 Platinum: 12% off (max $40)</span>
+                </div>
+            </div>
+
+            <!-- Progress to Platinum -->
+            <div style="margin-top:16px;">
+                <div style="display:flex;justify-content:space-between;font-size:11px;color:#888;margin-bottom:2px;">
+                    <span>Bronze</span>
+                    <span>Silver</span>
+                    <span>Gold</span>
+                    <span>Platinum</span>
+                </div>
+                <div class="progress-bar">
+                    <div class="fill fill-bronze" style="width:25%;"></div>
+                </div>
+                <div style="font-size:10px;color:#999;text-align:right;margin-top:2px;">
+                    Example progress shown
+                </div>
+            </div>
+        </div>
+
+        <!-- ============================================
+        SLIDE 5: EARNING & USING POINTS
+        ============================================ -->
+        <div class="slide">
+            <div class="slide-number">Slide 5</div>
+            <div class="slide-title">
+                <span class="icon">💰</span>
+                Earning &amp; Using Points
+            </div>
+
+            <div class="grid-2">
+                <div>
+                    <h4 style="color:#1a1a1a;font-size:15px;margin-bottom:10px;">📈 How to Earn</h4>
+                    <div class="table-wrap">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Action</th>
+                                    <th>Points</th>
+                                    <th>Limit</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>👃 Log a scent</td>
+                                    <td><span class="highlight">+1</span></td>
+                                    <td>30 min cooldown</td>
+                                </tr>
+                                <tr>
+                                    <td>🔥 Weekly Streak</td>
+                                    <td><span class="highlight">+7</span></td>
+                                    <td>Once per 7 days</td>
+                                </tr>
+                                <tr>
+                                    <td>🏆 Monthly Streak</td>
+                                    <td><span class="highlight">+30</span></td>
+                                    <td>Once per 30 days</td>
+                                </tr>
+                                <tr>
+                                    <td>🛍️ Purchase</td>
+                                    <td><span class="highlight">+10</span> per $10</td>
+                                    <td>Per purchase</td>
+                                </tr>
+                                <tr>
+                                    <td>💰 Bonus ($100+)</td>
+                                    <td><span class="highlight">+5</span></td>
+                                    <td>Per qualifying purchase</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div>
+                    <h4 style="color:#1a1a1a;font-size:15px;margin-bottom:10px;">💳 How to Use</h4>
+                    <div class="table-wrap">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Rule</th>
+                                    <th>Value</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>Minimum points</td>
+                                    <td><span class="highlight">50 pts</span></td>
+                                </tr>
+                                <tr>
+                                    <td>Points per $1 discount</td>
+                                    <td><span class="highlight">3 pts</span></td>
+                                </tr>
+                                <tr>
+                                    <td>Bronze max discount</td>
+                                    <td><span style="color:#c62828;font-weight:700;">$10</span></td>
+                                </tr>
+                                <tr>
+                                    <td>Silver max discount</td>
+                                    <td><span style="color:#c62828;font-weight:700;">$20</span></td>
+                                </tr>
+                                <tr>
+                                    <td>Gold max discount</td>
+                                    <td><span style="color:#c62828;font-weight:700;">$30</span></td>
+                                </tr>
+                                <tr>
+                                    <td>Platinum max discount</td>
+                                    <td><span style="color:#c62828;font-weight:700;">$40</span></td>
+                                </tr>
+                                <tr>
+                                    <td>Discount cooldown</td>
+                                    <td><span class="highlight">7 days</span></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ============================================
+        SLIDE 6: POINTS CALCULATION
+        ============================================ -->
+        <div class="slide">
+            <div class="slide-number">Slide 6</div>
+            <div class="slide-title">
+                <span class="icon">🧮</span>
+                Points &amp; Discount Calculation
+            </div>
+
+            <div class="grid-2">
+                <div>
+                    <h4 style="color:#1a1a1a;font-size:15px;margin-bottom:10px;">📆 Monthly Points</h4>
+                    <div class="table-wrap">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Activity</th>
+                                    <th>Calculation</th>
+                                    <th>Points</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>Daily Logs</td>
+                                    <td>30 × 1 pt</td>
+                                    <td><span class="highlight">30</span></td>
+                                </tr>
+                                <tr>
+                                    <td>Weekly Streaks</td>
+                                    <td>4 × 7 pts</td>
+                                    <td><span class="highlight">28</span></td>
+                                </tr>
+                                <tr>
+                                    <td>Monthly Streak</td>
+                                    <td>1 × 30 pts</td>
+                                    <td><span class="highlight">30</span></td>
+                                </tr>
+                                <tr style="border-top:2px solid #e0e0e0;">
+                                    <td><strong style="color:#1a1a1a;">Total</strong></td>
+                                    <td></td>
+                                    <td><span class="highlight" style="font-size:18px;">88 pts</span></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div style="margin-top:4px;font-size:11px;color:#999;">
+                        Based on perfect daily logging (30 days)
+                    </div>
+                </div>
+                <div>
+                    <h4 style="color:#1a1a1a;font-size:15px;margin-bottom:10px;">💰 Discount Value</h4>
+                    <div class="table-wrap">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Points</th>
+                                    <th>Tier</th>
+                                    <th>Max Discount</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>50 pts</td>
+                                    <td>🥉 Bronze</td>
+                                    <td><span class="highlight">$10</span></td>
+                                </tr>
+                                <tr>
+                                    <td>100 pts</td>
+                                    <td>🥈 Silver</td>
+                                    <td><span class="highlight">$20</span></td>
+                                </tr>
+                                <tr>
+                                    <td>250 pts</td>
+                                    <td>🥇 Gold</td>
+                                    <td><span class="highlight">$30</span></td>
+                                </tr>
+                                <tr>
+                                    <td><span class="highlight">500 pts</span></td>
+                                    <td>👑 Platinum</td>
+                                    <td><span class="highlight">$40</span></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div style="margin-top:4px;font-size:11px;color:#999;">
+                        <span class="tag tag-yellow">Formula:</span> Points ÷ 3 = Discount Value (capped by tier)
+                    </div>
+                </div>
+            </div>
+
+            <!-- Example -->
+            <hr class="divider" />
+            <h4 style="color:#1a1a1a;font-size:15px;margin-bottom:10px;">📊 Example: $245 Purchase</h4>
+
+            <div class="grid-2">
+                <div style="background:#fafafa;border-radius:12px;padding:16px;border:1px solid #e8e8e8;">
+                    <div style="font-size:13px;font-weight:600;color:#1a1a1a;">Gold Tier (250 pts, 10% discount)</div>
+                    <div style="font-size:12px;color:#666;margin-top:4px;">
+                        Purchase: $245.00<br>
+                        Discount: 10% = $24.50<br>
+                        <strong style="color:#c62828;">Max Discount: $30</strong><br>
+                        <span style="color:#2e7d32;">Applied: $24.50</span><br>
+                        Final Price: $220.50<br>
+                        Points Used: 24.50 × 3 = <strong>73.5 pts</strong><br>
+                        Points Earned: $220.50 ÷ 10 × 10 = <strong>22 pts</strong><br>
+                        Net Points Change: <strong style="color:#c62828;">-51.5 pts</strong>
+                    </div>
+                </div>
+                <div style="background:#fafafa;border-radius:12px;padding:16px;border:1px solid #e8e8e8;">
+                    <div style="font-size:13px;font-weight:600;color:#1a1a1a;">Platinum Tier (500 pts, 12% discount)</div>
+                    <div style="font-size:12px;color:#666;margin-top:4px;">
+                        Purchase: $245.00<br>
+                        Discount: 12% = $29.40<br>
+                        <strong style="color:#c62828;">Max Discount: $40</strong><br>
+                        <span style="color:#2e7d32;">Applied: $29.40</span><br>
+                        Final Price: $215.60<br>
+                        Points Used: 29.40 × 3 = <strong>88.2 pts</strong><br>
+                        Points Earned: $215.60 ÷ 10 × 10 = <strong>21.5 pts</strong><br>
+                        Net Points Change: <strong style="color:#c62828;">-66.7 pts</strong>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ============================================
+        SLIDE 7: ANTI-ABUSE MEASURES
+        ============================================ -->
+        <div class="slide">
+            <div class="slide-number">Slide 7</div>
+            <div class="slide-title">
+                <span class="icon">🛡️</span>
+                Anti-Abuse Measures
+            </div>
+            <div class="slide-subtitle">
+                Multiple layers of protection to ensure fair and sustainable rewards.
+            </div>
+
+            <div class="grid-3">
+                <div style="padding:16px;background:#fafafa;border-radius:12px;border:1px solid #e8e8e8;">
+                    <div style="font-size:24px;text-align:center;margin-bottom:6px;">⏳</div>
+                    <h5 style="color:#1a1a1a;font-size:13px;text-align:center;margin-bottom:4px;">Time Controls</h5>
+                    <ul style="list-style:none;font-size:12px;color:#888;text-align:center;padding:0;">
+                        <li><strong>30 min</strong> between logs</li>
+                        <li><strong>7-day</strong> discount cooldown</li>
+                        <li>Points expire in <strong>90 days</strong></li>
+                    </ul>
+                </div>
+                <div style="padding:16px;background:#fafafa;border-radius:12px;border:1px solid #e8e8e8;">
+                    <div style="font-size:24px;text-align:center;margin-bottom:6px;">📝</div>
+                    <h5 style="color:#1a1a1a;font-size:13px;text-align:center;margin-bottom:4px;">Content Controls</h5>
+                    <ul style="list-style:none;font-size:12px;color:#888;text-align:center;padding:0;">
+                        <li><strong>20+</strong> character notes</li>
+                        <li><strong>No</strong> duplicate notes</li>
+                        <li><strong>Rating variety</strong> required</li>
+                    </ul>
+                </div>
+                <div style="padding:16px;background:#fafafa;border-radius:12px;border:1px solid #e8e8e8;">
+                    <div style="font-size:24px;text-align:center;margin-bottom:6px;">💲</div>
+                    <h5 style="color:#1a1a1a;font-size:13px;text-align:center;margin-bottom:4px;">Financial Controls</h5>
+                    <ul style="list-style:none;font-size:12px;color:#888;text-align:center;padding:0;">
+                        <li>Minimum <strong>50 points</strong> for discount</li>
+                        <li><strong>Tier-based</strong> max discounts ($10-$40)</li>
+                        <li><strong>10%</strong> inactivity penalty</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div style="margin-top:12px;padding:12px 16px;background:#e8f5e9;border-radius:8px;border:1px solid #c8e6c9;">
+                <div style="font-size:13px;color:#2e7d32;text-align:center;">
+                    ✅ <strong>6+ Anti-Abuse Measures</strong> • Industry-leading protection
+                </div>
+            </div>
+        </div>
+
+        <!-- ============================================
+        SLIDE 8: FINANCIAL SUMMARY
+        ============================================ -->
+        <div class="slide">
+            <div class="slide-number">Slide 8</div>
+            <div class="slide-title">
+                <span class="icon">📊</span>
+                Financial Summary
+            </div>
+
+            <div class="grid-3">
+                <div class="stat-card" style="border:2px solid #2e7d32;">
+                    <span class="number" style="color:#2e7d32;">$245</span>
+                    <span class="label">Product Price</span>
+                    <span class="sub">Premium Olfactory Wellness</span>
+                </div>
+                <div class="stat-card" style="border:2px solid #d4a017;">
+                    <span class="number" style="color:#d4a017;">$29.40</span>
+                    <span class="label">Max Discount (Platinum)</span>
+                    <span class="sub">12% off on $245</span>
+                </div>
+                <div class="stat-card" style="border:2px solid #1565c0;">
+                    <span class="number" style="color:#1565c0;">$215.60</span>
+                    <span class="label">Final Price (Platinum)</span>
+                    <span class="sub">Best possible price</span>
+                </div>
+            </div>
+
+            <div class="grid-3" style="margin-top:12px;">
+                <div class="stat-card">
+                    <span class="number">88</span>
+                    <span class="label">Monthly Points</span>
+                    <span class="sub">Perfect logging + streaks</span>
+                </div>
+                <div class="stat-card">
+                    <span class="number">~$29</span>
+                    <span class="label">Monthly Discount Value</span>
+                    <span class="sub">88 pts ÷ 3</span>
+                </div>
+                <div class="stat-card">
+                    <span class="number">~5.7</span>
+                    <span class="label">Months to Platinum</span>
+                    <span class="sub">500 pts ÷ 88 pts/month</span>
+                </div>
+            </div>
+
+            <div style="margin-top:16px;padding:12px 16px;background:#fff8e1;border-radius:8px;border:1px solid #f5a623;">
+                <div style="font-size:13px;color:#1a1a1a;text-align:center;line-height:1.6;">
+                    <strong>📈 Key Insight:</strong> With perfect logging, users reach <strong>Platinum tier in ~6 months</strong>,
+                    earning up to <strong>12% discount ($29.40)</strong> on the $245 product.
+                    <br />
+                    <span style="font-size:11px;color:#888;">The system is sustainable with a <strong>~53% profit margin</strong></span>
+                </div>
+            </div>
+        </div>
+
+        <!-- ============================================
+        SLIDE 9: PROFIT MARGIN CALCULATOR - ALL 4 TIERS WITH COMPLETE CALCULATIONS
+        ============================================ -->
+        <div class="slide" style="border:2px solid #d4a017;">
+            <div class="slide-number">Slide 9</div>
+            <div class="slide-title">
+                <span class="icon">🧮</span>
+                Profit Margin by Tier
+            </div>
+            <div class="slide-subtitle">
+                See complete profit calculations for each tier based on your product price and costs. <strong>Adjust the inputs below.</strong>
+            </div>
+
+            <div class="calculator" id="calculator">
+                <!-- Product Price (Editable) -->
+                <div class="calc-row">
+                    <span class="calc-label">
+                        <span class="calc-icon">🛍️</span>
+                        Product Price
+                    </span>
+                    <input type="number" class="calc-input editable" id="productPrice" value="245.00" step="0.01" min="0" />
+                    <span class="calc-value" id="productPriceDisplay" style="color:#d4a017;">$245.00</span>
+                </div>
+
+                <!-- Cost of Goods Sold -->
+                <div class="calc-row">
+                    <span class="calc-label">
+                        <span class="calc-icon">📦</span>
+                        Cost of Goods Sold (COGS)
+                    </span>
+                    <input type="number" class="calc-input" id="cogsInput" value="85.00" step="0.01" min="0" />
+                    <span class="calc-value" id="cogsDisplay">$85.00</span>
+                </div>
+
+                <!-- Additional Costs -->
+                <div class="calc-row" id="additionalCostsContainer">
+                    <span class="calc-label" style="min-width:auto;flex:1;">
+                        <span class="calc-icon">➕</span>
+                        Additional Costs
+                    </span>
+                    <div id="additionalCostsList" style="flex:1;width:100%;">
+                        <!-- Dynamic cost items will be added here -->
+                    </div>
+                    <button class="add-cost-btn" id="addCostBtn">+ Add Cost</button>
+                </div>
+
+                <!-- Total Costs -->
+                <div class="calc-row" style="border-bottom:2px solid #ddd;">
+                    <span class="calc-label">
+                        <span class="calc-icon">💰</span>
+                        Total Costs
+                    </span>
+                    <span style="flex:1;"></span>
+                    <span class="calc-value highlight" id="totalCosts">$85.00</span>
+                </div>
+
+                <!-- Product Price - Total Costs -->
+                <div class="calc-row" style="border-bottom:2px solid #d4a017; background:#fff8e1; border-radius:8px; padding:10px 0; margin-bottom: 16px;">
+                    <span class="calc-label" style="font-size:15px;">
+                        <span class="calc-icon">📊</span>
+                        <strong>Product Price - Total Costs</strong>
+                    </span>
+                    <span style="flex:1;"></span>
+                    <span class="calc-value highlight" style="font-size:22px; color:#d4a017;" id="priceMinusCosts">$160.00</span>
+                </div>
+
+                <!-- Tier Profit Cards with Complete Calculations -->
+                <div class="grid-4" id="tierProfitGrid">
+                    <!-- Bronze -->
+                    <div class="tier-profit-card bronze">
+                        <span class="tier-icon">🥉</span>
+                        <div class="tier-name">Bronze</div>
+                        <div class="discount-rate">5% off (max $10)</div>
+                        <span class="profit-amount positive" id="bronzeProfit">$160.00</span>
+                        <div class="profit-margin" id="bronzeMargin">65.31%</div>
+                        <div class="final-price" id="bronzeFinalPrice">Final: $232.75</div>
+                        <div class="calc-detail" id="bronzeCalcDetail">
+                            5% of $245 = $12.25 → Capped at $10<br>
+                            $245 - $10 = $235.00
+                        </div>
+                    </div>
+
+                    <!-- Silver -->
+                    <div class="tier-profit-card silver">
+                        <span class="tier-icon">🥈</span>
+                        <div class="tier-name">Silver</div>
+                        <div class="discount-rate">8% off (max $20)</div>
+                        <span class="profit-amount positive" id="silverProfit">$160.00</span>
+                        <div class="profit-margin" id="silverMargin">65.31%</div>
+                        <div class="final-price" id="silverFinalPrice">Final: $225.40</div>
+                        <div class="calc-detail" id="silverCalcDetail">
+                            8% of $245 = $19.60 → Capped at $20<br>
+                            $245 - $19.60 = $225.40
+                        </div>
+                    </div>
+
+                    <!-- Gold -->
+                    <div class="tier-profit-card gold">
+                        <span class="tier-icon">🥇</span>
+                        <div class="tier-name">Gold</div>
+                        <div class="discount-rate">10% off (max $30)</div>
+                        <span class="profit-amount positive" id="goldProfit">$160.00</span>
+                        <div class="profit-margin" id="goldMargin">65.31%</div>
+                        <div class="final-price" id="goldFinalPrice">Final: $220.50</div>
+                        <div class="calc-detail" id="goldCalcDetail">
+                            10% of $245 = $24.50 → Capped at $30<br>
+                            $245 - $24.50 = $220.50
+                        </div>
+                    </div>
+
+                    <!-- Platinum -->
+                    <div class="tier-profit-card platinum">
+                        <span class="tier-icon">👑</span>
+                        <div class="tier-name">Platinum</div>
+                        <div class="discount-rate">12% off (max $40)</div>
+                        <span class="profit-amount positive" id="platinumProfit">$160.00</span>
+                        <div class="profit-margin" id="platinumMargin">65.31%</div>
+                        <div class="final-price" id="platinumFinalPrice">Final: $215.60</div>
+                        <div class="calc-detail" id="platinumCalcDetail">
+                            12% of $245 = $29.40 → Capped at $40<br>
+                            $245 - $29.40 = $215.60
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Summary -->
+                <div style="margin-top:16px;padding:12px 16px;background:#e8f5e9;border-radius:8px;border:1px solid #c8e6c9;">
+                    <div style="font-size:13px;color:#2e7d32;display:flex;flex-wrap:wrap;gap:16px;justify-content:center;">
+                        <span>🛍️ <strong>Price:</strong> <span id="summaryPrice">$245.00</span></span>
+                        <span>📦 <strong>COGS:</strong> <span id="summaryCogs">$85.00</span></span>
+                        <span>➕ <strong>Add. Costs:</strong> <span id="summaryAddCosts">$0.00</span></span>
+                        <span>💰 <strong>Total Costs:</strong> <span id="summaryTotalCosts">$85.00</span></span>
+                        <span>📊 <strong>Price - Costs:</strong> <span id="summaryPriceMinusCosts">$160.00</span></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ============================================
+        FOOTER
+        ============================================ -->
+        <div style="text-align:center;padding:20px;font-size:12px;color:#bbb;border-top:1px solid #e8e8e8;margin-top:20px;">
+            Olfactory Tracker • Rewards System v3.0 • Clinical Edition
+            <br />
+            Product Price: $245.00 • Built for Sustainability &amp; Profitability
+        </div>
+
+    </div>
+
+    <script>
+        // ============================================================
+        //  PROFIT MARGIN CALCULATOR - ALL 4 TIERS WITH COMPLETE CALCULATIONS
+        // ============================================================
+
+        (function() {
+            'use strict';
+
+            // Tier definitions with complete calculation details
+            const TIERS = {
+                bronze: { 
+                    label: 'Bronze', 
+                    icon: '🥉', 
+                    discount: 0.05, 
+                    maxDiscount: 10, 
+                    id: 'bronze',
+                    discountLabel: '5%'
+                },
+                silver: { 
+                    label: 'Silver', 
+                    icon: '🥈', 
+                    discount: 0.08, 
+                    maxDiscount: 20, 
+                    id: 'silver',
+                    discountLabel: '8%'
+                },
+                gold: { 
+                    label: 'Gold', 
+                    icon: '🥇', 
+                    discount: 0.10, 
+                    maxDiscount: 30, 
+                    id: 'gold',
+                    discountLabel: '10%'
+                },
+                platinum: { 
+                    label: 'Platinum', 
+                    icon: '👑', 
+                    discount: 0.12, 
+                    maxDiscount: 40, 
+                    id: 'platinum',
+                    discountLabel: '12%'
+                }
+            };
+
+            // DOM Elements
+            const productPriceInput = document.getElementById('productPrice');
+            const productPriceDisplay = document.getElementById('productPriceDisplay');
+            const cogsInput = document.getElementById('cogsInput');
+            const cogsDisplay = document.getElementById('cogsDisplay');
+            const additionalCostsList = document.getElementById('additionalCostsList');
+            const addCostBtn = document.getElementById('addCostBtn');
+
+            const totalCostsDisplay = document.getElementById('totalCosts');
+            const priceMinusCostsDisplay = document.getElementById('priceMinusCosts');
+
+            // Summary elements
+            const summaryPrice = document.getElementById('summaryPrice');
+            const summaryCogs = document.getElementById('summaryCogs');
+            const summaryAddCosts = document.getElementById('summaryAddCosts');
+            const summaryTotalCosts = document.getElementById('summaryTotalCosts');
+            const summaryPriceMinusCosts = document.getElementById('summaryPriceMinusCosts');
+
+            // Tier display elements
+            const tierElements = {};
+            for (const [key, tier] of Object.entries(TIERS)) {
+                tierElements[key] = {
+                    profit: document.getElementById(tier.id + 'Profit'),
+                    margin: document.getElementById(tier.id + 'Margin'),
+                    finalPrice: document.getElementById(tier.id + 'FinalPrice'),
+                    calcDetail: document.getElementById(tier.id + 'CalcDetail')
+                };
+            }
+
+            let costItems = [];
+            let costIdCounter = 0;
+
+            // Initialize with some example costs
+            const defaultCosts = [
+                { id: ++costIdCounter, label: 'Shipping', amount: 12.50 },
+                { id: ++costIdCounter, label: 'Packaging', amount: 5.75 },
+                { id: ++costIdCounter, label: 'Marketing', amount: 8.00 }
+            ];
+
+            costItems = defaultCosts;
+
+            function getProductPrice() {
+                return parseFloat(productPriceInput.value) || 0;
+            }
+
+            function renderCostItems() {
+                additionalCostsList.innerHTML = '';
+                costItems.forEach((item, index) => {
+                    const div = document.createElement('div');
+                    div.className = 'calc-cost-item';
+                    div.style.cssText = 'display:flex;align-items:center;gap:8px;padding:4px 0;flex-wrap:wrap;';
+                    div.innerHTML = `
+                        <input type="text" class="cost-label-input" value="${item.label}" placeholder="Cost name" data-id="${item.id}" style="flex:1;min-width:100px;padding:4px 10px;border:2px solid #d0d0d0;border-radius:6px;font-size:13px;outline:none;" />
+                        <input type="number" class="cost-amount-input" value="${item.amount}" step="0.01" min="0" data-id="${item.id}" style="min-width:80px;padding:4px 10px;border:2px solid #d0d0d0;border-radius:6px;font-size:13px;outline:none;" />
+                        <button class="remove-cost-btn" data-id="${item.id}" style="padding:2px 10px;border:none;border-radius:4px;background:#fce4ec;color:#c62828;font-size:12px;font-weight:600;cursor:pointer;">✕</button>
+                    `;
+                    additionalCostsList.appendChild(div);
+
+                    const labelInput = div.querySelector('.cost-label-input');
+                    const amountInput = div.querySelector('.cost-amount-input');
+                    const removeBtn = div.querySelector('.remove-cost-btn');
+
+                    labelInput.addEventListener('input', function() {
+                        const id = parseInt(this.dataset.id);
+                        const item = costItems.find(c => c.id === id);
+                        if (item) {
+                            item.label = this.value || 'Unnamed Cost';
+                        }
+                        updateCalculator();
+                    });
+
+                    amountInput.addEventListener('input', function() {
+                        const id = parseInt(this.dataset.id);
+                        const item = costItems.find(c => c.id === id);
+                        if (item) {
+                            item.amount = parseFloat(this.value) || 0;
+                        }
+                        updateCalculator();
+                    });
+
+                    removeBtn.addEventListener('click', function() {
+                        const id = parseInt(this.dataset.id);
+                        costItems = costItems.filter(c => c.id !== id);
+                        renderCostItems();
+                        updateCalculator();
+                    });
+                });
+            }
+
+            function getTotalAdditionalCosts() {
+                return costItems.reduce((sum, item) => sum + (item.amount || 0), 0);
+            }
+
+            function updateCalculator() {
+                const productPrice = getProductPrice();
+                const cogs = parseFloat(cogsInput.value) || 0;
+                const additionalCosts = getTotalAdditionalCosts();
+                const totalCosts = cogs + additionalCosts;
+                const priceMinusCosts = productPrice - totalCosts;
+
+                // Update displays
+                productPriceDisplay.textContent = '$' + productPrice.toFixed(2);
+                cogsDisplay.textContent = '$' + cogs.toFixed(2);
+                totalCostsDisplay.textContent = '$' + totalCosts.toFixed(2);
+                priceMinusCostsDisplay.textContent = '$' + priceMinusCosts.toFixed(2);
+
+                // Color code the price minus costs
+                if (priceMinusCosts > 0) {
+                    priceMinusCostsDisplay.style.color = '#2e7d32';
+                } else {
+                    priceMinusCostsDisplay.style.color = '#c62828';
+                }
+
+                // Update summary
+                summaryPrice.textContent = '$' + productPrice.toFixed(2);
+                summaryCogs.textContent = '$' + cogs.toFixed(2);
+                summaryAddCosts.textContent = '$' + additionalCosts.toFixed(2);
+                summaryTotalCosts.textContent = '$' + totalCosts.toFixed(2);
+                summaryPriceMinusCosts.textContent = '$' + priceMinusCosts.toFixed(2);
+
+                // Calculate and update each tier with complete calculations
+                for (const [key, tier] of Object.entries(TIERS)) {
+                    const discountPercentAmount = productPrice * tier.discount;
+                    const appliedDiscount = Math.min(discountPercentAmount, tier.maxDiscount);
+                    const finalPrice = productPrice - appliedDiscount;
+                    const profit = finalPrice - totalCosts;
+                    const margin = finalPrice > 0 ? (profit / finalPrice) * 100 : 0;
+
+                    const elements = tierElements[key];
+                    elements.profit.textContent = '$' + profit.toFixed(2);
+                    elements.profit.className = 'profit-amount ' + (profit >= 0 ? 'positive' : 'negative');
+                    elements.margin.textContent = margin.toFixed(2) + '%';
+                    elements.finalPrice.textContent = 'Final: $' + finalPrice.toFixed(2);
+
+                    // Build complete calculation details
+                    let calcDetailText = '';
+                    if (discountPercentAmount > tier.maxDiscount) {
+                        calcDetailText = tier.discountLabel + ' of $' + productPrice.toFixed(2) + ' = $' + discountPercentAmount.toFixed(2) + ' → Capped at $' + tier.maxDiscount.toFixed(2) + '\n';
+                    } else {
+                        calcDetailText = tier.discountLabel + ' of $' + productPrice.toFixed(2) + ' = $' + discountPercentAmount.toFixed(2) + '\n';
+                    }
+                    calcDetailText += '$' + productPrice.toFixed(2) + ' - $' + appliedDiscount.toFixed(2) + ' = $' + finalPrice.toFixed(2);
+                    
+                    // Add profit calculation
+                    calcDetailText += '\nProfit: $' + finalPrice.toFixed(2) + ' - $' + totalCosts.toFixed(2) + ' = $' + profit.toFixed(2);
+                    calcDetailText += '\nMargin: $' + profit.toFixed(2) + ' ÷ $' + finalPrice.toFixed(2) + ' = ' + margin.toFixed(2) + '%';
+
+                    elements.calcDetail.textContent = calcDetailText;
+                }
+            }
+
+            // Event listeners
+            productPriceInput.addEventListener('input', updateCalculator);
+            cogsInput.addEventListener('input', updateCalculator);
+
+            addCostBtn.addEventListener('click', function() {
+                costItems.push({
+                    id: ++costIdCounter,
+                    label: 'New Cost',
+                    amount: 0
+                });
+                renderCostItems();
+                updateCalculator();
+            });
+
+            // Initialize
+            renderCostItems();
+            updateCalculator();
+
+            console.log('🧮 Profit Margin Calculator initialized - All 4 Tiers with Complete Calculations');
+            console.log('📊 Showing complete calculations for Bronze, Silver, Gold, and Platinum');
+
+        })();
+    </script>
+
+</body>
+</html>

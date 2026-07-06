@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Olfactory Tracker - Home</title>
+    <title>Olfactory Tracker · Home</title>
     <style>
         /* ============================================
                    RESET & BASE
@@ -209,7 +209,7 @@
         }
 
         /* ============================================
-                   CARD
+                   CARD (base)
                 ============================================ */
         .card {
             background: rgba(255, 255, 255, 0.03);
@@ -354,7 +354,7 @@
         }
 
         /* ============================================
-                   CARD VARIANTS
+                   CARD VARIANTS (existing)
                 ============================================ */
         .card.personas {
             border-color: rgba(46, 125, 50, 0.2);
@@ -411,6 +411,26 @@
             background: rgba(156, 39, 176, 0.1);
             color: #ce93d8;
             border-color: rgba(156, 39, 176, 0.15);
+        }
+
+        /* ===== NEW CARD: GAMIFIED REWARD ===== */
+        .card.reward {
+            border-color: rgba(255, 193, 7, 0.25);
+        }
+
+        .card.reward:hover {
+            border-color: rgba(255, 193, 7, 0.5);
+            box-shadow: 0 20px 60px rgba(255, 193, 7, 0.08);
+        }
+
+        .card.reward .card-title {
+            color: #ffd54f;
+        }
+
+        .card.reward .card-tags .tag {
+            background: rgba(255, 193, 7, 0.08);
+            color: #ffd54f;
+            border-color: rgba(255, 193, 7, 0.15);
         }
 
         /* ============================================
@@ -493,11 +513,14 @@
         .card:nth-child(3) {
             animation-delay: 0.7s;
         }
+        .card:nth-child(4) {
+            animation-delay: 0.9s;
+        }
 
         .footer {
             animation: fadeInUp 0.8s ease forwards;
             opacity: 0;
-            animation-delay: 0.9s;
+            animation-delay: 1.1s;
         }
 
         /* ============================================
@@ -554,11 +577,11 @@
             <span class="line"></span>
         </div>
 
-        <!-- ===== CARDS GRID ===== -->
+        <!-- ===== CARDS GRID (now 4 cards) ===== -->
         <div class="cards-grid">
 
             <!-- Card 1: Personas -->
-            <a href="https://studentinlifeonceandalways-afk.github.io/olfactory/persona3.html" class="card personas">
+            <a href="personas.html" class="card personas">
                 <div class="card-glow"></div>
                 <span class="card-icon">👤</span>
                 <span class="card-number">01 — Research</span>
@@ -580,7 +603,7 @@
             </a>
 
             <!-- Card 2: Feature Mapping -->
-            <a href="https://studentinlifeonceandalways-afk.github.io/olfactory/featuremapping.html" class="card features">
+            <a href="feature-mapping.html" class="card features">
                 <div class="card-glow"></div>
                 <span class="card-icon">📊</span>
                 <span class="card-number">02 — Analysis</span>
@@ -602,7 +625,7 @@
             </a>
 
             <!-- Card 3: Olfactory App -->
-            <a href="https://studentinlifeonceandalways-afk.github.io/olfactory/olfactory.html" class="card app">
+            <a href="index.html" class="card app">
                 <div class="card-glow"></div>
                 <span class="card-icon">📱</span>
                 <span class="card-number">03 — Product</span>
@@ -624,6 +647,33 @@
                 </div>
             </a>
 
+            <!-- Card 4: Gamified Reward Points (NEW) 
+                 linked to external URL -->
+            <a href="https://studentinlifeonceandalways-afk.github.io/olfactory/reward-points.html" 
+               target="_blank" 
+               rel="noopener noreferrer" 
+               class="card reward">
+                <div class="card-glow"></div>
+                <span class="card-icon">🏆</span>
+                <span class="card-number">04 — Gamification</span>
+                <h2 class="card-title">Reward Points</h2>
+                <p class="card-desc">
+                    Earn points for every logged scent, streak, and milestone. 
+                    Unlock achievements, track your progress, and stay motivated 
+                    on your olfactory health journey.
+                </p>
+                <div class="card-tags">
+                    <span class="tag">🎯 Streaks</span>
+                    <span class="tag">⭐ Achievements</span>
+                    <span class="tag">📈 Leaderboard</span>
+                    <span class="tag">🎁 Rewards</span>
+                </div>
+                <div class="card-arrow">
+                    <span>Earn Rewards</span>
+                    <span class="arrow-icon">→</span>
+                </div>
+            </a>
+
         </div>
 
         <!-- ===== FOOTER ===== -->
@@ -633,9 +683,10 @@
                 Empowering individuals with olfactory disorders
             </p>
             <div class="footer-links">
-                <a href="https://studentinlifeonceandalways-afk.github.io/olfactory/persona3.html">Personas</a>
-                <a href="https://studentinlifeonceandalways-afk.github.io/olfactory/featuremapping.html">Feature Mapping</a>
-                <a href="https://studentinlifeonceandalways-afk.github.io/olfactory/olfactory.html">Olfactory App</a>
+                <a href="personas.html">Personas</a>
+                <a href="feature-mapping.html">Feature Mapping</a>
+                <a href="index.html">Olfactory App</a>
+                <a href="https://studentinlifeonceandalways-afk.github.io/olfactory/reward-points.html" target="_blank" rel="noopener noreferrer">Reward Points</a>
             </div>
             <p style="margin-top:12px;font-size:11px;color:#444;">
                 © 2026 Olfactory Tracker • Clinical Edition

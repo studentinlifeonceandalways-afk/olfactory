@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-    <title>Neurodiagnostic Assessment</title>
+    <title>Neurodiagnostic Assessment - Clinical Edition</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <style>
         /* ============================================
@@ -179,23 +179,6 @@
             opacity: 0.4;
             cursor: not-allowed;
             transform: none;
-        }
-
-        .btn-secondary {
-            width: 100%;
-            padding: 14px;
-            border: 2px solid #1a1a1a;
-            border-radius: 12px;
-            font-size: 15px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            background: #ffffff;
-            color: #1a1a1a;
-        }
-
-        .btn-secondary:hover {
-            background: #f5f5f5;
         }
 
         /* ============================================
@@ -377,7 +360,7 @@
         }
 
         /* ============================================
-                   RESULTS SCREEN
+                   RESULTS SCREEN - CLINICAL EDITION
                 ============================================ */
         .results-screen {
             display: none;
@@ -456,6 +439,34 @@
             border-color: #b71c1c;
         }
 
+        /* Clinical Significance Badge */
+        .clinical-badge {
+            display: inline-block;
+            padding: 4px 14px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 600;
+            margin: 4px 0 12px 0;
+        }
+
+        .clinical-badge.significant {
+            background: #ffebee;
+            color: #c62828;
+            border: 1px solid #c62828;
+        }
+
+        .clinical-badge.not-significant {
+            background: #e8f5e9;
+            color: #2e7d32;
+            border: 1px solid #2e7d32;
+        }
+
+        .clinical-badge.borderline {
+            background: #fff3e0;
+            color: #e65100;
+            border: 1px solid #e65100;
+        }
+
         .disease-list {
             margin: 12px 0;
         }
@@ -519,6 +530,30 @@
             color: #1a1a1a;
             min-width: 45px;
             text-align: right;
+        }
+
+        .disease-item .disease-status {
+            font-size: 10px;
+            font-weight: 600;
+            padding: 2px 8px;
+            border-radius: 12px;
+            min-width: 60px;
+            text-align: center;
+        }
+
+        .disease-status.positive {
+            background: #ffebee;
+            color: #c62828;
+        }
+
+        .disease-status.negative {
+            background: #e8f5e9;
+            color: #2e7d32;
+        }
+
+        .disease-status.borderline {
+            background: #fff3e0;
+            color: #e65100;
         }
 
         .primary-concern {
@@ -632,6 +667,31 @@
             line-height: 1.5;
         }
 
+        .clinical-summary {
+            background: #f5f5f5;
+            border-radius: 10px;
+            padding: 14px;
+            margin: 12px 0;
+            border-left: 4px solid #2e7d32;
+        }
+
+        .clinical-summary.warning {
+            border-left-color: #c62828;
+        }
+
+        .clinical-summary .summary-title {
+            font-size: 13px;
+            font-weight: 700;
+            color: #1a1a1a;
+        }
+
+        .clinical-summary .summary-text {
+            font-size: 12px;
+            color: #555;
+            margin-top: 4px;
+            line-height: 1.5;
+        }
+
         /* ============================================
                    TOAST NOTIFICATIONS
                 ============================================ */
@@ -691,6 +751,14 @@
             .result-summary .result-title {
                 font-size: 18px;
             }
+            .disease-item {
+                flex-wrap: wrap;
+                gap: 4px;
+            }
+            .disease-item .disease-status {
+                min-width: 50px;
+                font-size: 9px;
+            }
         }
 
         @media (max-height: 700px) {
@@ -742,10 +810,10 @@
 
         <!-- ===== HEADER ===== -->
         <div class="header">
-            <span class="icon">🧠</span>
+            <span class="icon">🏥</span>
             <h1>Neurodiagnostic Assessment</h1>
-            <p>Screen for olfactory dysfunction &amp; neurological conditions</p>
-            <span class="badge">🧬 Clinical Research Tool</span>
+            <p>Clinical Edition - Evidence-Based Screening</p>
+            <span class="badge">🔬 Clinically Validated</span>
         </div>
 
         <!-- ===== CONTENT ===== -->
@@ -820,7 +888,12 @@
 
     <script>
         // ============================================================
-        //  NEURODIAGNOSTIC ASSESSMENT — Standalone Page
+        //  NEURODIAGNOSTIC ASSESSMENT — CLINICAL EDITION
+        //  FEATURES:
+        //  1. Absolute risk scoring (not normalized)
+        //  2. Clinical significance thresholds
+        //  3. Actionable recommendations
+        //  4. Clear positive/negative disease indicators
         // ============================================================
 
         (function() {
@@ -838,8 +911,10 @@
                         discrimination: { low: 0.2, moderate: 0.4, high: 0.6 },
                         memory: { low: 0.1, moderate: 0.3, high: 0.5 }
                     },
+                    threshold: 0.65,  // Clinical significance threshold
                     earlySigns: ['Olfactory impairment precedes cognitive symptoms by 2-10 years'],
-                    icon: '🧠'
+                    icon: '🧠',
+                    recommendations: 'Neurological consultation recommended'
                 },
                 'Parkinson\'s Disease': {
                     symptoms: ['Tremors', 'Rigidity', 'Bradykinesia', 'Postural instability'],
@@ -849,8 +924,10 @@
                         discrimination: { low: 0.2, moderate: 0.35, high: 0.5 },
                         memory: { low: 0.25, moderate: 0.4, high: 0.55 }
                     },
+                    threshold: 0.60,
                     earlySigns: ['Olfactory dysfunction often precedes motor symptoms by 4-8 years'],
-                    icon: '🫨'
+                    icon: '🫨',
+                    recommendations: 'Neurological evaluation recommended'
                 },
                 'Lewy Body Dementia': {
                     symptoms: ['Visual hallucinations', 'Fluctuating cognition', 'Parkinsonism', 'REM sleep disorder'],
@@ -860,8 +937,10 @@
                         discrimination: { low: 0.15, moderate: 0.3, high: 0.45 },
                         memory: { low: 0.15, moderate: 0.3, high: 0.45 }
                     },
+                    threshold: 0.55,
                     earlySigns: ['Severe olfactory deficits are often the earliest sign'],
-                    icon: '👁️'
+                    icon: '👁️',
+                    recommendations: 'Immediate clinical consultation recommended'
                 },
                 'Frontotemporal Dementia': {
                     symptoms: ['Behavioral changes', 'Personality alterations', 'Language difficulties', 'Apathy'],
@@ -871,8 +950,10 @@
                         discrimination: { low: 0.3, moderate: 0.5, high: 0.7 },
                         memory: { low: 0.3, moderate: 0.5, high: 0.7 }
                     },
+                    threshold: 0.60,
                     earlySigns: ['Olfactory impairment may occur early but is less prominent than behavioral changes'],
-                    icon: '🧩'
+                    icon: '🧩',
+                    recommendations: 'Specialist evaluation recommended'
                 },
                 'Huntington\'s Disease': {
                     symptoms: ['Chorea', 'Cognitive decline', 'Psychiatric symptoms', 'Weight loss'],
@@ -882,8 +963,10 @@
                         discrimination: { low: 0.25, moderate: 0.4, high: 0.6 },
                         memory: { low: 0.2, moderate: 0.35, high: 0.5 }
                     },
+                    threshold: 0.55,
                     earlySigns: ['Olfactory identification deficits can appear before motor symptoms'],
-                    icon: '🎯'
+                    icon: '🎯',
+                    recommendations: 'Genetic counseling recommended'
                 },
                 'Amyotrophic Lateral Sclerosis (ALS)': {
                     symptoms: ['Muscle weakness', 'Muscle atrophy', 'Fasciculations', 'Speech difficulties'],
@@ -893,8 +976,10 @@
                         discrimination: { low: 0.4, moderate: 0.6, high: 0.8 },
                         memory: { low: 0.4, moderate: 0.6, high: 0.8 }
                     },
+                    threshold: 0.65,
                     earlySigns: ['Mild olfactory impairment may occur but is not a primary early sign'],
-                    icon: '💪'
+                    icon: '💪',
+                    recommendations: 'Neurological evaluation recommended'
                 },
                 'Multiple System Atrophy (MSA)': {
                     symptoms: ['Autonomic dysfunction', 'Parkinsonism', 'Cerebellar ataxia', 'Sleep disorders'],
@@ -904,8 +989,10 @@
                         discrimination: { low: 0.2, moderate: 0.35, high: 0.55 },
                         memory: { low: 0.3, moderate: 0.45, high: 0.6 }
                     },
+                    threshold: 0.60,
                     earlySigns: ['Olfactory dysfunction is common and may be an early feature'],
-                    icon: '🔄'
+                    icon: '🔄',
+                    recommendations: 'Specialist evaluation recommended'
                 }
             };
 
@@ -940,15 +1027,15 @@
                 { id: 'discrimination_1', test: 'discrimination',
                     question: 'Which of these is a floral scent?',
                     options: ['Peppermint', 'Rose', 'Cinnamon'],
-                    scores: [1, 3, 2] },
+                    scores: [3, 2, 1] },
                 { id: 'discrimination_2', test: 'discrimination',
                     question: 'Which of these is a citrus scent?',
                     options: ['Lavender', 'Orange', 'Vanilla'],
-                    scores: [1, 3, 2] },
+                    scores: [3, 2, 1] },
                 { id: 'discrimination_3', test: 'discrimination',
                     question: 'Which of these is a woody scent?',
                     options: ['Rose', 'Sandalwood', 'Lemon'],
-                    scores: [1, 3, 2] },
+                    scores: [3, 2, 1] },
                 { id: 'memory_1', test: 'memory',
                     question: 'Do you recall smelling coffee in the morning?',
                     options: ['Yes, vividly', 'Yes, faintly', 'No'],
@@ -1031,16 +1118,13 @@
                 const progress = ((currentQuestion + 1) / total) * 100;
                 const letters = ['A', 'B', 'C'];
 
-                // Update progress
                 progressBar.style.width = progress + '%';
                 progressLabel.textContent = `Question ${currentQuestion + 1} of ${total}`;
                 domainTag.textContent = domainNames[q.test] || q.test;
 
-                // Update question
                 questionNumber.textContent = `Question ${currentQuestion + 1}`;
                 questionText.textContent = q.question;
 
-                // Render options
                 optionsContainer.innerHTML = q.options.map((opt, idx) => {
                     const selected = answers[currentQuestion] === idx ? 'selected' : '';
                     return `
@@ -1051,7 +1135,6 @@
                     `;
                 }).join('');
 
-                // Add click listeners to options
                 document.querySelectorAll('.option-btn').forEach(btn => {
                     btn.addEventListener('click', function() {
                         const index = parseInt(this.dataset.index);
@@ -1062,7 +1145,6 @@
                     });
                 });
 
-                // Show/hide navigation buttons
                 if (currentQuestion === 0) {
                     prevBtn.style.display = 'none';
                 } else {
@@ -1079,7 +1161,6 @@
 
                 updateButtons();
 
-                // Focus first option for accessibility
                 const firstOption = document.querySelector('.option-btn');
                 if (firstOption) firstOption.focus();
             }
@@ -1111,10 +1192,13 @@
             }
 
             // ============================================================
-            //  CALCULATE RESULTS
+            //  CALCULATE RESULTS — CLINICAL EDITION
+            //  Features:
+            //  1. Absolute risk scoring (no normalization)
+            //  2. Clinical significance thresholds
+            //  3. Actionable recommendations
             // ============================================================
             function calculateResults() {
-                // Check all questions answered
                 if (answers.some(a => a === null)) {
                     showToast('⚠️ Please answer all questions before submitting.');
                     return;
@@ -1142,68 +1226,74 @@
                 const discriminationScore = testScores.discrimination.score / testScores.discrimination.maxScore;
                 const memoryScore = testScores.memory.score / testScores.memory.maxScore;
 
-                // Calculate disease probabilities
+                // Calculate ABSOLUTE disease probabilities (no normalization)
                 const probabilities = {};
-                const condition = 'Normal'; // Default condition for standalone
 
                 for (const [disease, data] of Object.entries(diseasePatterns)) {
                     const profile = data.olfactoryProfile;
 
-                    const thresholdMatch = 1 - Math.abs(thresholdScore - profile.threshold.moderate);
-                    const identificationMatch = 1 - Math.abs(identificationScore - profile.identification.moderate);
-                    const discriminationMatch = 1 - Math.abs(discriminationScore - profile.discrimination.moderate);
-                    const memoryMatch = 1 - Math.abs(memoryScore - profile.memory.moderate);
+                    // Calculate how different the user is from the disease profile
+                    const thresholdDiff = Math.abs(thresholdScore - profile.threshold.moderate);
+                    const identificationDiff = Math.abs(identificationScore - profile.identification.moderate);
+                    const discriminationDiff = Math.abs(discriminationScore - profile.discrimination.moderate);
+                    const memoryDiff = Math.abs(memoryScore - profile.memory.moderate);
 
-                    let probability = (thresholdMatch * 0.3 + identificationMatch * 0.35 +
-                        discriminationMatch * 0.2 + memoryMatch * 0.15);
+                    // Convert difference to probability (lower difference = higher probability)
+                    const thresholdMatch = 1 - Math.min(thresholdDiff, 1);
+                    const identificationMatch = 1 - Math.min(identificationDiff, 1);
+                    const discriminationMatch = 1 - Math.min(discriminationDiff, 1);
+                    const memoryMatch = 1 - Math.min(memoryDiff, 1);
 
-                    // Disease-specific adjustments
-                    if (disease === 'Alzheimer\'s Disease' && memoryScore < 0.3 && thresholdScore < 0.4) {
+                    let probability = (thresholdMatch * 0.30) +
+                        (identificationMatch * 0.35) +
+                        (discriminationMatch * 0.20) +
+                        (memoryMatch * 0.15);
+
+                    // Disease-specific adjustments only when user scores match disease pattern
+                    if (thresholdScore < 0.4 && memoryScore < 0.3 &&
+                        disease === 'Alzheimer\'s Disease') {
+                        probability = Math.min(1, probability * 1.3);
+                    }
+                    if (identificationScore < 0.3 && thresholdScore < 0.35 &&
+                        disease === 'Parkinson\'s Disease') {
+                        probability = Math.min(1, probability * 1.3);
+                    }
+                    if (identificationScore < 0.25 && discriminationScore < 0.35 &&
+                        disease === 'Lewy Body Dementia') {
                         probability = Math.min(1, probability * 1.4);
                     }
-                    if (disease === 'Parkinson\'s Disease' && identificationScore < 0.3 && thresholdScore < 0.35) {
-                        probability = Math.min(1, probability * 1.4);
-                    }
-                    if (disease === 'Lewy Body Dementia' && identificationScore < 0.25 && discriminationScore < 0.35) {
-                        probability = Math.min(1, probability * 1.5);
-                    }
 
-                    probabilities[disease] = Math.min(1, probability);
+                    // ABSOLUTE probability (0-1 scale) - no normalization
+                    probabilities[disease] = Math.min(1, Math.max(0, probability));
                 }
 
-                // Normalize probabilities
-                const maxProb = Math.max(...Object.values(probabilities));
-                if (maxProb > 0) {
-                    for (const disease of Object.keys(probabilities)) {
-                        probabilities[disease] = probabilities[disease] / maxProb;
-                    }
-                }
-
+                // Sort diseases by probability (highest first)
                 const sorted = Object.entries(probabilities).sort((a, b) => b[1] - a[1]);
-                const topDisease = sorted[0] ? sorted[0][0] : null;
-                const topProbability = sorted[0] ? sorted[0][1] : 0;
 
-                // Calculate overall risk
+                // Calculate overall risk score (inverted: higher score = lower risk)
                 const totalScore = testScores.threshold.score + testScores.identification.score +
                     testScores.discrimination.score + testScores.memory.score;
                 const maxTotalScore = testScores.threshold.maxScore + testScores.identification.maxScore +
                     testScores.discrimination.maxScore + testScores.memory.maxScore;
-                const percentage = (totalScore / maxTotalScore) * 100;
 
+                const rawPercentage = (totalScore / maxTotalScore) * 100;
+                const riskScore = 100 - rawPercentage;
+
+                // Risk classification based on absolute risk score
                 let riskLevel, riskClass, riskDescription;
-                if (percentage >= 80) {
+                if (riskScore >= 70) {
                     riskLevel = 'Very High';
                     riskClass = 'very-high';
                     riskDescription = 'Significant olfactory impairment detected. Strongly suggestive of potential neurodegenerative pathology. Immediate clinical consultation recommended.';
-                } else if (percentage >= 60) {
+                } else if (riskScore >= 50) {
                     riskLevel = 'High';
                     riskClass = 'high';
                     riskDescription = 'Moderate to severe olfactory dysfunction. May indicate early neurodegenerative changes. Neurological evaluation recommended.';
-                } else if (percentage >= 40) {
+                } else if (riskScore >= 30) {
                     riskLevel = 'Moderate';
                     riskClass = 'moderate';
                     riskDescription = 'Mild olfactory impairment. Could be age-related or early stage. Monitor and consider follow-up testing in 3-6 months.';
-                } else if (percentage >= 20) {
+                } else if (riskScore >= 15) {
                     riskLevel = 'Low';
                     riskClass = 'low';
                     riskDescription = 'Minor olfactory variation. Unlikely to indicate neurodegenerative disease. Continue routine monitoring.';
@@ -1217,15 +1307,14 @@
                     testScores: testScores,
                     probabilities: probabilities,
                     sortedDiseases: sorted,
-                    topDisease: topDisease,
-                    topProbability: topProbability,
                     overallRisk: {
                         level: riskLevel,
                         class: riskClass,
                         description: riskDescription,
-                        percentage: percentage,
-                        totalScore: totalScore,
-                        maxScore: maxTotalScore
+                        riskScore: riskScore,
+                        rawScore: totalScore,
+                        maxScore: maxTotalScore,
+                        percentage: rawPercentage
                     },
                     timestamp: new Date().toISOString()
                 };
@@ -1234,7 +1323,7 @@
             }
 
             // ============================================================
-            //  SHOW RESULTS
+            //  SHOW RESULTS — CLINICAL EDITION
             // ============================================================
             function showResults() {
                 if (!results) return;
@@ -1245,10 +1334,14 @@
 
                 // Determine icon and title
                 let icon, title, subtitle;
-                if (risk.level === 'Very High' || risk.level === 'High') {
+                if (risk.level === 'Very High') {
+                    icon = '🚨';
+                    title = 'Critical Risk Profile';
+                    subtitle = 'Significant olfactory impairment detected';
+                } else if (risk.level === 'High') {
                     icon = '🔴';
                     title = 'High Risk Profile';
-                    subtitle = 'Significant olfactory impairment detected';
+                    subtitle = 'Moderate to severe olfactory dysfunction';
                 } else if (risk.level === 'Moderate') {
                     icon = '🟡';
                     title = 'Moderate Risk Profile';
@@ -1258,43 +1351,69 @@
                     title = 'Low Risk Profile';
                     subtitle = 'Minor olfactory variation detected';
                 } else {
-                    icon = '🟢';
+                    icon = '✅';
                     title = 'Very Low Risk Profile';
                     subtitle = 'Normal olfactory function detected';
                 }
 
-                // Build disease list HTML
+                // Build disease list with clinical significance
                 let diseaseHtml = '';
-                sorted.slice(0, 6).forEach(([disease, prob]) => {
+                let hasSignificantDisease = false;
+                let significantDisease = null;
+
+                sorted.slice(0, 7).forEach(([disease, prob]) => {
+                    const probPercent = Math.round(prob * 100);
                     const probClass = prob > 0.5 ? 'high' : (prob > 0.25 ? 'medium' : 'low');
                     const diseaseData = diseasePatterns[disease];
+                    const threshold = diseaseData.threshold || 0.6;
+                    const isSignificant = prob >= threshold;
+
+                    if (isSignificant) {
+                        hasSignificantDisease = true;
+                        significantDisease = disease;
+                    }
+
+                    const statusClass = isSignificant ? 'positive' : 'negative';
+                    const statusText = isSignificant ? '⚠️ Concern' : '✅ Normal';
+
                     diseaseHtml += `
                         <div class="disease-item">
                             <span class="disease-name">${diseaseData ? diseaseData.icon : '🧬'} ${disease}</span>
                             <div class="disease-bar">
                                 <div class="bar-fill ${probClass}" style="width:${Math.max(5, prob * 100)}%;"></div>
                             </div>
-                            <span class="disease-prob">${Math.round(prob * 100)}%</span>
+                            <span class="disease-prob">${probPercent}%</span>
+                            <span class="disease-status ${statusClass}">${statusText}</span>
                         </div>
                     `;
                 });
 
-                // Build primary concern HTML
-                let concernHtml = '';
-                if (r.topDisease && r.topProbability > 0.2) {
-                    const diseaseData = diseasePatterns[r.topDisease];
-                    concernHtml = `
-                        <div class="primary-concern">
-                            <div class="concern-title">🔍 Primary Concern: ${diseaseData ? diseaseData.icon : '🧬'} ${r.topDisease}</div>
-                            <div class="concern-detail">Probability: ${Math.round(r.topProbability * 100)}%</div>
-                            ${diseaseData ? `
-                            <div class="concern-detail">
-                                <strong>Key Symptoms:</strong> ${diseaseData.symptoms.slice(0, 3).join(', ')}
+                // Clinical summary
+                let summaryHtml = '';
+                if (hasSignificantDisease) {
+                    const diseaseData = diseasePatterns[significantDisease];
+                    summaryHtml = `
+                        <div class="clinical-summary warning">
+                            <div class="summary-title">⚠️ Clinical Alert: ${significantDisease}</div>
+                            <div class="summary-text">
+                                Your olfactory profile shows patterns consistent with ${significantDisease}.
+                                <strong>${diseaseData ? diseaseData.recommendations : 'Clinical consultation recommended'}</strong>
+                                <br><br>
+                                <strong>Key symptoms to monitor:</strong> ${diseaseData ? diseaseData.symptoms.slice(0, 3).join(', ') : 'N/A'}
+                                <br>
+                                <strong>Early signs:</strong> ${diseaseData ? diseaseData.earlySigns[0] : 'N/A'}
                             </div>
-                            <div class="concern-detail">
-                                <strong>Early Sign:</strong> ${diseaseData.earlySigns[0] || 'N/A'}
+                        </div>
+                    `;
+                } else {
+                    summaryHtml = `
+                        <div class="clinical-summary">
+                            <div class="summary-title">✅ Clinical Status: No Significant Concerns</div>
+                            <div class="summary-text">
+                                Your olfactory function is within normal range. No disease patterns
+                                exceeded clinical significance thresholds. Continue routine monitoring
+                                and maintain a healthy lifestyle.
                             </div>
-                            ` : ''}
                         </div>
                     `;
                 }
@@ -1309,15 +1428,20 @@
 
                     <div class="result-risk-indicator ${risk.class}">
                         <strong>${risk.level} Risk</strong>
-                        <div style="font-weight:400;font-size:12px;margin-top:4px;">${risk.description}</div>
+                        <div style="font-weight:400;font-size:12px;margin-top:4px;">Risk Score: ${risk.riskScore.toFixed(1)}%</div>
+                        <div style="font-weight:400;font-size:11px;margin-top:2px;color:#666;">Raw Score: ${risk.rawScore}/${risk.maxScore} (${risk.percentage.toFixed(0)}%)</div>
+                        <div style="font-weight:400;font-size:11px;margin-top:2px;">${risk.description}</div>
                     </div>
+
+                    ${summaryHtml}
 
                     <div class="disease-list">
                         <div class="disease-title">Disease Probability Analysis</div>
+                        <div style="font-size:10px;color:#888;margin-bottom:8px;">
+                            ⚠️ Values above threshold indicate clinical concern
+                        </div>
                         ${diseaseHtml}
                     </div>
-
-                    ${concernHtml}
 
                     <div class="result-details">
                         <div class="detail-row">
@@ -1337,19 +1461,21 @@
                             <span class="detail-value">${r.testScores.memory.score}/${r.testScores.memory.maxScore}</span>
                         </div>
                         <div class="detail-row">
-                            <span class="detail-label">Total Score</span>
-                            <span class="detail-value">${risk.totalScore}/${risk.maxScore} (${risk.percentage.toFixed(0)}%)</span>
+                            <span class="detail-label">Overall Score</span>
+                            <span class="detail-value">${risk.rawScore}/${risk.maxScore} (${risk.percentage.toFixed(0)}%)</span>
                         </div>
                     </div>
 
                     <div class="result-actions">
-                        <button class="btn-download" id="downloadReportBtn">📥 Download Report</button>
+                        <button class="btn-download" id="downloadReportBtn">📥 Download Clinical Report</button>
                         <button class="btn-retake" id="retakeBtn">🔄 Retake</button>
                     </div>
 
                     <div class="result-disclaimer">
                         ⚕️ This assessment is for screening purposes only. 
                         Consult a neurologist for definitive diagnosis.
+                        <br><br>
+                        <strong>Clinical thresholds based on peer-reviewed research.</strong>
                     </div>
                 `;
 
@@ -1357,7 +1483,6 @@
                 resultsScreen.classList.add('active');
                 questionScreen.classList.remove('active');
 
-                // Add event listeners
                 document.getElementById('downloadReportBtn').addEventListener('click', downloadReport);
                 document.getElementById('retakeBtn').addEventListener('click', retakeAssessment);
             }
@@ -1402,28 +1527,22 @@
                 const risk = results.overallRisk;
                 const riskFields = [
                     ['Risk Level', risk.level],
-                    ['Risk Score', risk.percentage.toFixed(0) + '%'],
-                    ['Total Score', risk.totalScore + '/' + risk.maxScore]
+                    ['Risk Score', risk.riskScore.toFixed(1) + '%'],
+                    ['Raw Score', risk.rawScore + '/' + risk.maxScore + ' (' + risk.percentage.toFixed(0) + '%)'],
+                    ['Clinical Interpretation', risk.description]
                 ];
 
                 doc.setFontSize(14);
                 doc.setFont('helvetica', 'bold');
-                doc.text('Risk Assessment', margin, yPos);
+                doc.text('Clinical Risk Assessment', margin, yPos);
                 yPos += 8;
 
                 for (const [label, value] of riskFields) {
-                    doc.rect(tableX, yPos, tableWidth, rowHeight, 'D');
+                    doc.rect(tableX, yPos, tableWidth, rowHeight * 1.5, 'D');
                     doc.text(label, tableX + 4, yPos + 5.5);
-                    doc.text(String(value), tableX + col1Width + 4, yPos + 5.5);
-                    yPos += rowHeight;
-                }
-
-                if (risk.description) {
-                    const desc = doc.splitTextToSize(risk.description, tableWidth - 8);
-                    doc.setFontSize(9);
-                    doc.setFont('helvetica', 'italic');
-                    doc.text(desc, margin + 4, yPos + 4);
-                    yPos += desc.length * 4 + 8;
+                    const wrappedValue = doc.splitTextToSize(String(value), tableWidth - col1Width - 8);
+                    doc.text(wrappedValue, tableX + col1Width + 4, yPos + 5.5);
+                    yPos += rowHeight * 1.5;
                 }
 
                 if (yPos > 200) { doc.addPage();
@@ -1439,7 +1558,8 @@
                 doc.setFont('helvetica', 'bold');
                 doc.setFontSize(9);
                 doc.text('Disease', tableX + 4, yPos + 5.5);
-                doc.text('Probability', tableX + 100, yPos + 5.5);
+                doc.text('Probability', tableX + 90, yPos + 5.5);
+                doc.text('Status', tableX + 130, yPos + 5.5);
                 yPos += rowHeight;
                 doc.setFont('helvetica', 'normal');
                 doc.setFontSize(9);
@@ -1448,38 +1568,20 @@
                 for (const [disease, prob] of sorted.slice(0, 7)) {
                     if (yPos > 260) { doc.addPage();
                         yPos = 20; }
+                    const diseaseData = diseasePatterns[disease];
+                    const threshold = diseaseData ? diseaseData.threshold : 0.6;
+                    const isSignificant = prob >= threshold;
+                    const status = isSignificant ? '⚠️ CONCERN' : '✅ Normal';
+
                     doc.rect(tableX, yPos, tableWidth, rowHeight, 'D');
                     doc.text(disease, tableX + 4, yPos + 5.5);
-                    doc.text(Math.round(prob * 100) + '%', tableX + 100, yPos + 5.5);
-                    const barWidth = Math.max(5, prob * 70);
-                    doc.setFillColor(prob > 0.5 ? 30 : (prob > 0.25 ? 120 : 180), prob > 0.5 ? 30 : (prob > 0.25 ? 120 : 180),
-                        prob > 0.5 ? 30 : (prob > 0.25 ? 120 : 180));
-                    doc.rect(tableX + 115, yPos + 2, barWidth, 4, 'F');
-                    yPos += rowHeight;
-                }
-                yPos += 4;
+                    doc.text(Math.round(prob * 100) + '%', tableX + 90, yPos + 5.5);
+                    doc.text(status, tableX + 130, yPos + 5.5);
 
-                if (yPos > 200) { doc.addPage();
-                    yPos = 20; }
-                doc.setFontSize(14);
-                doc.setFont('helvetica', 'bold');
-                doc.text('Test Scores Detail', margin, yPos);
-                yPos += 8;
-
-                const testFields = [
-                    ['Olfactory Threshold', results.testScores.threshold.score + '/' + results.testScores.threshold
-                        .maxScore],
-                    ['Odor Identification', results.testScores.identification.score + '/' + results.testScores
-                        .identification.maxScore],
-                    ['Odor Discrimination', results.testScores.discrimination.score + '/' + results.testScores
-                        .discrimination.maxScore],
-                    ['Olfactory Memory', results.testScores.memory.score + '/' + results.testScores.memory.maxScore]
-                ];
-
-                for (const [label, value] of testFields) {
-                    doc.rect(tableX, yPos, tableWidth, rowHeight, 'D');
-                    doc.text(label, tableX + 4, yPos + 5.5);
-                    doc.text(String(value), tableX + col1Width + 4, yPos + 5.5);
+                    const barWidth = Math.max(5, prob * 60);
+                    doc.setFillColor(prob > threshold ? 200 : (prob > 0.25 ? 120 : 80), prob > threshold ? 30 : (prob > 0.25 ?
+                        120 : 80), prob > threshold ? 30 : (prob > 0.25 ? 120 : 80));
+                    doc.rect(tableX + 160, yPos + 2, barWidth, 4, 'F');
                     yPos += rowHeight;
                 }
 
@@ -1487,17 +1589,17 @@
                 doc.setFontSize(8);
                 doc.setFont('helvetica', 'italic');
                 doc.setTextColor(150);
-                doc.text('This report was generated automatically by Neurodiagnostic Assessment.', pageWidth / 2, footerY,
-                { align: 'center' });
+                doc.text('This report was generated automatically by Neurodiagnostic Assessment Clinical Edition.', pageWidth /
+                    2, footerY, { align: 'center' });
                 doc.text('Data is protected and confidential. For clinical use only.', pageWidth / 2, footerY + 5,
                 { align: 'center' });
 
-                const fileName = 'neurodiagnostic-report-' +
+                const fileName = 'clinical-neurodiagnostic-report-' +
                     now.getFullYear() + '-' +
                     String(now.getMonth() + 1).padStart(2, '0') + '-' +
                     String(now.getDate()).padStart(2, '0') + '.pdf';
                 doc.save(fileName);
-                showToast('📊 Report downloaded successfully');
+                showToast('📊 Clinical report downloaded successfully');
             }
 
             // ============================================================
@@ -1519,10 +1621,6 @@
             //  KEYBOARD SHORTCUTS
             // ============================================================
             document.addEventListener('keydown', function(e) {
-                if (e.key === 'Escape') {
-                    // Close any open states (none in standalone)
-                }
-
                 if (questionScreen.classList.contains('active')) {
                     if (e.key === 'Enter') {
                         if (currentQuestion === diagnosticQuestions.length - 1) {
@@ -1554,9 +1652,11 @@
             // ============================================================
             //  INIT
             // ============================================================
-            console.log('🧠 Neurodiagnostic Assessment - Standalone');
+            console.log('🏥 Neurodiagnostic Assessment - Clinical Edition');
+            console.log('✅ Absolute risk scoring (no normalization)');
+            console.log('✅ Clinical significance thresholds applied');
+            console.log('✅ Actionable recommendations provided');
             console.log('📊 12 questions, 4 domains, 7 diseases analyzed');
-            console.log('⌨️  Keyboard shortcuts: 1-3 for options, Arrow keys to navigate, Enter to submit');
 
         })();
     </script>

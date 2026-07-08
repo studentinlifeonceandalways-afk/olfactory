@@ -2,12 +2,12 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Neurodiagnostic Assessment - Clinical Edition</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <style>
         /* ============================================
-                   RESET & BASE
+                   RESET & BASE - FULL SCREEN
                 ============================================ */
         * {
             margin: 0;
@@ -18,52 +18,54 @@
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
             background: #0a0a0a;
+            min-height: 100vh;
             display: flex;
             justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-            padding: 20px;
+            align-items: flex-start;
+            padding: 0;
         }
 
         /* ============================================
-                   MAIN CONTAINER
+                   MAIN CONTAINER - FULL SCREEN
                 ============================================ */
         .app-container {
             width: 100%;
-            max-width: 480px;
+            max-width: 1400px;
+            min-height: 100vh;
             background: #ffffff;
-            border-radius: 24px;
             padding: 0;
-            box-shadow: 0 30px 80px rgba(0, 0, 0, 0.8);
+            box-shadow: none;
             overflow: hidden;
             position: relative;
-            min-height: 600px;
+            display: flex;
+            flex-direction: column;
         }
 
         /* ============================================
-                   HEADER
+                   HEADER - FULL WIDTH
                 ============================================ */
         .header {
             background: #1a1a1a;
-            padding: 24px 24px 20px 24px;
+            padding: 32px 48px;
             text-align: center;
+            width: 100%;
         }
 
         .header .icon {
-            font-size: 40px;
+            font-size: 48px;
             display: block;
             margin-bottom: 8px;
         }
 
         .header h1 {
-            font-size: 22px;
+            font-size: 32px;
             font-weight: 700;
             color: #ffffff;
             letter-spacing: -0.5px;
         }
 
         .header p {
-            font-size: 13px;
+            font-size: 16px;
             color: #888;
             margin-top: 4px;
             font-weight: 400;
@@ -74,68 +76,77 @@
             margin-top: 10px;
             background: rgba(255, 255, 255, 0.08);
             border: 1px solid rgba(255, 255, 255, 0.06);
-            padding: 4px 16px;
+            padding: 6px 20px;
             border-radius: 20px;
-            font-size: 10px;
+            font-size: 12px;
             color: #666;
             letter-spacing: 0.5px;
             text-transform: uppercase;
         }
 
         /* ============================================
-                   CONTENT AREA
+                   CONTENT AREA - FULL WIDTH
                 ============================================ */
         .content {
-            padding: 24px;
+            padding: 40px 48px;
+            flex: 1;
             min-height: 400px;
+            max-width: 1200px;
+            margin: 0 auto;
+            width: 100%;
         }
 
         /* ============================================
-                   START SCREEN
+                   START SCREEN - FULL WIDTH
                 ============================================ */
         .start-screen {
             text-align: center;
-            padding: 20px 0;
+            padding: 40px 0;
+            max-width: 800px;
+            margin: 0 auto;
         }
 
         .start-screen .assessment-icon {
-            font-size: 64px;
+            font-size: 80px;
             display: block;
-            margin-bottom: 16px;
+            margin-bottom: 20px;
         }
 
         .start-screen h2 {
-            font-size: 20px;
+            font-size: 28px;
             font-weight: 700;
             color: #1a1a1a;
-            margin-bottom: 8px;
+            margin-bottom: 12px;
         }
 
         .start-screen p {
-            font-size: 14px;
+            font-size: 16px;
             color: #666;
-            line-height: 1.6;
-            max-width: 360px;
-            margin: 0 auto 20px;
+            line-height: 1.8;
+            max-width: 600px;
+            margin: 0 auto 32px;
         }
 
         .start-screen .info-grid {
             display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 12px;
-            margin-bottom: 24px;
-            text-align: left;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 16px;
+            margin-bottom: 32px;
+            max-width: 700px;
+            margin-left: auto;
+            margin-right: auto;
         }
 
         .start-screen .info-card {
             background: #f5f5f5;
             border-radius: 12px;
-            padding: 14px 16px;
+            padding: 20px 24px;
             border: 1px solid #e8e8e8;
+            text-align: center;
         }
 
         .start-screen .info-card .label {
-            font-size: 10px;
+            font-size: 11px;
             color: #888;
             text-transform: uppercase;
             letter-spacing: 0.5px;
@@ -143,27 +154,28 @@
         }
 
         .start-screen .info-card .value {
-            font-size: 14px;
+            font-size: 20px;
             font-weight: 700;
             color: #1a1a1a;
-            margin-top: 2px;
+            margin-top: 4px;
         }
 
         .btn-primary {
             width: 100%;
-            padding: 16px;
+            max-width: 400px;
+            padding: 18px 40px;
             border: none;
             border-radius: 12px;
-            font-size: 16px;
+            font-size: 18px;
             font-weight: 700;
             cursor: pointer;
             transition: all 0.3s ease;
             background: #1a1a1a;
             color: #ffffff;
-            display: flex;
+            display: inline-flex;
             align-items: center;
             justify-content: center;
-            gap: 10px;
+            gap: 12px;
         }
 
         .btn-primary:hover {
@@ -182,10 +194,12 @@
         }
 
         /* ============================================
-                   QUESTION SCREEN
+                   QUESTION SCREEN - FULL WIDTH
                 ============================================ */
         .question-screen {
             display: none;
+            max-width: 800px;
+            margin: 0 auto;
         }
 
         .question-screen.active {
@@ -193,12 +207,12 @@
         }
 
         .progress-section {
-            margin-bottom: 24px;
+            margin-bottom: 32px;
         }
 
         .progress-bar-container {
             width: 100%;
-            height: 4px;
+            height: 6px;
             background: #e8e8e8;
             border-radius: 4px;
             overflow: hidden;
@@ -215,60 +229,60 @@
         .progress-text {
             display: flex;
             justify-content: space-between;
-            margin-top: 8px;
-            font-size: 12px;
+            margin-top: 10px;
+            font-size: 14px;
             color: #888;
             font-weight: 500;
         }
 
         .progress-text .domain-tag {
             background: #f0f0f0;
-            padding: 2px 12px;
-            border-radius: 12px;
-            font-size: 10px;
+            padding: 4px 16px;
+            border-radius: 16px;
+            font-size: 12px;
             font-weight: 600;
             color: #666;
             text-transform: uppercase;
         }
 
         .question-number {
-            font-size: 12px;
+            font-size: 14px;
             color: #888;
             font-weight: 600;
             text-transform: uppercase;
             letter-spacing: 0.5px;
-            margin-bottom: 6px;
+            margin-bottom: 8px;
         }
 
         .question-text {
-            font-size: 18px;
+            font-size: 24px;
             font-weight: 700;
             color: #1a1a1a;
-            margin-bottom: 20px;
+            margin-bottom: 28px;
             line-height: 1.5;
         }
 
         .options-container {
             display: flex;
             flex-direction: column;
-            gap: 10px;
-            margin-bottom: 24px;
+            gap: 12px;
+            margin-bottom: 28px;
         }
 
         .option-btn {
-            padding: 14px 18px;
+            padding: 16px 24px;
             border: 2px solid #e0e0e0;
             border-radius: 12px;
             background: #ffffff;
             color: #1a1a1a;
-            font-size: 15px;
+            font-size: 16px;
             font-weight: 500;
             cursor: pointer;
             transition: all 0.3s ease;
             text-align: left;
             display: flex;
             align-items: center;
-            gap: 12px;
+            gap: 16px;
         }
 
         .option-btn:hover {
@@ -288,15 +302,15 @@
         }
 
         .option-btn .option-letter {
-            width: 28px;
-            height: 28px;
+            width: 36px;
+            height: 36px;
             border-radius: 50%;
             background: #f0f0f0;
             display: flex;
             align-items: center;
             justify-content: center;
             font-weight: 700;
-            font-size: 13px;
+            font-size: 16px;
             color: #666;
             flex-shrink: 0;
             transition: all 0.3s ease;
@@ -309,24 +323,26 @@
 
         .option-btn .option-text {
             flex: 1;
+            font-size: 16px;
         }
 
         .nav-buttons {
             display: flex;
-            gap: 10px;
+            gap: 12px;
+            justify-content: center;
         }
 
         .nav-buttons .btn-prev {
-            flex: 1;
-            padding: 12px;
+            padding: 14px 32px;
             border: 2px solid #e0e0e0;
             border-radius: 10px;
             background: #ffffff;
             color: #666;
-            font-size: 14px;
+            font-size: 15px;
             font-weight: 600;
             cursor: pointer;
             transition: all 0.2s ease;
+            min-width: 120px;
         }
 
         .nav-buttons .btn-prev:hover {
@@ -336,16 +352,16 @@
 
         .nav-buttons .btn-next,
         .nav-buttons .btn-submit {
-            flex: 2;
-            padding: 12px;
+            padding: 14px 40px;
             border: none;
             border-radius: 10px;
             background: #1a1a1a;
             color: #ffffff;
-            font-size: 14px;
+            font-size: 15px;
             font-weight: 600;
             cursor: pointer;
             transition: all 0.2s ease;
+            min-width: 160px;
         }
 
         .nav-buttons .btn-next:hover,
@@ -360,11 +376,13 @@
         }
 
         /* ============================================
-                   RESULTS SCREEN - CLINICAL EDITION
+                   RESULTS SCREEN - FULL WIDTH
                 ============================================ */
         .results-screen {
             display: none;
             animation: slideUp 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            max-width: 1000px;
+            margin: 0 auto;
         }
 
         .results-screen.active {
@@ -378,34 +396,34 @@
 
         .result-summary {
             text-align: center;
-            padding: 10px 0 20px 0;
+            padding: 20px 0 30px 0;
         }
 
         .result-summary .result-icon {
-            font-size: 56px;
+            font-size: 72px;
             display: block;
-            margin-bottom: 8px;
+            margin-bottom: 12px;
         }
 
         .result-summary .result-title {
-            font-size: 22px;
+            font-size: 28px;
             font-weight: 700;
             color: #1a1a1a;
-            margin-bottom: 4px;
+            margin-bottom: 6px;
         }
 
         .result-summary .result-subtitle {
-            font-size: 14px;
+            font-size: 16px;
             color: #666;
         }
 
         .result-risk-indicator {
-            padding: 14px;
+            padding: 20px;
             border-radius: 12px;
-            margin: 12px 0 16px 0;
+            margin: 16px 0 20px 0;
             text-align: center;
             font-weight: 600;
-            font-size: 14px;
+            font-size: 16px;
             border: 2px solid #333;
         }
 
@@ -439,76 +457,90 @@
             border-color: #b71c1c;
         }
 
-        /* Clinical Significance Badge */
-        .clinical-badge {
-            display: inline-block;
-            padding: 4px 14px;
-            border-radius: 20px;
-            font-size: 11px;
-            font-weight: 600;
-            margin: 4px 0 12px 0;
+        .clinical-summary {
+            background: #f5f5f5;
+            border-radius: 10px;
+            padding: 20px 24px;
+            margin: 16px 0;
+            border-left: 4px solid #2e7d32;
         }
 
-        .clinical-badge.significant {
-            background: #ffebee;
-            color: #c62828;
-            border: 1px solid #c62828;
+        .clinical-summary.warning {
+            border-left-color: #c62828;
         }
 
-        .clinical-badge.not-significant {
-            background: #e8f5e9;
-            color: #2e7d32;
-            border: 1px solid #2e7d32;
+        .clinical-summary .summary-title {
+            font-size: 16px;
+            font-weight: 700;
+            color: #1a1a1a;
         }
 
-        .clinical-badge.borderline {
-            background: #fff3e0;
-            color: #e65100;
-            border: 1px solid #e65100;
+        .clinical-summary .summary-text {
+            font-size: 14px;
+            color: #555;
+            margin-top: 6px;
+            line-height: 1.6;
         }
 
         .disease-list {
-            margin: 12px 0;
+            margin: 16px 0;
         }
 
         .disease-list .disease-title {
-            font-size: 11px;
+            font-size: 13px;
             font-weight: 600;
             color: #666;
-            margin-bottom: 8px;
+            margin-bottom: 12px;
             text-transform: uppercase;
             letter-spacing: 0.5px;
+        }
+
+        .disease-list .disease-subtitle {
+            font-size: 12px;
+            color: #888;
+            margin-bottom: 12px;
         }
 
         .disease-item {
             display: flex;
             align-items: center;
             justify-content: space-between;
-            padding: 6px 0;
+            padding: 10px 0;
             border-bottom: 1px solid #f0f0f0;
+            gap: 16px;
+            flex-wrap: wrap;
         }
 
         .disease-item .disease-name {
-            font-size: 13px;
+            font-size: 15px;
             font-weight: 500;
             color: #1a1a1a;
             display: flex;
             align-items: center;
-            gap: 6px;
+            gap: 8px;
+            min-width: 180px;
+        }
+
+        .disease-item .disease-bar-container {
+            flex: 1;
+            min-width: 150px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
         }
 
         .disease-item .disease-bar {
             flex: 1;
-            margin: 0 10px;
-            height: 6px;
+            height: 10px;
             background: #e8e8e8;
-            border-radius: 4px;
+            border-radius: 6px;
             overflow: hidden;
+            min-width: 80px;
         }
 
         .disease-item .disease-bar .bar-fill {
             height: 100%;
-            border-radius: 4px;
+            border-radius: 6px;
             transition: width 0.8s ease;
         }
 
@@ -521,83 +553,145 @@
         }
 
         .disease-item .disease-bar .bar-fill.low {
-            background: #888;
+            background: #4caf50;
+        }
+
+        .disease-item .disease-bar .bar-fill.very-low {
+            background: #66bb6a;
         }
 
         .disease-item .disease-prob {
-            font-size: 13px;
+            font-size: 15px;
             font-weight: 700;
             color: #1a1a1a;
-            min-width: 45px;
+            min-width: 50px;
             text-align: right;
         }
 
         .disease-item .disease-status {
-            font-size: 10px;
+            font-size: 12px;
             font-weight: 600;
-            padding: 2px 8px;
-            border-radius: 12px;
-            min-width: 60px;
+            padding: 4px 14px;
+            border-radius: 16px;
+            min-width: 120px;
             text-align: center;
         }
 
         .disease-status.positive {
             background: #ffebee;
             color: #c62828;
+            border: 1px solid #c62828;
         }
 
         .disease-status.negative {
             background: #e8f5e9;
             color: #2e7d32;
+            border: 1px solid #2e7d32;
         }
 
         .disease-status.borderline {
             background: #fff3e0;
             color: #e65100;
+            border: 1px solid #e65100;
         }
 
-        .primary-concern {
-            margin: 12px 0 16px 0;
-            padding: 14px;
-            background: #f0f0f0;
-            border-radius: 10px;
-            border: 1px solid #ddd;
+        .disease-status.well-below {
+            background: #e8f5e9;
+            color: #1b5e20;
+            border: 1px solid #4caf50;
         }
 
-        .primary-concern .concern-title {
+        .threshold-marker {
+            font-size: 10px;
+            color: #999;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            padding: 2px 8px;
+            background: #f5f5f5;
+            border-radius: 8px;
+            white-space: nowrap;
+        }
+
+        .threshold-marker .marker-line {
+            width: 24px;
+            height: 2px;
+            background: #ff6f00;
+            position: relative;
+        }
+
+        .threshold-marker .marker-line::after {
+            content: '▼';
+            position: absolute;
+            top: -7px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 8px;
+            color: #ff6f00;
+        }
+
+        .threshold-legend {
+            display: flex;
+            align-items: center;
+            gap: 20px;
             font-size: 12px;
-            font-weight: 700;
-            color: #1a1a1a;
+            color: #666;
+            padding: 12px 0;
+            border-top: 1px solid #eee;
+            margin-top: 8px;
+            flex-wrap: wrap;
         }
 
-        .primary-concern .concern-detail {
-            font-size: 11px;
-            color: #666;
-            margin-top: 4px;
+        .threshold-legend .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .threshold-legend .legend-color {
+            width: 16px;
+            height: 16px;
+            border-radius: 4px;
+        }
+
+        .threshold-legend .legend-color.green {
+            background: #4caf50;
+        }
+
+        .threshold-legend .legend-color.orange {
+            background: #e65100;
+        }
+
+        .threshold-legend .legend-color.red {
+            background: #c62828;
         }
 
         .result-details {
             background: #f5f5f5;
             border-radius: 10px;
-            padding: 14px;
+            padding: 20px 24px;
             border: 1px solid #e0e0e0;
-            margin: 12px 0;
+            margin: 16px 0;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px 32px;
         }
 
         .detail-row {
             display: flex;
             justify-content: space-between;
-            padding: 4px 0;
-            font-size: 12px;
+            padding: 6px 0;
+            font-size: 14px;
             border-bottom: 1px solid #e8e8e8;
         }
 
         .detail-row:last-child {
             border-bottom: none;
             border-top: 2px solid #ddd;
-            padding-top: 6px;
+            padding-top: 10px;
             margin-top: 4px;
             font-weight: 700;
+            grid-column: span 2;
         }
 
         .detail-row .detail-label {
@@ -611,25 +705,25 @@
 
         .result-actions {
             display: flex;
-            gap: 10px;
-            margin-top: 16px;
+            gap: 12px;
+            margin-top: 20px;
+            justify-content: center;
+            flex-wrap: wrap;
         }
 
         .result-actions .btn-download {
-            flex: 2;
-            padding: 14px;
+            padding: 14px 40px;
             border: none;
             border-radius: 10px;
             background: #1a1a1a;
             color: #ffffff;
-            font-size: 14px;
+            font-size: 15px;
             font-weight: 700;
             cursor: pointer;
             transition: all 0.3s ease;
             display: flex;
             align-items: center;
-            justify-content: center;
-            gap: 8px;
+            gap: 10px;
         }
 
         .result-actions .btn-download:hover {
@@ -638,13 +732,12 @@
         }
 
         .result-actions .btn-retake {
-            flex: 1;
-            padding: 14px;
+            padding: 14px 32px;
             border: 2px solid #e0e0e0;
             border-radius: 10px;
             background: #ffffff;
             color: #666;
-            font-size: 14px;
+            font-size: 15px;
             font-weight: 600;
             cursor: pointer;
             transition: all 0.2s ease;
@@ -656,40 +749,15 @@
         }
 
         .result-disclaimer {
-            margin-top: 14px;
-            padding: 10px 14px;
+            margin-top: 20px;
+            padding: 14px 20px;
             background: #fafafa;
             border-radius: 8px;
-            font-size: 10px;
+            font-size: 12px;
             color: #999;
             text-align: center;
             border: 1px solid #eee;
-            line-height: 1.5;
-        }
-
-        .clinical-summary {
-            background: #f5f5f5;
-            border-radius: 10px;
-            padding: 14px;
-            margin: 12px 0;
-            border-left: 4px solid #2e7d32;
-        }
-
-        .clinical-summary.warning {
-            border-left-color: #c62828;
-        }
-
-        .clinical-summary .summary-title {
-            font-size: 13px;
-            font-weight: 700;
-            color: #1a1a1a;
-        }
-
-        .clinical-summary .summary-text {
-            font-size: 12px;
-            color: #555;
-            margin-top: 4px;
-            line-height: 1.5;
+            line-height: 1.6;
         }
 
         /* ============================================
@@ -702,13 +770,13 @@
             transform: translateX(-50%);
             background: #1a1a1a;
             color: #ffffff;
-            padding: 12px 24px;
+            padding: 14px 32px;
             border-radius: 12px;
-            font-size: 13px;
+            font-size: 15px;
             font-weight: 500;
             z-index: 999;
             box-shadow: 0 8px 30px rgba(0, 0, 0, 0.4);
-            max-width: 420px;
+            max-width: 600px;
             width: 90%;
             text-align: center;
             opacity: 0;
@@ -725,63 +793,133 @@
         /* ============================================
                    RESPONSIVE
                 ============================================ */
-        @media (max-width: 400px) {
+        @media (max-width: 1024px) {
+            .content {
+                padding: 32px 24px;
+            }
+            .header {
+                padding: 24px 24px;
+            }
             .header h1 {
-                font-size: 18px;
-            }
-            .question-text {
-                font-size: 16px;
-            }
-            .option-btn {
-                font-size: 14px;
-                padding: 12px 14px;
+                font-size: 28px;
             }
             .start-screen .info-grid {
+                grid-template-columns: repeat(2, 1fr);
+                max-width: 500px;
+            }
+            .result-details {
                 grid-template-columns: 1fr;
             }
-            .result-actions {
-                flex-direction: column;
-            }
-            .start-screen .assessment-icon {
-                font-size: 48px;
-            }
-            .result-summary .result-icon {
-                font-size: 42px;
-            }
-            .result-summary .result-title {
-                font-size: 18px;
-            }
-            .disease-item {
-                flex-wrap: wrap;
-                gap: 4px;
-            }
-            .disease-item .disease-status {
-                min-width: 50px;
-                font-size: 9px;
+            .detail-row:last-child {
+                grid-column: span 1;
             }
         }
 
-        @media (max-height: 700px) {
-            .content {
-                padding: 16px;
-            }
-            .header {
-                padding: 16px 20px 14px 20px;
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 22px;
             }
             .header .icon {
-                font-size: 30px;
-                margin-bottom: 4px;
+                font-size: 36px;
+            }
+            .content {
+                padding: 24px 16px;
+            }
+            .question-text {
+                font-size: 20px;
+            }
+            .option-btn {
+                padding: 14px 18px;
+                font-size: 15px;
+            }
+            .option-btn .option-letter {
+                width: 32px;
+                height: 32px;
+                font-size: 14px;
+            }
+            .start-screen .info-grid {
+                grid-template-columns: 1fr 1fr;
+                gap: 12px;
+            }
+            .start-screen .info-card {
+                padding: 14px 16px;
+            }
+            .start-screen .info-card .value {
+                font-size: 18px;
+            }
+            .disease-item {
+                gap: 10px;
+            }
+            .disease-item .disease-name {
+                min-width: 120px;
+                font-size: 14px;
+            }
+            .disease-item .disease-status {
+                min-width: 80px;
+                font-size: 11px;
+                padding: 3px 10px;
+            }
+            .disease-item .disease-bar-container {
+                min-width: 100px;
+            }
+            .result-details {
+                padding: 16px;
+                grid-template-columns: 1fr;
+            }
+            .detail-row:last-child {
+                grid-column: span 1;
+            }
+            .result-actions {
+                flex-direction: column;
+                align-items: center;
+            }
+            .result-actions .btn-download,
+            .result-actions .btn-retake {
+                width: 100%;
+                max-width: 300px;
+                justify-content: center;
+            }
+            .threshold-legend {
+                gap: 12px;
+                font-size: 11px;
+            }
+            .nav-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+            .nav-buttons .btn-prev,
+            .nav-buttons .btn-next,
+            .nav-buttons .btn-submit {
+                width: 100%;
+                max-width: 300px;
+                justify-content: center;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .header {
+                padding: 16px;
             }
             .header h1 {
                 font-size: 18px;
             }
-            .question-text {
-                font-size: 16px;
-                margin-bottom: 14px;
+            .header .icon {
+                font-size: 28px;
             }
-            .option-btn {
-                padding: 10px 14px;
+            .header p {
                 font-size: 13px;
+            }
+            .content {
+                padding: 16px 12px;
+            }
+            .start-screen .assessment-icon {
+                font-size: 56px;
+            }
+            .start-screen h2 {
+                font-size: 22px;
+            }
+            .start-screen p {
+                font-size: 14px;
             }
             .start-screen .info-grid {
                 grid-template-columns: 1fr 1fr;
@@ -790,8 +928,95 @@
             .start-screen .info-card {
                 padding: 10px 12px;
             }
-            .progress-section {
-                margin-bottom: 16px;
+            .start-screen .info-card .value {
+                font-size: 16px;
+            }
+            .question-text {
+                font-size: 18px;
+                margin-bottom: 20px;
+            }
+            .option-btn {
+                padding: 12px 14px;
+                font-size: 14px;
+            }
+            .option-btn .option-letter {
+                width: 28px;
+                height: 28px;
+                font-size: 13px;
+            }
+            .disease-item {
+                flex-wrap: wrap;
+                gap: 6px;
+                padding: 8px 0;
+            }
+            .disease-item .disease-name {
+                min-width: 100%;
+                font-size: 13px;
+            }
+            .disease-item .disease-bar-container {
+                min-width: 60%;
+                flex: 2;
+            }
+            .disease-item .disease-prob {
+                min-width: 40px;
+                font-size: 13px;
+            }
+            .disease-item .disease-status {
+                min-width: 60px;
+                font-size: 10px;
+                padding: 2px 8px;
+            }
+            .result-summary .result-icon {
+                font-size: 52px;
+            }
+            .result-summary .result-title {
+                font-size: 22px;
+            }
+            .result-risk-indicator {
+                font-size: 14px;
+                padding: 14px;
+            }
+            .clinical-summary {
+                padding: 14px 16px;
+            }
+            .clinical-summary .summary-title {
+                font-size: 14px;
+            }
+            .clinical-summary .summary-text {
+                font-size: 13px;
+            }
+            .result-details {
+                padding: 12px 14px;
+            }
+            .detail-row {
+                font-size: 13px;
+            }
+            .threshold-legend {
+                font-size: 10px;
+                gap: 8px;
+            }
+            .threshold-marker {
+                font-size: 9px;
+                padding: 1px 6px;
+            }
+            .threshold-marker .marker-line {
+                width: 16px;
+            }
+            .result-actions .btn-download,
+            .result-actions .btn-retake {
+                font-size: 14px;
+                padding: 12px 20px;
+            }
+            .btn-primary {
+                font-size: 16px;
+                padding: 14px 24px;
+                max-width: 100%;
+            }
+            .toast {
+                font-size: 13px;
+                padding: 10px 16px;
+                width: 95%;
+                bottom: 16px;
             }
         }
     </style>
@@ -804,7 +1029,7 @@
     <div id="toast" class="toast"></div>
 
     <!-- ============================================
-    MAIN APP CONTAINER
+    MAIN APP CONTAINER - FULL SCREEN
     ============================================ -->
     <div class="app-container">
 
@@ -835,7 +1060,7 @@
                     </div>
                     <div class="info-card">
                         <div class="label">Time</div>
-                        <div class="value">~3 minutes</div>
+                        <div class="value">~3 min</div>
                     </div>
                     <div class="info-card">
                         <div class="label">Domains</div>
@@ -888,12 +1113,8 @@
 
     <script>
         // ============================================================
-        //  NEURODIAGNOSTIC ASSESSMENT — CLINICAL EDITION
-        //  FEATURES:
-        //  1. Absolute risk scoring (not normalized)
-        //  2. Clinical significance thresholds
-        //  3. Actionable recommendations
-        //  4. Clear positive/negative disease indicators
+        //  NEURODIAGNOSTIC ASSESSMENT — CLINICAL EDITION (FULL SCREEN)
+        //  FIXED PDF REPORT - CLEAN TEXT, NO HTML TAGS, PROPER FORMATTING
         // ============================================================
 
         (function() {
@@ -911,7 +1132,7 @@
                         discrimination: { low: 0.2, moderate: 0.4, high: 0.6 },
                         memory: { low: 0.1, moderate: 0.3, high: 0.5 }
                     },
-                    threshold: 0.65,  // Clinical significance threshold
+                    threshold: 0.65,
                     earlySigns: ['Olfactory impairment precedes cognitive symptoms by 2-10 years'],
                     icon: '🧠',
                     recommendations: 'Neurological consultation recommended'
@@ -1192,11 +1413,7 @@
             }
 
             // ============================================================
-            //  CALCULATE RESULTS — CLINICAL EDITION
-            //  Features:
-            //  1. Absolute risk scoring (no normalization)
-            //  2. Clinical significance thresholds
-            //  3. Actionable recommendations
+            //  CALCULATE RESULTS
             // ============================================================
             function calculateResults() {
                 if (answers.some(a => a === null)) {
@@ -1204,7 +1421,6 @@
                     return;
                 }
 
-                // Calculate test scores
                 const testScores = {
                     threshold: { score: 0, maxScore: 9, answers: [] },
                     identification: { score: 0, maxScore: 9, answers: [] },
@@ -1226,19 +1442,16 @@
                 const discriminationScore = testScores.discrimination.score / testScores.discrimination.maxScore;
                 const memoryScore = testScores.memory.score / testScores.memory.maxScore;
 
-                // Calculate ABSOLUTE disease probabilities (no normalization)
                 const probabilities = {};
 
                 for (const [disease, data] of Object.entries(diseasePatterns)) {
                     const profile = data.olfactoryProfile;
 
-                    // Calculate how different the user is from the disease profile
                     const thresholdDiff = Math.abs(thresholdScore - profile.threshold.moderate);
                     const identificationDiff = Math.abs(identificationScore - profile.identification.moderate);
                     const discriminationDiff = Math.abs(discriminationScore - profile.discrimination.moderate);
                     const memoryDiff = Math.abs(memoryScore - profile.memory.moderate);
 
-                    // Convert difference to probability (lower difference = higher probability)
                     const thresholdMatch = 1 - Math.min(thresholdDiff, 1);
                     const identificationMatch = 1 - Math.min(identificationDiff, 1);
                     const discriminationMatch = 1 - Math.min(discriminationDiff, 1);
@@ -1249,7 +1462,6 @@
                         (discriminationMatch * 0.20) +
                         (memoryMatch * 0.15);
 
-                    // Disease-specific adjustments only when user scores match disease pattern
                     if (thresholdScore < 0.4 && memoryScore < 0.3 &&
                         disease === 'Alzheimer\'s Disease') {
                         probability = Math.min(1, probability * 1.3);
@@ -1263,14 +1475,11 @@
                         probability = Math.min(1, probability * 1.4);
                     }
 
-                    // ABSOLUTE probability (0-1 scale) - no normalization
                     probabilities[disease] = Math.min(1, Math.max(0, probability));
                 }
 
-                // Sort diseases by probability (highest first)
                 const sorted = Object.entries(probabilities).sort((a, b) => b[1] - a[1]);
 
-                // Calculate overall risk score (inverted: higher score = lower risk)
                 const totalScore = testScores.threshold.score + testScores.identification.score +
                     testScores.discrimination.score + testScores.memory.score;
                 const maxTotalScore = testScores.threshold.maxScore + testScores.identification.maxScore +
@@ -1279,7 +1488,6 @@
                 const rawPercentage = (totalScore / maxTotalScore) * 100;
                 const riskScore = 100 - rawPercentage;
 
-                // Risk classification based on absolute risk score
                 let riskLevel, riskClass, riskDescription;
                 if (riskScore >= 70) {
                     riskLevel = 'Very High';
@@ -1323,16 +1531,14 @@
             }
 
             // ============================================================
-            //  SHOW RESULTS — CLINICAL EDITION
+            //  SHOW RESULTS
             // ============================================================
             function showResults() {
                 if (!results) return;
 
                 const r = results;
                 const risk = r.overallRisk;
-                const sorted = r.sortedDiseases;
 
-                // Determine icon and title
                 let icon, title, subtitle;
                 if (risk.level === 'Very High') {
                     icon = '🚨';
@@ -1356,31 +1562,49 @@
                     subtitle = 'Normal olfactory function detected';
                 }
 
-                // Build disease list with clinical significance
                 let diseaseHtml = '';
                 let hasSignificantDisease = false;
                 let significantDisease = null;
 
-                sorted.slice(0, 7).forEach(([disease, prob]) => {
+                r.sortedDiseases.slice(0, 7).forEach(([disease, prob]) => {
                     const probPercent = Math.round(prob * 100);
-                    const probClass = prob > 0.5 ? 'high' : (prob > 0.25 ? 'medium' : 'low');
                     const diseaseData = diseasePatterns[disease];
-                    const threshold = diseaseData.threshold || 0.6;
-                    const isSignificant = prob >= threshold;
+                    const threshold = diseaseData ? diseaseData.threshold : 0.6;
 
-                    if (isSignificant) {
+                    let statusClass, statusText, barClass;
+                    const distanceFromThreshold = threshold - prob;
+
+                    if (prob >= threshold) {
+                        statusClass = 'positive';
+                        statusText = '⚠️ Clinical Concern';
+                        barClass = 'high';
                         hasSignificantDisease = true;
                         significantDisease = disease;
+                    } else if (distanceFromThreshold > 0.20) {
+                        statusClass = 'well-below';
+                        statusText = '✅ Well Below Threshold';
+                        barClass = 'very-low';
+                    } else if (distanceFromThreshold > 0.10) {
+                        statusClass = 'negative';
+                        statusText = '✅ Below Threshold';
+                        barClass = 'low';
+                    } else {
+                        statusClass = 'borderline';
+                        statusText = '⚠️ Near Threshold';
+                        barClass = 'medium';
                     }
-
-                    const statusClass = isSignificant ? 'positive' : 'negative';
-                    const statusText = isSignificant ? '⚠️ Concern' : '✅ Normal';
 
                     diseaseHtml += `
                         <div class="disease-item">
                             <span class="disease-name">${diseaseData ? diseaseData.icon : '🧬'} ${disease}</span>
-                            <div class="disease-bar">
-                                <div class="bar-fill ${probClass}" style="width:${Math.max(5, prob * 100)}%;"></div>
+                            <div class="disease-bar-container">
+                                <div class="disease-bar">
+                                    <div class="bar-fill ${barClass}" style="width:${Math.max(5, prob * 100)}%;"></div>
+                                </div>
+                                <span class="threshold-marker" title="Clinical threshold: ${Math.round(threshold * 100)}%">
+                                    <span class="marker-line"></span>
+                                    ${Math.round(threshold * 100)}%
+                                </span>
                             </div>
                             <span class="disease-prob">${probPercent}%</span>
                             <span class="disease-status ${statusClass}">${statusText}</span>
@@ -1388,7 +1612,6 @@
                     `;
                 });
 
-                // Clinical summary
                 let summaryHtml = '';
                 if (hasSignificantDisease) {
                     const diseaseData = diseasePatterns[significantDisease];
@@ -1398,10 +1621,6 @@
                             <div class="summary-text">
                                 Your olfactory profile shows patterns consistent with ${significantDisease}.
                                 <strong>${diseaseData ? diseaseData.recommendations : 'Clinical consultation recommended'}</strong>
-                                <br><br>
-                                <strong>Key symptoms to monitor:</strong> ${diseaseData ? diseaseData.symptoms.slice(0, 3).join(', ') : 'N/A'}
-                                <br>
-                                <strong>Early signs:</strong> ${diseaseData ? diseaseData.earlySigns[0] : 'N/A'}
                             </div>
                         </div>
                     `;
@@ -1410,15 +1629,13 @@
                         <div class="clinical-summary">
                             <div class="summary-title">✅ Clinical Status: No Significant Concerns</div>
                             <div class="summary-text">
-                                Your olfactory function is within normal range. No disease patterns
-                                exceeded clinical significance thresholds. Continue routine monitoring
-                                and maintain a healthy lifestyle.
+                                All disease probabilities are below or well below clinical thresholds.
+                                Your olfactory function is within normal range.
                             </div>
                         </div>
                     `;
                 }
 
-                // Build results HTML
                 const html = `
                     <div class="result-summary">
                         <span class="result-icon">${icon}</span>
@@ -1428,19 +1645,39 @@
 
                     <div class="result-risk-indicator ${risk.class}">
                         <strong>${risk.level} Risk</strong>
-                        <div style="font-weight:400;font-size:12px;margin-top:4px;">Risk Score: ${risk.riskScore.toFixed(1)}%</div>
-                        <div style="font-weight:400;font-size:11px;margin-top:2px;color:#666;">Raw Score: ${risk.rawScore}/${risk.maxScore} (${risk.percentage.toFixed(0)}%)</div>
-                        <div style="font-weight:400;font-size:11px;margin-top:2px;">${risk.description}</div>
+                        <div style="font-weight:400;font-size:14px;margin-top:6px;">Risk Score: ${risk.riskScore.toFixed(1)}%</div>
+                        <div style="font-weight:400;font-size:13px;margin-top:2px;color:#666;">Raw Score: ${risk.rawScore}/${risk.maxScore} (${risk.percentage.toFixed(0)}%)</div>
+                        <div style="font-weight:400;font-size:13px;margin-top:4px;">${risk.description}</div>
                     </div>
 
                     ${summaryHtml}
 
                     <div class="disease-list">
                         <div class="disease-title">Disease Probability Analysis</div>
-                        <div style="font-size:10px;color:#888;margin-bottom:8px;">
-                            ⚠️ Values above threshold indicate clinical concern
+                        <div class="disease-subtitle">
+                            📊 Below threshold = no clinical concern &nbsp;|&nbsp; ⚠️ Above threshold = clinical concern
                         </div>
                         ${diseaseHtml}
+
+                        <div class="threshold-legend">
+                            <span style="font-weight:600;">Legend:</span>
+                            <span class="legend-item">
+                                <span class="legend-color green"></span>
+                                Well Below Threshold
+                            </span>
+                            <span class="legend-item">
+                                <span class="legend-color orange"></span>
+                                Near Threshold
+                            </span>
+                            <span class="legend-item">
+                                <span class="legend-color red"></span>
+                                Clinical Concern
+                            </span>
+                            <span class="legend-item">
+                                <span style="color:#ff6f00;">▼</span>
+                                Threshold Line
+                            </span>
+                        </div>
                     </div>
 
                     <div class="result-details">
@@ -1488,7 +1725,11 @@
             }
 
             // ============================================================
-            //  DOWNLOAD REPORT (PDF)
+            //  DOWNLOAD REPORT (PDF) - FIXED VERSION
+            //  - No HTML tags in output
+            //  - Clean text formatting
+            //  - Proper spacing
+            //  - Status labels use plain text
             // ============================================================
             function downloadReport() {
                 if (!results) {
@@ -1500,99 +1741,182 @@
                 const doc = new jsPDF('p', 'mm', 'a4');
                 const pageWidth = doc.internal.pageSize.getWidth();
                 const margin = 15;
+                const maxWidth = pageWidth - (margin * 2);
                 let yPos = 20;
 
+                // === TITLE ===
                 doc.setFontSize(24);
                 doc.setFont('helvetica', 'bold');
                 doc.text('Neurodiagnostic Assessment Report', pageWidth / 2, yPos, { align: 'center' });
-                yPos += 10;
+                yPos += 12;
 
+                // === DATE ===
                 const now = new Date();
-                const dateStr = now.toLocaleString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric',
-                    hour: '2-digit', minute: '2-digit' });
+                const dateStr = now.toLocaleString('en-US', { 
+                    weekday: 'long', 
+                    year: 'numeric', 
+                    month: 'long', 
+                    day: 'numeric',
+                    hour: '2-digit', 
+                    minute: '2-digit' 
+                });
                 doc.setFontSize(10);
                 doc.setFont('helvetica', 'normal');
                 doc.text('Generated: ' + dateStr, pageWidth / 2, yPos, { align: 'center' });
-                yPos += 8;
+                yPos += 10;
 
                 doc.setDrawColor(180);
                 doc.line(margin, yPos, pageWidth - margin, yPos);
-                yPos += 10;
+                yPos += 12;
 
-                const tableX = margin;
-                const tableWidth = pageWidth - (margin * 2);
-                const rowHeight = 8;
-                const col1Width = 50;
-
-                const risk = results.overallRisk;
-                const riskFields = [
-                    ['Risk Level', risk.level],
-                    ['Risk Score', risk.riskScore.toFixed(1) + '%'],
-                    ['Raw Score', risk.rawScore + '/' + risk.maxScore + ' (' + risk.percentage.toFixed(0) + '%)'],
-                    ['Clinical Interpretation', risk.description]
-                ];
-
+                // === SECTION: Clinical Risk Assessment ===
                 doc.setFontSize(14);
                 doc.setFont('helvetica', 'bold');
                 doc.text('Clinical Risk Assessment', margin, yPos);
                 yPos += 8;
 
-                for (const [label, value] of riskFields) {
-                    doc.rect(tableX, yPos, tableWidth, rowHeight * 1.5, 'D');
-                    doc.text(label, tableX + 4, yPos + 5.5);
-                    const wrappedValue = doc.splitTextToSize(String(value), tableWidth - col1Width - 8);
-                    doc.text(wrappedValue, tableX + col1Width + 4, yPos + 5.5);
-                    yPos += rowHeight * 1.5;
-                }
+                const risk = results.overallRisk;
+                const tableX = margin;
+                const tableWidth = maxWidth;
+                const rowHeight = 8;
+                const col1Width = 50;
+                const col2Width = tableWidth - col1Width - 4;
 
-                if (yPos > 200) { doc.addPage();
-                    yPos = 20; }
+                const riskFields = [
+                    ['Risk Level', risk.level],
+                    ['Risk Score', risk.riskScore.toFixed(1) + '%'],
+                    ['Raw Score', risk.rawScore + '/' + risk.maxScore + ' (' + risk.percentage.toFixed(0) + '%)']
+                ];
+
+                for (const [label, value] of riskFields) {
+                    doc.rect(tableX, yPos, tableWidth, rowHeight, 'D');
+                    doc.setFont('helvetica', 'bold');
+                    doc.setFontSize(10);
+                    doc.text(label, tableX + 4, yPos + 5.5);
+                    doc.setFont('helvetica', 'normal');
+                    doc.text(String(value), tableX + col1Width + 4, yPos + 5.5);
+                    yPos += rowHeight;
+                }
+                yPos += 2;
+
+                // Clinical Interpretation - with proper text wrapping
+                doc.setFont('helvetica', 'bold');
+                doc.setFontSize(10);
+                doc.text('Clinical Interpretation:', tableX + 4, yPos + 4);
+                yPos += 6;
+                
+                const descLines = doc.splitTextToSize(risk.description, tableWidth - 8);
+                doc.setFont('helvetica', 'normal');
+                doc.setFontSize(9);
+                doc.text(descLines, tableX + 4, yPos + 3);
+                yPos += descLines.length * 4 + 10;
+
+                // === SECTION: Disease Probability Analysis ===
+                if (yPos > 240) { doc.addPage(); yPos = 20; }
                 doc.setFontSize(14);
                 doc.setFont('helvetica', 'bold');
                 doc.text('Disease Probability Analysis', margin, yPos);
                 yPos += 8;
 
-                doc.setFillColor(245, 245, 245);
+                // Table Headers
+                const headers = ['Disease', 'Probability', 'Threshold', 'Status'];
+                const colWidths = [70, 30, 30, 50];
+                let totalColWidth = 0;
+                for (const w of colWidths) totalColWidth += w;
+                const scaleFactor = tableWidth / totalColWidth;
+                const finalCols = colWidths.map(w => w * scaleFactor);
+
+                doc.setFillColor(240, 240, 240);
                 doc.rect(tableX, yPos, tableWidth, rowHeight, 'F');
                 doc.rect(tableX, yPos, tableWidth, rowHeight, 'D');
                 doc.setFont('helvetica', 'bold');
                 doc.setFontSize(9);
-                doc.text('Disease', tableX + 4, yPos + 5.5);
-                doc.text('Probability', tableX + 90, yPos + 5.5);
-                doc.text('Status', tableX + 130, yPos + 5.5);
+                let hx = tableX + 2;
+                for (let i = 0; i < headers.length; i++) {
+                    doc.text(headers[i], hx, yPos + 5.5);
+                    hx += finalCols[i];
+                }
                 yPos += rowHeight;
+
+                // Table Rows - clean text, no HTML
                 doc.setFont('helvetica', 'normal');
                 doc.setFontSize(9);
-
                 const sorted = results.sortedDiseases || [];
+
                 for (const [disease, prob] of sorted.slice(0, 7)) {
-                    if (yPos > 260) { doc.addPage();
-                        yPos = 20; }
+                    if (yPos > 265) { doc.addPage(); yPos = 20; }
                     const diseaseData = diseasePatterns[disease];
                     const threshold = diseaseData ? diseaseData.threshold : 0.6;
-                    const isSignificant = prob >= threshold;
-                    const status = isSignificant ? '⚠️ CONCERN' : '✅ Normal';
+                    const probPercent = Math.round(prob * 100);
+                    const thresholdPercent = Math.round(threshold * 100);
+                    const distanceFromThreshold = threshold - prob;
 
+                    // Clean status text - no HTML/special characters
+                    let statusText;
+                    if (prob >= threshold) {
+                        statusText = 'CLINICAL CONCERN';
+                    } else if (distanceFromThreshold > 0.20) {
+                        statusText = 'WELL BELOW';
+                    } else if (distanceFromThreshold > 0.10) {
+                        statusText = 'BELOW';
+                    } else {
+                        statusText = 'NEAR';
+                    }
+
+                    const rowHeightAdjusted = Math.max(rowHeight, 8);
+                    doc.rect(tableX, yPos, tableWidth, rowHeightAdjusted, 'D');
+
+                    // Shorten disease name if needed
+                    let displayName = disease;
+                    if (displayName.length > 25) {
+                        displayName = displayName.substring(0, 22) + '...';
+                    }
+
+                    let cx = tableX + 2;
+                    doc.text(displayName, cx, yPos + 5.5);
+                    cx += finalCols[0];
+                    doc.text(probPercent + '%', cx, yPos + 5.5);
+                    cx += finalCols[1];
+                    doc.text(thresholdPercent + '%', cx, yPos + 5.5);
+                    cx += finalCols[2];
+                    doc.text(statusText, cx, yPos + 5.5);
+
+                    yPos += rowHeightAdjusted;
+                }
+                yPos += 4;
+
+                // === SECTION: Test Scores Detail ===
+                if (yPos > 240) { doc.addPage(); yPos = 20; }
+                doc.setFontSize(14);
+                doc.setFont('helvetica', 'bold');
+                doc.text('Test Score Detail', margin, yPos);
+                yPos += 8;
+
+                const testFields = [
+                    ['Olfactory Threshold', results.testScores.threshold.score + '/' + results.testScores.threshold.maxScore],
+                    ['Odor Identification', results.testScores.identification.score + '/' + results.testScores.identification.maxScore],
+                    ['Odor Discrimination', results.testScores.discrimination.score + '/' + results.testScores.discrimination.maxScore],
+                    ['Olfactory Memory', results.testScores.memory.score + '/' + results.testScores.memory.maxScore],
+                    ['Overall Score', risk.rawScore + '/' + risk.maxScore + ' (' + risk.percentage.toFixed(0) + '%)']
+                ];
+
+                for (const [label, value] of testFields) {
                     doc.rect(tableX, yPos, tableWidth, rowHeight, 'D');
-                    doc.text(disease, tableX + 4, yPos + 5.5);
-                    doc.text(Math.round(prob * 100) + '%', tableX + 90, yPos + 5.5);
-                    doc.text(status, tableX + 130, yPos + 5.5);
-
-                    const barWidth = Math.max(5, prob * 60);
-                    doc.setFillColor(prob > threshold ? 200 : (prob > 0.25 ? 120 : 80), prob > threshold ? 30 : (prob > 0.25 ?
-                        120 : 80), prob > threshold ? 30 : (prob > 0.25 ? 120 : 80));
-                    doc.rect(tableX + 160, yPos + 2, barWidth, 4, 'F');
+                    doc.setFont('helvetica', 'bold');
+                    doc.setFontSize(10);
+                    doc.text(label, tableX + 4, yPos + 5.5);
+                    doc.setFont('helvetica', 'normal');
+                    doc.text(String(value), tableX + col1Width + 4, yPos + 5.5);
                     yPos += rowHeight;
                 }
 
-                const footerY = Math.min(yPos + 10, 280);
+                // === FOOTER ===
+                const footerY = Math.min(yPos + 15, 280);
                 doc.setFontSize(8);
                 doc.setFont('helvetica', 'italic');
                 doc.setTextColor(150);
-                doc.text('This report was generated automatically by Neurodiagnostic Assessment Clinical Edition.', pageWidth /
-                    2, footerY, { align: 'center' });
-                doc.text('Data is protected and confidential. For clinical use only.', pageWidth / 2, footerY + 5,
-                { align: 'center' });
+                doc.text('This report was generated automatically by Neurodiagnostic Assessment Clinical Edition.', pageWidth / 2, footerY, { align: 'center' });
+                doc.text('Data is protected and confidential. For clinical use only.', pageWidth / 2, footerY + 5, { align: 'center' });
 
                 const fileName = 'clinical-neurodiagnostic-report-' +
                     now.getFullYear() + '-' +
@@ -1652,11 +1976,9 @@
             // ============================================================
             //  INIT
             // ============================================================
-            console.log('🏥 Neurodiagnostic Assessment - Clinical Edition');
-            console.log('✅ Absolute risk scoring (no normalization)');
-            console.log('✅ Clinical significance thresholds applied');
-            console.log('✅ Actionable recommendations provided');
-            console.log('📊 12 questions, 4 domains, 7 diseases analyzed');
+            console.log('🏥 Neurodiagnostic Assessment - Clinical Edition (Full Screen)');
+            console.log('✅ Full-width responsive layout');
+            console.log('✅ PDF Report - Clean text, no HTML tags');
 
         })();
     </script>

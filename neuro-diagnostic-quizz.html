@@ -1,0 +1,1565 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <title>Neurodiagnostic Assessment</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <style>
+        /* ============================================
+                   RESET & BASE
+                ============================================ */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+            background: #0a0a0a;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        /* ============================================
+                   MAIN CONTAINER
+                ============================================ */
+        .app-container {
+            width: 100%;
+            max-width: 480px;
+            background: #ffffff;
+            border-radius: 24px;
+            padding: 0;
+            box-shadow: 0 30px 80px rgba(0, 0, 0, 0.8);
+            overflow: hidden;
+            position: relative;
+            min-height: 600px;
+        }
+
+        /* ============================================
+                   HEADER
+                ============================================ */
+        .header {
+            background: #1a1a1a;
+            padding: 24px 24px 20px 24px;
+            text-align: center;
+        }
+
+        .header .icon {
+            font-size: 40px;
+            display: block;
+            margin-bottom: 8px;
+        }
+
+        .header h1 {
+            font-size: 22px;
+            font-weight: 700;
+            color: #ffffff;
+            letter-spacing: -0.5px;
+        }
+
+        .header p {
+            font-size: 13px;
+            color: #888;
+            margin-top: 4px;
+            font-weight: 400;
+        }
+
+        .header .badge {
+            display: inline-block;
+            margin-top: 10px;
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            padding: 4px 16px;
+            border-radius: 20px;
+            font-size: 10px;
+            color: #666;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+        }
+
+        /* ============================================
+                   CONTENT AREA
+                ============================================ */
+        .content {
+            padding: 24px;
+            min-height: 400px;
+        }
+
+        /* ============================================
+                   START SCREEN
+                ============================================ */
+        .start-screen {
+            text-align: center;
+            padding: 20px 0;
+        }
+
+        .start-screen .assessment-icon {
+            font-size: 64px;
+            display: block;
+            margin-bottom: 16px;
+        }
+
+        .start-screen h2 {
+            font-size: 20px;
+            font-weight: 700;
+            color: #1a1a1a;
+            margin-bottom: 8px;
+        }
+
+        .start-screen p {
+            font-size: 14px;
+            color: #666;
+            line-height: 1.6;
+            max-width: 360px;
+            margin: 0 auto 20px;
+        }
+
+        .start-screen .info-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin-bottom: 24px;
+            text-align: left;
+        }
+
+        .start-screen .info-card {
+            background: #f5f5f5;
+            border-radius: 12px;
+            padding: 14px 16px;
+            border: 1px solid #e8e8e8;
+        }
+
+        .start-screen .info-card .label {
+            font-size: 10px;
+            color: #888;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            font-weight: 600;
+        }
+
+        .start-screen .info-card .value {
+            font-size: 14px;
+            font-weight: 700;
+            color: #1a1a1a;
+            margin-top: 2px;
+        }
+
+        .btn-primary {
+            width: 100%;
+            padding: 16px;
+            border: none;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background: #1a1a1a;
+            color: #ffffff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .btn-primary:hover {
+            transform: scale(1.02);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+        }
+
+        .btn-primary:active {
+            transform: scale(0.98);
+        }
+
+        .btn-primary:disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .btn-secondary {
+            width: 100%;
+            padding: 14px;
+            border: 2px solid #1a1a1a;
+            border-radius: 12px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background: #ffffff;
+            color: #1a1a1a;
+        }
+
+        .btn-secondary:hover {
+            background: #f5f5f5;
+        }
+
+        /* ============================================
+                   QUESTION SCREEN
+                ============================================ */
+        .question-screen {
+            display: none;
+        }
+
+        .question-screen.active {
+            display: block;
+        }
+
+        .progress-section {
+            margin-bottom: 24px;
+        }
+
+        .progress-bar-container {
+            width: 100%;
+            height: 4px;
+            background: #e8e8e8;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .progress-bar {
+            height: 100%;
+            background: #1a1a1a;
+            border-radius: 4px;
+            transition: width 0.6s ease;
+            width: 0%;
+        }
+
+        .progress-text {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 8px;
+            font-size: 12px;
+            color: #888;
+            font-weight: 500;
+        }
+
+        .progress-text .domain-tag {
+            background: #f0f0f0;
+            padding: 2px 12px;
+            border-radius: 12px;
+            font-size: 10px;
+            font-weight: 600;
+            color: #666;
+            text-transform: uppercase;
+        }
+
+        .question-number {
+            font-size: 12px;
+            color: #888;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 6px;
+        }
+
+        .question-text {
+            font-size: 18px;
+            font-weight: 700;
+            color: #1a1a1a;
+            margin-bottom: 20px;
+            line-height: 1.5;
+        }
+
+        .options-container {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-bottom: 24px;
+        }
+
+        .option-btn {
+            padding: 14px 18px;
+            border: 2px solid #e0e0e0;
+            border-radius: 12px;
+            background: #ffffff;
+            color: #1a1a1a;
+            font-size: 15px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: left;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .option-btn:hover {
+            border-color: #888;
+            background: #f5f5f5;
+            transform: scale(1.01);
+        }
+
+        .option-btn:active {
+            transform: scale(0.98);
+        }
+
+        .option-btn.selected {
+            border-color: #1a1a1a;
+            background: #1a1a1a;
+            color: #ffffff;
+        }
+
+        .option-btn .option-letter {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            background: #f0f0f0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 13px;
+            color: #666;
+            flex-shrink: 0;
+            transition: all 0.3s ease;
+        }
+
+        .option-btn.selected .option-letter {
+            background: #ffffff;
+            color: #1a1a1a;
+        }
+
+        .option-btn .option-text {
+            flex: 1;
+        }
+
+        .nav-buttons {
+            display: flex;
+            gap: 10px;
+        }
+
+        .nav-buttons .btn-prev {
+            flex: 1;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            background: #ffffff;
+            color: #666;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .nav-buttons .btn-prev:hover {
+            background: #f5f5f5;
+            border-color: #ccc;
+        }
+
+        .nav-buttons .btn-next,
+        .nav-buttons .btn-submit {
+            flex: 2;
+            padding: 12px;
+            border: none;
+            border-radius: 10px;
+            background: #1a1a1a;
+            color: #ffffff;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .nav-buttons .btn-next:hover,
+        .nav-buttons .btn-submit:hover {
+            background: #333;
+        }
+
+        .nav-buttons .btn-next:disabled,
+        .nav-buttons .btn-submit:disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+        }
+
+        /* ============================================
+                   RESULTS SCREEN
+                ============================================ */
+        .results-screen {
+            display: none;
+            animation: slideUp 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+        }
+
+        .results-screen.active {
+            display: block;
+        }
+
+        @keyframes slideUp {
+            from { transform: translateY(30px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        .result-summary {
+            text-align: center;
+            padding: 10px 0 20px 0;
+        }
+
+        .result-summary .result-icon {
+            font-size: 56px;
+            display: block;
+            margin-bottom: 8px;
+        }
+
+        .result-summary .result-title {
+            font-size: 22px;
+            font-weight: 700;
+            color: #1a1a1a;
+            margin-bottom: 4px;
+        }
+
+        .result-summary .result-subtitle {
+            font-size: 14px;
+            color: #666;
+        }
+
+        .result-risk-indicator {
+            padding: 14px;
+            border-radius: 12px;
+            margin: 12px 0 16px 0;
+            text-align: center;
+            font-weight: 600;
+            font-size: 14px;
+            border: 2px solid #333;
+        }
+
+        .result-risk-indicator.very-low {
+            background: #e8f5e9;
+            color: #2e7d32;
+            border-color: #2e7d32;
+        }
+
+        .result-risk-indicator.low {
+            background: #e8e8e8;
+            color: #1a1a1a;
+            border-color: #888;
+        }
+
+        .result-risk-indicator.moderate {
+            background: #fff3e0;
+            color: #e65100;
+            border-color: #e65100;
+        }
+
+        .result-risk-indicator.high {
+            background: #ffebee;
+            color: #c62828;
+            border-color: #c62828;
+        }
+
+        .result-risk-indicator.very-high {
+            background: #b71c1c;
+            color: #ffffff;
+            border-color: #b71c1c;
+        }
+
+        .disease-list {
+            margin: 12px 0;
+        }
+
+        .disease-list .disease-title {
+            font-size: 11px;
+            font-weight: 600;
+            color: #666;
+            margin-bottom: 8px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .disease-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 6px 0;
+            border-bottom: 1px solid #f0f0f0;
+        }
+
+        .disease-item .disease-name {
+            font-size: 13px;
+            font-weight: 500;
+            color: #1a1a1a;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .disease-item .disease-bar {
+            flex: 1;
+            margin: 0 10px;
+            height: 6px;
+            background: #e8e8e8;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .disease-item .disease-bar .bar-fill {
+            height: 100%;
+            border-radius: 4px;
+            transition: width 0.8s ease;
+        }
+
+        .disease-item .disease-bar .bar-fill.high {
+            background: #c62828;
+        }
+
+        .disease-item .disease-bar .bar-fill.medium {
+            background: #e65100;
+        }
+
+        .disease-item .disease-bar .bar-fill.low {
+            background: #888;
+        }
+
+        .disease-item .disease-prob {
+            font-size: 13px;
+            font-weight: 700;
+            color: #1a1a1a;
+            min-width: 45px;
+            text-align: right;
+        }
+
+        .primary-concern {
+            margin: 12px 0 16px 0;
+            padding: 14px;
+            background: #f0f0f0;
+            border-radius: 10px;
+            border: 1px solid #ddd;
+        }
+
+        .primary-concern .concern-title {
+            font-size: 12px;
+            font-weight: 700;
+            color: #1a1a1a;
+        }
+
+        .primary-concern .concern-detail {
+            font-size: 11px;
+            color: #666;
+            margin-top: 4px;
+        }
+
+        .result-details {
+            background: #f5f5f5;
+            border-radius: 10px;
+            padding: 14px;
+            border: 1px solid #e0e0e0;
+            margin: 12px 0;
+        }
+
+        .detail-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 4px 0;
+            font-size: 12px;
+            border-bottom: 1px solid #e8e8e8;
+        }
+
+        .detail-row:last-child {
+            border-bottom: none;
+            border-top: 2px solid #ddd;
+            padding-top: 6px;
+            margin-top: 4px;
+            font-weight: 700;
+        }
+
+        .detail-row .detail-label {
+            color: #888;
+        }
+
+        .detail-row .detail-value {
+            font-weight: 500;
+            color: #1a1a1a;
+        }
+
+        .result-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 16px;
+        }
+
+        .result-actions .btn-download {
+            flex: 2;
+            padding: 14px;
+            border: none;
+            border-radius: 10px;
+            background: #1a1a1a;
+            color: #ffffff;
+            font-size: 14px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .result-actions .btn-download:hover {
+            background: #333;
+            transform: scale(1.02);
+        }
+
+        .result-actions .btn-retake {
+            flex: 1;
+            padding: 14px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            background: #ffffff;
+            color: #666;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .result-actions .btn-retake:hover {
+            background: #f5f5f5;
+            border-color: #ccc;
+        }
+
+        .result-disclaimer {
+            margin-top: 14px;
+            padding: 10px 14px;
+            background: #fafafa;
+            border-radius: 8px;
+            font-size: 10px;
+            color: #999;
+            text-align: center;
+            border: 1px solid #eee;
+            line-height: 1.5;
+        }
+
+        /* ============================================
+                   TOAST NOTIFICATIONS
+                ============================================ */
+        .toast {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #1a1a1a;
+            color: #ffffff;
+            padding: 12px 24px;
+            border-radius: 12px;
+            font-size: 13px;
+            font-weight: 500;
+            z-index: 999;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.4);
+            max-width: 420px;
+            width: 90%;
+            text-align: center;
+            opacity: 0;
+            transition: opacity 0.3s ease, transform 0.3s ease;
+            transform: translateX(-50%) translateY(20px);
+            pointer-events: none;
+        }
+
+        .toast.show {
+            opacity: 1;
+            transform: translateX(-50%) translateY(0);
+        }
+
+        /* ============================================
+                   RESPONSIVE
+                ============================================ */
+        @media (max-width: 400px) {
+            .header h1 {
+                font-size: 18px;
+            }
+            .question-text {
+                font-size: 16px;
+            }
+            .option-btn {
+                font-size: 14px;
+                padding: 12px 14px;
+            }
+            .start-screen .info-grid {
+                grid-template-columns: 1fr;
+            }
+            .result-actions {
+                flex-direction: column;
+            }
+            .start-screen .assessment-icon {
+                font-size: 48px;
+            }
+            .result-summary .result-icon {
+                font-size: 42px;
+            }
+            .result-summary .result-title {
+                font-size: 18px;
+            }
+        }
+
+        @media (max-height: 700px) {
+            .content {
+                padding: 16px;
+            }
+            .header {
+                padding: 16px 20px 14px 20px;
+            }
+            .header .icon {
+                font-size: 30px;
+                margin-bottom: 4px;
+            }
+            .header h1 {
+                font-size: 18px;
+            }
+            .question-text {
+                font-size: 16px;
+                margin-bottom: 14px;
+            }
+            .option-btn {
+                padding: 10px 14px;
+                font-size: 13px;
+            }
+            .start-screen .info-grid {
+                grid-template-columns: 1fr 1fr;
+                gap: 8px;
+            }
+            .start-screen .info-card {
+                padding: 10px 12px;
+            }
+            .progress-section {
+                margin-bottom: 16px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ============================================
+    TOAST NOTIFICATION
+    ============================================ -->
+    <div id="toast" class="toast"></div>
+
+    <!-- ============================================
+    MAIN APP CONTAINER
+    ============================================ -->
+    <div class="app-container">
+
+        <!-- ===== HEADER ===== -->
+        <div class="header">
+            <span class="icon">🧠</span>
+            <h1>Neurodiagnostic Assessment</h1>
+            <p>Screen for olfactory dysfunction &amp; neurological conditions</p>
+            <span class="badge">🧬 Clinical Research Tool</span>
+        </div>
+
+        <!-- ===== CONTENT ===== -->
+        <div class="content">
+
+            <!-- ===== START SCREEN ===== -->
+            <div class="start-screen" id="startScreen">
+                <span class="assessment-icon">👃</span>
+                <h2>Olfactory Health Screening</h2>
+                <p>
+                    Complete this 12-question assessment to evaluate your olfactory function
+                    and identify potential neurological risk patterns.
+                </p>
+
+                <div class="info-grid">
+                    <div class="info-card">
+                        <div class="label">Questions</div>
+                        <div class="value">12</div>
+                    </div>
+                    <div class="info-card">
+                        <div class="label">Time</div>
+                        <div class="value">~3 minutes</div>
+                    </div>
+                    <div class="info-card">
+                        <div class="label">Domains</div>
+                        <div class="value">4 Tests</div>
+                    </div>
+                    <div class="info-card">
+                        <div class="label">Diseases</div>
+                        <div class="value">7 Analyzed</div>
+                    </div>
+                </div>
+
+                <button class="btn-primary" id="startAssessmentBtn">
+                    🧪 Start Assessment
+                </button>
+            </div>
+
+            <!-- ===== QUESTION SCREEN ===== -->
+            <div class="question-screen" id="questionScreen">
+                <div class="progress-section">
+                    <div class="progress-bar-container">
+                        <div class="progress-bar" id="progressBar"></div>
+                    </div>
+                    <div class="progress-text">
+                        <span id="progressLabel">Question 1 of 12</span>
+                        <span class="domain-tag" id="domainTag">Threshold</span>
+                    </div>
+                </div>
+
+                <div class="question-number" id="questionNumber">Question 1</div>
+                <div class="question-text" id="questionText">Loading question...</div>
+
+                <div class="options-container" id="optionsContainer">
+                    <!-- Options rendered by JS -->
+                </div>
+
+                <div class="nav-buttons">
+                    <button class="btn-prev" id="prevBtn" style="display:none;">← Back</button>
+                    <button class="btn-next" id="nextBtn" disabled>Next →</button>
+                    <button class="btn-submit" id="submitBtn" style="display:none;" disabled>📊 Complete Assessment</button>
+                </div>
+            </div>
+
+            <!-- ===== RESULTS SCREEN ===== -->
+            <div class="results-screen" id="resultsScreen">
+                <!-- Results rendered by JS -->
+            </div>
+
+        </div>
+    </div>
+
+    <script>
+        // ============================================================
+        //  NEURODIAGNOSTIC ASSESSMENT — Standalone Page
+        // ============================================================
+
+        (function() {
+            'use strict';
+
+            // ============================================================
+            //  DISEASE PATTERNS
+            // ============================================================
+            const diseasePatterns = {
+                'Alzheimer\'s Disease': {
+                    symptoms: ['Memory loss', 'Cognitive decline', 'Behavioral changes'],
+                    olfactoryProfile: {
+                        threshold: { low: 0.2, moderate: 0.4, high: 0.6 },
+                        identification: { low: 0.15, moderate: 0.35, high: 0.55 },
+                        discrimination: { low: 0.2, moderate: 0.4, high: 0.6 },
+                        memory: { low: 0.1, moderate: 0.3, high: 0.5 }
+                    },
+                    earlySigns: ['Olfactory impairment precedes cognitive symptoms by 2-10 years'],
+                    icon: '🧠'
+                },
+                'Parkinson\'s Disease': {
+                    symptoms: ['Tremors', 'Rigidity', 'Bradykinesia', 'Postural instability'],
+                    olfactoryProfile: {
+                        threshold: { low: 0.15, moderate: 0.3, high: 0.5 },
+                        identification: { low: 0.1, moderate: 0.25, high: 0.4 },
+                        discrimination: { low: 0.2, moderate: 0.35, high: 0.5 },
+                        memory: { low: 0.25, moderate: 0.4, high: 0.55 }
+                    },
+                    earlySigns: ['Olfactory dysfunction often precedes motor symptoms by 4-8 years'],
+                    icon: '🫨'
+                },
+                'Lewy Body Dementia': {
+                    symptoms: ['Visual hallucinations', 'Fluctuating cognition', 'Parkinsonism', 'REM sleep disorder'],
+                    olfactoryProfile: {
+                        threshold: { low: 0.1, moderate: 0.25, high: 0.4 },
+                        identification: { low: 0.05, moderate: 0.2, high: 0.35 },
+                        discrimination: { low: 0.15, moderate: 0.3, high: 0.45 },
+                        memory: { low: 0.15, moderate: 0.3, high: 0.45 }
+                    },
+                    earlySigns: ['Severe olfactory deficits are often the earliest sign'],
+                    icon: '👁️'
+                },
+                'Frontotemporal Dementia': {
+                    symptoms: ['Behavioral changes', 'Personality alterations', 'Language difficulties', 'Apathy'],
+                    olfactoryProfile: {
+                        threshold: { low: 0.3, moderate: 0.5, high: 0.7 },
+                        identification: { low: 0.2, moderate: 0.4, high: 0.6 },
+                        discrimination: { low: 0.3, moderate: 0.5, high: 0.7 },
+                        memory: { low: 0.3, moderate: 0.5, high: 0.7 }
+                    },
+                    earlySigns: ['Olfactory impairment may occur early but is less prominent than behavioral changes'],
+                    icon: '🧩'
+                },
+                'Huntington\'s Disease': {
+                    symptoms: ['Chorea', 'Cognitive decline', 'Psychiatric symptoms', 'Weight loss'],
+                    olfactoryProfile: {
+                        threshold: { low: 0.25, moderate: 0.4, high: 0.6 },
+                        identification: { low: 0.2, moderate: 0.35, high: 0.5 },
+                        discrimination: { low: 0.25, moderate: 0.4, high: 0.6 },
+                        memory: { low: 0.2, moderate: 0.35, high: 0.5 }
+                    },
+                    earlySigns: ['Olfactory identification deficits can appear before motor symptoms'],
+                    icon: '🎯'
+                },
+                'Amyotrophic Lateral Sclerosis (ALS)': {
+                    symptoms: ['Muscle weakness', 'Muscle atrophy', 'Fasciculations', 'Speech difficulties'],
+                    olfactoryProfile: {
+                        threshold: { low: 0.4, moderate: 0.6, high: 0.8 },
+                        identification: { low: 0.35, moderate: 0.55, high: 0.75 },
+                        discrimination: { low: 0.4, moderate: 0.6, high: 0.8 },
+                        memory: { low: 0.4, moderate: 0.6, high: 0.8 }
+                    },
+                    earlySigns: ['Mild olfactory impairment may occur but is not a primary early sign'],
+                    icon: '💪'
+                },
+                'Multiple System Atrophy (MSA)': {
+                    symptoms: ['Autonomic dysfunction', 'Parkinsonism', 'Cerebellar ataxia', 'Sleep disorders'],
+                    olfactoryProfile: {
+                        threshold: { low: 0.2, moderate: 0.35, high: 0.55 },
+                        identification: { low: 0.15, moderate: 0.3, high: 0.45 },
+                        discrimination: { low: 0.2, moderate: 0.35, high: 0.55 },
+                        memory: { low: 0.3, moderate: 0.45, high: 0.6 }
+                    },
+                    earlySigns: ['Olfactory dysfunction is common and may be an early feature'],
+                    icon: '🔄'
+                }
+            };
+
+            // ============================================================
+            //  DIAGNOSTIC QUESTIONS
+            // ============================================================
+            const diagnosticQuestions = [
+                { id: 'threshold_1', test: 'threshold',
+                    question: 'Can you detect the scent of peppermint at a very low concentration?',
+                    options: ['Yes, clearly', 'Yes, faintly', 'No, not at all'],
+                    scores: [3, 2, 1] },
+                { id: 'threshold_2', test: 'threshold',
+                    question: 'Can you detect the scent of vanilla at a low concentration?',
+                    options: ['Yes, clearly', 'Yes, faintly', 'No, not at all'],
+                    scores: [3, 2, 1] },
+                { id: 'threshold_3', test: 'threshold',
+                    question: 'Can you detect the scent of lemon at a low concentration?',
+                    options: ['Yes, clearly', 'Yes, faintly', 'No, not at all'],
+                    scores: [3, 2, 1] },
+                { id: 'identification_1', test: 'identification',
+                    question: 'Identify this scent: It smells like a fresh flower, commonly found in gardens.',
+                    options: ['Rose', 'Lavender', 'Jasmine'],
+                    scores: [3, 2, 1] },
+                { id: 'identification_2', test: 'identification',
+                    question: 'Identify this scent: It has a sharp, citrusy aroma often used in cleaning products.',
+                    options: ['Lemon', 'Orange', 'Lime'],
+                    scores: [3, 2, 1] },
+                { id: 'identification_3', test: 'identification',
+                    question: 'Identify this scent: It is warm, sweet, and often used in baking.',
+                    options: ['Vanilla', 'Cinnamon', 'Nutmeg'],
+                    scores: [3, 2, 1] },
+                { id: 'discrimination_1', test: 'discrimination',
+                    question: 'Which of these is a floral scent?',
+                    options: ['Peppermint', 'Rose', 'Cinnamon'],
+                    scores: [1, 3, 2] },
+                { id: 'discrimination_2', test: 'discrimination',
+                    question: 'Which of these is a citrus scent?',
+                    options: ['Lavender', 'Orange', 'Vanilla'],
+                    scores: [1, 3, 2] },
+                { id: 'discrimination_3', test: 'discrimination',
+                    question: 'Which of these is a woody scent?',
+                    options: ['Rose', 'Sandalwood', 'Lemon'],
+                    scores: [1, 3, 2] },
+                { id: 'memory_1', test: 'memory',
+                    question: 'Do you recall smelling coffee in the morning?',
+                    options: ['Yes, vividly', 'Yes, faintly', 'No'],
+                    scores: [3, 2, 1] },
+                { id: 'memory_2', test: 'memory',
+                    question: 'Do you recall the scent of fresh bread or pastries?',
+                    options: ['Yes, vividly', 'Yes, faintly', 'No'],
+                    scores: [3, 2, 1] },
+                { id: 'memory_3', test: 'memory',
+                    question: 'Do you recall the scent of rain or wet earth?',
+                    options: ['Yes, vividly', 'Yes, faintly', 'No'],
+                    scores: [3, 2, 1] }
+            ];
+
+            // ============================================================
+            //  DOM REFS
+            // ============================================================
+            const startScreen = document.getElementById('startScreen');
+            const questionScreen = document.getElementById('questionScreen');
+            const resultsScreen = document.getElementById('resultsScreen');
+            const startBtn = document.getElementById('startAssessmentBtn');
+            const progressBar = document.getElementById('progressBar');
+            const progressLabel = document.getElementById('progressLabel');
+            const domainTag = document.getElementById('domainTag');
+            const questionNumber = document.getElementById('questionNumber');
+            const questionText = document.getElementById('questionText');
+            const optionsContainer = document.getElementById('optionsContainer');
+            const prevBtn = document.getElementById('prevBtn');
+            const nextBtn = document.getElementById('nextBtn');
+            const submitBtn = document.getElementById('submitBtn');
+            const toast = document.getElementById('toast');
+
+            // ============================================================
+            //  STATE
+            // ============================================================
+            let currentQuestion = 0;
+            let answers = new Array(diagnosticQuestions.length).fill(null);
+            let results = null;
+            let toastTimer = null;
+
+            // ============================================================
+            //  DOMAIN NAMES
+            // ============================================================
+            const domainNames = {
+                threshold: 'Threshold',
+                identification: 'Identification',
+                discrimination: 'Discrimination',
+                memory: 'Memory'
+            };
+
+            // ============================================================
+            //  TOAST NOTIFICATION
+            // ============================================================
+            function showToast(message, duration = 3000) {
+                toast.textContent = message;
+                toast.classList.add('show');
+                clearTimeout(toastTimer);
+                toastTimer = setTimeout(() => toast.classList.remove('show'), duration);
+            }
+
+            // ============================================================
+            //  START ASSESSMENT
+            // ============================================================
+            function startAssessment() {
+                currentQuestion = 0;
+                answers = new Array(diagnosticQuestions.length).fill(null);
+                results = null;
+                startScreen.style.display = 'none';
+                questionScreen.classList.add('active');
+                resultsScreen.classList.remove('active');
+                renderQuestion();
+            }
+
+            // ============================================================
+            //  RENDER QUESTION
+            // ============================================================
+            function renderQuestion() {
+                const q = diagnosticQuestions[currentQuestion];
+                const total = diagnosticQuestions.length;
+                const progress = ((currentQuestion + 1) / total) * 100;
+                const letters = ['A', 'B', 'C'];
+
+                // Update progress
+                progressBar.style.width = progress + '%';
+                progressLabel.textContent = `Question ${currentQuestion + 1} of ${total}`;
+                domainTag.textContent = domainNames[q.test] || q.test;
+
+                // Update question
+                questionNumber.textContent = `Question ${currentQuestion + 1}`;
+                questionText.textContent = q.question;
+
+                // Render options
+                optionsContainer.innerHTML = q.options.map((opt, idx) => {
+                    const selected = answers[currentQuestion] === idx ? 'selected' : '';
+                    return `
+                        <button class="option-btn ${selected}" data-index="${idx}">
+                            <span class="option-letter">${letters[idx]}</span>
+                            <span class="option-text">${opt}</span>
+                        </button>
+                    `;
+                }).join('');
+
+                // Add click listeners to options
+                document.querySelectorAll('.option-btn').forEach(btn => {
+                    btn.addEventListener('click', function() {
+                        const index = parseInt(this.dataset.index);
+                        answers[currentQuestion] = index;
+                        document.querySelectorAll('.option-btn').forEach(b => b.classList.remove('selected'));
+                        this.classList.add('selected');
+                        updateButtons();
+                    });
+                });
+
+                // Show/hide navigation buttons
+                if (currentQuestion === 0) {
+                    prevBtn.style.display = 'none';
+                } else {
+                    prevBtn.style.display = 'block';
+                }
+
+                if (currentQuestion === total - 1) {
+                    nextBtn.style.display = 'none';
+                    submitBtn.style.display = 'block';
+                } else {
+                    nextBtn.style.display = 'block';
+                    submitBtn.style.display = 'none';
+                }
+
+                updateButtons();
+
+                // Focus first option for accessibility
+                const firstOption = document.querySelector('.option-btn');
+                if (firstOption) firstOption.focus();
+            }
+
+            // ============================================================
+            //  UPDATE BUTTONS
+            // ============================================================
+            function updateButtons() {
+                const hasAnswer = answers[currentQuestion] !== null;
+                nextBtn.disabled = !hasAnswer;
+                submitBtn.disabled = !hasAnswer;
+            }
+
+            // ============================================================
+            //  NAVIGATION
+            // ============================================================
+            function goToNext() {
+                if (currentQuestion < diagnosticQuestions.length - 1) {
+                    currentQuestion++;
+                    renderQuestion();
+                }
+            }
+
+            function goToPrev() {
+                if (currentQuestion > 0) {
+                    currentQuestion--;
+                    renderQuestion();
+                }
+            }
+
+            // ============================================================
+            //  CALCULATE RESULTS
+            // ============================================================
+            function calculateResults() {
+                // Check all questions answered
+                if (answers.some(a => a === null)) {
+                    showToast('⚠️ Please answer all questions before submitting.');
+                    return;
+                }
+
+                // Calculate test scores
+                const testScores = {
+                    threshold: { score: 0, maxScore: 9, answers: [] },
+                    identification: { score: 0, maxScore: 9, answers: [] },
+                    discrimination: { score: 0, maxScore: 9, answers: [] },
+                    memory: { score: 0, maxScore: 9, answers: [] }
+                };
+
+                answers.forEach((answer, idx) => {
+                    const q = diagnosticQuestions[idx];
+                    if (answer !== null) {
+                        const score = q.scores[answer] || 0;
+                        testScores[q.test].score += score;
+                        testScores[q.test].answers.push(answer);
+                    }
+                });
+
+                const thresholdScore = testScores.threshold.score / testScores.threshold.maxScore;
+                const identificationScore = testScores.identification.score / testScores.identification.maxScore;
+                const discriminationScore = testScores.discrimination.score / testScores.discrimination.maxScore;
+                const memoryScore = testScores.memory.score / testScores.memory.maxScore;
+
+                // Calculate disease probabilities
+                const probabilities = {};
+                const condition = 'Normal'; // Default condition for standalone
+
+                for (const [disease, data] of Object.entries(diseasePatterns)) {
+                    const profile = data.olfactoryProfile;
+
+                    const thresholdMatch = 1 - Math.abs(thresholdScore - profile.threshold.moderate);
+                    const identificationMatch = 1 - Math.abs(identificationScore - profile.identification.moderate);
+                    const discriminationMatch = 1 - Math.abs(discriminationScore - profile.discrimination.moderate);
+                    const memoryMatch = 1 - Math.abs(memoryScore - profile.memory.moderate);
+
+                    let probability = (thresholdMatch * 0.3 + identificationMatch * 0.35 +
+                        discriminationMatch * 0.2 + memoryMatch * 0.15);
+
+                    // Disease-specific adjustments
+                    if (disease === 'Alzheimer\'s Disease' && memoryScore < 0.3 && thresholdScore < 0.4) {
+                        probability = Math.min(1, probability * 1.4);
+                    }
+                    if (disease === 'Parkinson\'s Disease' && identificationScore < 0.3 && thresholdScore < 0.35) {
+                        probability = Math.min(1, probability * 1.4);
+                    }
+                    if (disease === 'Lewy Body Dementia' && identificationScore < 0.25 && discriminationScore < 0.35) {
+                        probability = Math.min(1, probability * 1.5);
+                    }
+
+                    probabilities[disease] = Math.min(1, probability);
+                }
+
+                // Normalize probabilities
+                const maxProb = Math.max(...Object.values(probabilities));
+                if (maxProb > 0) {
+                    for (const disease of Object.keys(probabilities)) {
+                        probabilities[disease] = probabilities[disease] / maxProb;
+                    }
+                }
+
+                const sorted = Object.entries(probabilities).sort((a, b) => b[1] - a[1]);
+                const topDisease = sorted[0] ? sorted[0][0] : null;
+                const topProbability = sorted[0] ? sorted[0][1] : 0;
+
+                // Calculate overall risk
+                const totalScore = testScores.threshold.score + testScores.identification.score +
+                    testScores.discrimination.score + testScores.memory.score;
+                const maxTotalScore = testScores.threshold.maxScore + testScores.identification.maxScore +
+                    testScores.discrimination.maxScore + testScores.memory.maxScore;
+                const percentage = (totalScore / maxTotalScore) * 100;
+
+                let riskLevel, riskClass, riskDescription;
+                if (percentage >= 80) {
+                    riskLevel = 'Very High';
+                    riskClass = 'very-high';
+                    riskDescription = 'Significant olfactory impairment detected. Strongly suggestive of potential neurodegenerative pathology. Immediate clinical consultation recommended.';
+                } else if (percentage >= 60) {
+                    riskLevel = 'High';
+                    riskClass = 'high';
+                    riskDescription = 'Moderate to severe olfactory dysfunction. May indicate early neurodegenerative changes. Neurological evaluation recommended.';
+                } else if (percentage >= 40) {
+                    riskLevel = 'Moderate';
+                    riskClass = 'moderate';
+                    riskDescription = 'Mild olfactory impairment. Could be age-related or early stage. Monitor and consider follow-up testing in 3-6 months.';
+                } else if (percentage >= 20) {
+                    riskLevel = 'Low';
+                    riskClass = 'low';
+                    riskDescription = 'Minor olfactory variation. Unlikely to indicate neurodegenerative disease. Continue routine monitoring.';
+                } else {
+                    riskLevel = 'Very Low';
+                    riskClass = 'very-low';
+                    riskDescription = 'Normal olfactory function. No significant risk indicators detected.';
+                }
+
+                results = {
+                    testScores: testScores,
+                    probabilities: probabilities,
+                    sortedDiseases: sorted,
+                    topDisease: topDisease,
+                    topProbability: topProbability,
+                    overallRisk: {
+                        level: riskLevel,
+                        class: riskClass,
+                        description: riskDescription,
+                        percentage: percentage,
+                        totalScore: totalScore,
+                        maxScore: maxTotalScore
+                    },
+                    timestamp: new Date().toISOString()
+                };
+
+                showResults();
+            }
+
+            // ============================================================
+            //  SHOW RESULTS
+            // ============================================================
+            function showResults() {
+                if (!results) return;
+
+                const r = results;
+                const risk = r.overallRisk;
+                const sorted = r.sortedDiseases;
+
+                // Determine icon and title
+                let icon, title, subtitle;
+                if (risk.level === 'Very High' || risk.level === 'High') {
+                    icon = '🔴';
+                    title = 'High Risk Profile';
+                    subtitle = 'Significant olfactory impairment detected';
+                } else if (risk.level === 'Moderate') {
+                    icon = '🟡';
+                    title = 'Moderate Risk Profile';
+                    subtitle = 'Mild olfactory impairment detected';
+                } else if (risk.level === 'Low') {
+                    icon = '🟢';
+                    title = 'Low Risk Profile';
+                    subtitle = 'Minor olfactory variation detected';
+                } else {
+                    icon = '🟢';
+                    title = 'Very Low Risk Profile';
+                    subtitle = 'Normal olfactory function detected';
+                }
+
+                // Build disease list HTML
+                let diseaseHtml = '';
+                sorted.slice(0, 6).forEach(([disease, prob]) => {
+                    const probClass = prob > 0.5 ? 'high' : (prob > 0.25 ? 'medium' : 'low');
+                    const diseaseData = diseasePatterns[disease];
+                    diseaseHtml += `
+                        <div class="disease-item">
+                            <span class="disease-name">${diseaseData ? diseaseData.icon : '🧬'} ${disease}</span>
+                            <div class="disease-bar">
+                                <div class="bar-fill ${probClass}" style="width:${Math.max(5, prob * 100)}%;"></div>
+                            </div>
+                            <span class="disease-prob">${Math.round(prob * 100)}%</span>
+                        </div>
+                    `;
+                });
+
+                // Build primary concern HTML
+                let concernHtml = '';
+                if (r.topDisease && r.topProbability > 0.2) {
+                    const diseaseData = diseasePatterns[r.topDisease];
+                    concernHtml = `
+                        <div class="primary-concern">
+                            <div class="concern-title">🔍 Primary Concern: ${diseaseData ? diseaseData.icon : '🧬'} ${r.topDisease}</div>
+                            <div class="concern-detail">Probability: ${Math.round(r.topProbability * 100)}%</div>
+                            ${diseaseData ? `
+                            <div class="concern-detail">
+                                <strong>Key Symptoms:</strong> ${diseaseData.symptoms.slice(0, 3).join(', ')}
+                            </div>
+                            <div class="concern-detail">
+                                <strong>Early Sign:</strong> ${diseaseData.earlySigns[0] || 'N/A'}
+                            </div>
+                            ` : ''}
+                        </div>
+                    `;
+                }
+
+                // Build results HTML
+                const html = `
+                    <div class="result-summary">
+                        <span class="result-icon">${icon}</span>
+                        <div class="result-title">${title}</div>
+                        <div class="result-subtitle">${subtitle}</div>
+                    </div>
+
+                    <div class="result-risk-indicator ${risk.class}">
+                        <strong>${risk.level} Risk</strong>
+                        <div style="font-weight:400;font-size:12px;margin-top:4px;">${risk.description}</div>
+                    </div>
+
+                    <div class="disease-list">
+                        <div class="disease-title">Disease Probability Analysis</div>
+                        ${diseaseHtml}
+                    </div>
+
+                    ${concernHtml}
+
+                    <div class="result-details">
+                        <div class="detail-row">
+                            <span class="detail-label">Olfactory Threshold</span>
+                            <span class="detail-value">${r.testScores.threshold.score}/${r.testScores.threshold.maxScore}</span>
+                        </div>
+                        <div class="detail-row">
+                            <span class="detail-label">Odor Identification</span>
+                            <span class="detail-value">${r.testScores.identification.score}/${r.testScores.identification.maxScore}</span>
+                        </div>
+                        <div class="detail-row">
+                            <span class="detail-label">Odor Discrimination</span>
+                            <span class="detail-value">${r.testScores.discrimination.score}/${r.testScores.discrimination.maxScore}</span>
+                        </div>
+                        <div class="detail-row">
+                            <span class="detail-label">Olfactory Memory</span>
+                            <span class="detail-value">${r.testScores.memory.score}/${r.testScores.memory.maxScore}</span>
+                        </div>
+                        <div class="detail-row">
+                            <span class="detail-label">Total Score</span>
+                            <span class="detail-value">${risk.totalScore}/${risk.maxScore} (${risk.percentage.toFixed(0)}%)</span>
+                        </div>
+                    </div>
+
+                    <div class="result-actions">
+                        <button class="btn-download" id="downloadReportBtn">📥 Download Report</button>
+                        <button class="btn-retake" id="retakeBtn">🔄 Retake</button>
+                    </div>
+
+                    <div class="result-disclaimer">
+                        ⚕️ This assessment is for screening purposes only. 
+                        Consult a neurologist for definitive diagnosis.
+                    </div>
+                `;
+
+                resultsScreen.innerHTML = html;
+                resultsScreen.classList.add('active');
+                questionScreen.classList.remove('active');
+
+                // Add event listeners
+                document.getElementById('downloadReportBtn').addEventListener('click', downloadReport);
+                document.getElementById('retakeBtn').addEventListener('click', retakeAssessment);
+            }
+
+            // ============================================================
+            //  DOWNLOAD REPORT (PDF)
+            // ============================================================
+            function downloadReport() {
+                if (!results) {
+                    showToast('⚠️ No results available to download');
+                    return;
+                }
+
+                const { jsPDF } = window.jspdf;
+                const doc = new jsPDF('p', 'mm', 'a4');
+                const pageWidth = doc.internal.pageSize.getWidth();
+                const margin = 15;
+                let yPos = 20;
+
+                doc.setFontSize(24);
+                doc.setFont('helvetica', 'bold');
+                doc.text('Neurodiagnostic Assessment Report', pageWidth / 2, yPos, { align: 'center' });
+                yPos += 10;
+
+                const now = new Date();
+                const dateStr = now.toLocaleString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric',
+                    hour: '2-digit', minute: '2-digit' });
+                doc.setFontSize(10);
+                doc.setFont('helvetica', 'normal');
+                doc.text('Generated: ' + dateStr, pageWidth / 2, yPos, { align: 'center' });
+                yPos += 8;
+
+                doc.setDrawColor(180);
+                doc.line(margin, yPos, pageWidth - margin, yPos);
+                yPos += 10;
+
+                const tableX = margin;
+                const tableWidth = pageWidth - (margin * 2);
+                const rowHeight = 8;
+                const col1Width = 50;
+
+                const risk = results.overallRisk;
+                const riskFields = [
+                    ['Risk Level', risk.level],
+                    ['Risk Score', risk.percentage.toFixed(0) + '%'],
+                    ['Total Score', risk.totalScore + '/' + risk.maxScore]
+                ];
+
+                doc.setFontSize(14);
+                doc.setFont('helvetica', 'bold');
+                doc.text('Risk Assessment', margin, yPos);
+                yPos += 8;
+
+                for (const [label, value] of riskFields) {
+                    doc.rect(tableX, yPos, tableWidth, rowHeight, 'D');
+                    doc.text(label, tableX + 4, yPos + 5.5);
+                    doc.text(String(value), tableX + col1Width + 4, yPos + 5.5);
+                    yPos += rowHeight;
+                }
+
+                if (risk.description) {
+                    const desc = doc.splitTextToSize(risk.description, tableWidth - 8);
+                    doc.setFontSize(9);
+                    doc.setFont('helvetica', 'italic');
+                    doc.text(desc, margin + 4, yPos + 4);
+                    yPos += desc.length * 4 + 8;
+                }
+
+                if (yPos > 200) { doc.addPage();
+                    yPos = 20; }
+                doc.setFontSize(14);
+                doc.setFont('helvetica', 'bold');
+                doc.text('Disease Probability Analysis', margin, yPos);
+                yPos += 8;
+
+                doc.setFillColor(245, 245, 245);
+                doc.rect(tableX, yPos, tableWidth, rowHeight, 'F');
+                doc.rect(tableX, yPos, tableWidth, rowHeight, 'D');
+                doc.setFont('helvetica', 'bold');
+                doc.setFontSize(9);
+                doc.text('Disease', tableX + 4, yPos + 5.5);
+                doc.text('Probability', tableX + 100, yPos + 5.5);
+                yPos += rowHeight;
+                doc.setFont('helvetica', 'normal');
+                doc.setFontSize(9);
+
+                const sorted = results.sortedDiseases || [];
+                for (const [disease, prob] of sorted.slice(0, 7)) {
+                    if (yPos > 260) { doc.addPage();
+                        yPos = 20; }
+                    doc.rect(tableX, yPos, tableWidth, rowHeight, 'D');
+                    doc.text(disease, tableX + 4, yPos + 5.5);
+                    doc.text(Math.round(prob * 100) + '%', tableX + 100, yPos + 5.5);
+                    const barWidth = Math.max(5, prob * 70);
+                    doc.setFillColor(prob > 0.5 ? 30 : (prob > 0.25 ? 120 : 180), prob > 0.5 ? 30 : (prob > 0.25 ? 120 : 180),
+                        prob > 0.5 ? 30 : (prob > 0.25 ? 120 : 180));
+                    doc.rect(tableX + 115, yPos + 2, barWidth, 4, 'F');
+                    yPos += rowHeight;
+                }
+                yPos += 4;
+
+                if (yPos > 200) { doc.addPage();
+                    yPos = 20; }
+                doc.setFontSize(14);
+                doc.setFont('helvetica', 'bold');
+                doc.text('Test Scores Detail', margin, yPos);
+                yPos += 8;
+
+                const testFields = [
+                    ['Olfactory Threshold', results.testScores.threshold.score + '/' + results.testScores.threshold
+                        .maxScore],
+                    ['Odor Identification', results.testScores.identification.score + '/' + results.testScores
+                        .identification.maxScore],
+                    ['Odor Discrimination', results.testScores.discrimination.score + '/' + results.testScores
+                        .discrimination.maxScore],
+                    ['Olfactory Memory', results.testScores.memory.score + '/' + results.testScores.memory.maxScore]
+                ];
+
+                for (const [label, value] of testFields) {
+                    doc.rect(tableX, yPos, tableWidth, rowHeight, 'D');
+                    doc.text(label, tableX + 4, yPos + 5.5);
+                    doc.text(String(value), tableX + col1Width + 4, yPos + 5.5);
+                    yPos += rowHeight;
+                }
+
+                const footerY = Math.min(yPos + 10, 280);
+                doc.setFontSize(8);
+                doc.setFont('helvetica', 'italic');
+                doc.setTextColor(150);
+                doc.text('This report was generated automatically by Neurodiagnostic Assessment.', pageWidth / 2, footerY,
+                { align: 'center' });
+                doc.text('Data is protected and confidential. For clinical use only.', pageWidth / 2, footerY + 5,
+                { align: 'center' });
+
+                const fileName = 'neurodiagnostic-report-' +
+                    now.getFullYear() + '-' +
+                    String(now.getMonth() + 1).padStart(2, '0') + '-' +
+                    String(now.getDate()).padStart(2, '0') + '.pdf';
+                doc.save(fileName);
+                showToast('📊 Report downloaded successfully');
+            }
+
+            // ============================================================
+            //  RETAKE ASSESSMENT
+            // ============================================================
+            function retakeAssessment() {
+                if (confirm('Retake the assessment? Your previous results will be cleared.')) {
+                    currentQuestion = 0;
+                    answers = new Array(diagnosticQuestions.length).fill(null);
+                    results = null;
+                    resultsScreen.classList.remove('active');
+                    startScreen.style.display = 'block';
+                    questionScreen.classList.remove('active');
+                    showToast('🔄 Assessment reset. Start again when ready.');
+                }
+            }
+
+            // ============================================================
+            //  KEYBOARD SHORTCUTS
+            // ============================================================
+            document.addEventListener('keydown', function(e) {
+                if (e.key === 'Escape') {
+                    // Close any open states (none in standalone)
+                }
+
+                if (questionScreen.classList.contains('active')) {
+                    if (e.key === 'Enter') {
+                        if (currentQuestion === diagnosticQuestions.length - 1) {
+                            if (!submitBtn.disabled) calculateResults();
+                        } else {
+                            if (!nextBtn.disabled) goToNext();
+                        }
+                    }
+                    if (e.key === 'ArrowLeft' && prevBtn.style.display !== 'none') goToPrev();
+                    if (e.key === 'ArrowRight' && nextBtn.style.display !== 'none') {
+                        if (!nextBtn.disabled) goToNext();
+                    }
+                    if (e.key >= '1' && e.key <= '3') {
+                        const options = document.querySelectorAll('.option-btn');
+                        const idx = parseInt(e.key) - 1;
+                        if (options[idx]) options[idx].click();
+                    }
+                }
+            });
+
+            // ============================================================
+            //  EVENT LISTENERS
+            // ============================================================
+            startBtn.addEventListener('click', startAssessment);
+            nextBtn.addEventListener('click', goToNext);
+            prevBtn.addEventListener('click', goToPrev);
+            submitBtn.addEventListener('click', calculateResults);
+
+            // ============================================================
+            //  INIT
+            // ============================================================
+            console.log('🧠 Neurodiagnostic Assessment - Standalone');
+            console.log('📊 12 questions, 4 domains, 7 diseases analyzed');
+            console.log('⌨️  Keyboard shortcuts: 1-3 for options, Arrow keys to navigate, Enter to submit');
+
+        })();
+    </script>
+
+</body>
+</html>

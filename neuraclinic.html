@@ -1,0 +1,3598 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>NeuraClinic - Neurodegenerative Assessment Platform</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <style>
+      /* ============================================
+                   RESET & BASE
+                ============================================ */
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family:
+          -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu,
+          sans-serif;
+        background: #0a0a0a;
+        min-height: 100vh;
+        display: flex;
+        justify-content: center;
+        align-items: flex-start;
+        padding: 0;
+      }
+
+      .app-container {
+        width: 100%;
+        max-width: 1400px;
+        min-height: 100vh;
+        background: #f0f4f8;
+        padding: 0;
+        box-shadow: none;
+        overflow: hidden;
+        position: relative;
+        display: flex;
+        flex-direction: column;
+      }
+
+      /* ============================================
+                   HEADER
+                ============================================ */
+      .header {
+        background: linear-gradient(
+          135deg,
+          #0a1628 0%,
+          #1a2a4a 50%,
+          #0d1f3c 100%
+        );
+        padding: 20px 40px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 16px;
+        border-bottom: 3px solid #2a5f8a;
+      }
+
+      .header-left {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+      }
+
+      .header-left .hospital-icon {
+        font-size: 40px;
+      }
+
+      .header-left h1 {
+        font-size: 24px;
+        font-weight: 700;
+        color: #ffffff;
+        letter-spacing: -0.5px;
+      }
+
+      .header-left .subtitle {
+        font-size: 12px;
+        color: #88b4d8;
+        font-weight: 400;
+        display: block;
+      }
+
+      .header-right {
+        display: flex;
+        align-items: center;
+        gap: 20px;
+        flex-wrap: wrap;
+      }
+
+      .header-badge {
+        display: inline-block;
+        background: rgba(255, 255, 255, 0.08);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        padding: 4px 16px;
+        border-radius: 20px;
+        font-size: 11px;
+        color: #88b4d8;
+        letter-spacing: 0.5px;
+        text-transform: uppercase;
+      }
+
+      .persona-selector {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        background: rgba(255, 255, 255, 0.06);
+        padding: 4px 8px;
+        border-radius: 12px;
+        border: 1px solid rgba(255, 255, 255, 0.08);
+      }
+
+      .persona-selector label {
+        font-size: 11px;
+        color: #88b4d8;
+        font-weight: 500;
+        text-transform: uppercase;
+      }
+
+      .persona-selector select {
+        background: transparent;
+        border: none;
+        color: #ffffff;
+        font-size: 14px;
+        font-weight: 600;
+        padding: 6px 12px;
+        border-radius: 8px;
+        cursor: pointer;
+        outline: none;
+      }
+
+      .persona-selector select option {
+        background: #1a2a4a;
+        color: #ffffff;
+      }
+
+      .header-status {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 12px;
+        color: #88b4d8;
+      }
+
+      .status-dot {
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        display: inline-block;
+      }
+
+      .status-dot.online {
+        background: #4caf50;
+        animation: pulse-dot 2s infinite;
+      }
+
+      @keyframes pulse-dot {
+        0%,
+        100% {
+          opacity: 1;
+        }
+        50% {
+          opacity: 0.3;
+        }
+      }
+
+      /* ============================================
+                   MAIN LAYOUT
+                ============================================ */
+      .main-layout {
+        display: flex;
+        flex: 1;
+        min-height: 600px;
+      }
+
+      /* ============================================
+                   SIDEBAR
+                ============================================ */
+      .sidebar {
+        width: 260px;
+        background: #ffffff;
+        border-right: 1px solid #e0e8f0;
+        padding: 24px 16px;
+        flex-shrink: 0;
+        overflow-y: auto;
+      }
+
+      .sidebar .section-title {
+        font-size: 10px;
+        font-weight: 700;
+        color: #8899aa;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        margin: 16px 0 8px 0;
+        padding: 0 8px;
+      }
+
+      .sidebar .section-title:first-child {
+        margin-top: 0;
+      }
+
+      .sidebar-menu-item {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 10px 12px;
+        border-radius: 10px;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        color: #334455;
+        font-size: 13px;
+        font-weight: 500;
+        border: none;
+        background: transparent;
+        width: 100%;
+        text-align: left;
+      }
+
+      .sidebar-menu-item:hover {
+        background: #f0f4f8;
+      }
+
+      .sidebar-menu-item.active {
+        background: #e8edf5;
+        color: #0a1628;
+        font-weight: 600;
+      }
+
+      .sidebar-menu-item .icon {
+        font-size: 18px;
+        width: 28px;
+        text-align: center;
+      }
+
+      .sidebar-menu-item .badge {
+        margin-left: auto;
+        background: #1a2a4a;
+        color: #ffffff;
+        font-size: 10px;
+        font-weight: 700;
+        padding: 2px 10px;
+        border-radius: 12px;
+      }
+
+      .sidebar-menu-item .badge.alert {
+        background: #c62828;
+      }
+
+      .sidebar-menu-item .badge.warning {
+        background: #e65100;
+      }
+
+      .sidebar-menu-item .badge.success {
+        background: #2e7d32;
+      }
+
+      /* ============================================
+                   CONTENT AREA
+                ============================================ */
+      .content-area {
+        flex: 1;
+        padding: 24px 32px;
+        overflow-y: auto;
+        background: #f0f4f8;
+      }
+
+      /* ============================================
+                   DASHBOARD CARDS
+                ============================================ */
+      .dashboard-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+        gap: 16px;
+        margin-bottom: 24px;
+      }
+
+      .stat-card {
+        background: #ffffff;
+        border-radius: 12px;
+        padding: 18px 20px;
+        border: 1px solid #e0e8f0;
+        transition: all 0.3s ease;
+      }
+
+      .stat-card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06);
+      }
+
+      .stat-card .stat-label {
+        font-size: 11px;
+        font-weight: 600;
+        color: #8899aa;
+        text-transform: uppercase;
+        letter-spacing: 0.3px;
+      }
+
+      .stat-card .stat-value {
+        font-size: 28px;
+        font-weight: 700;
+        color: #0a1628;
+        margin-top: 4px;
+      }
+
+      .stat-card .stat-change {
+        font-size: 12px;
+        color: #2e7d32;
+        margin-top: 2px;
+      }
+
+      .stat-card .stat-change.negative {
+        color: #c62828;
+      }
+
+      .stat-card .stat-icon {
+        font-size: 32px;
+        float: right;
+        opacity: 0.6;
+      }
+
+      /* ============================================
+                   PATIENT LIST
+                ============================================ */
+      .section-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 16px;
+        flex-wrap: wrap;
+        gap: 12px;
+      }
+
+      .section-header h2 {
+        font-size: 18px;
+        font-weight: 700;
+        color: #0a1628;
+      }
+
+      .section-header .sub {
+        font-size: 13px;
+        color: #8899aa;
+        font-weight: 400;
+      }
+
+      .btn-primary {
+        padding: 10px 24px;
+        border: none;
+        border-radius: 10px;
+        font-size: 14px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        background: #1a2a4a;
+        color: #ffffff;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+      }
+
+      .btn-primary:hover {
+        background: #0d1f3c;
+        transform: scale(1.02);
+      }
+
+      .btn-secondary {
+        padding: 10px 24px;
+        border: 2px solid #e0e8f0;
+        border-radius: 10px;
+        font-size: 14px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        background: #ffffff;
+        color: #334455;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+      }
+
+      .btn-secondary:hover {
+        background: #f0f4f8;
+        border-color: #b0c0d0;
+      }
+
+      .btn-success {
+        padding: 10px 24px;
+        border: none;
+        border-radius: 10px;
+        font-size: 14px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        background: #2e7d32;
+        color: #ffffff;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+      }
+
+      .btn-success:hover {
+        background: #1b5e20;
+        transform: scale(1.02);
+      }
+
+      .btn-danger {
+        padding: 10px 24px;
+        border: none;
+        border-radius: 10px;
+        font-size: 14px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        background: #c62828;
+        color: #ffffff;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+      }
+
+      .btn-danger:hover {
+        background: #b71c1c;
+        transform: scale(1.02);
+      }
+
+      .btn-outline-primary {
+        padding: 10px 24px;
+        border: 2px solid #1a2a4a;
+        border-radius: 10px;
+        font-size: 14px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        background: transparent;
+        color: #1a2a4a;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+      }
+
+      .btn-outline-primary:hover {
+        background: #1a2a4a;
+        color: #ffffff;
+      }
+
+      .patient-table {
+        background: #ffffff;
+        border-radius: 12px;
+        border: 1px solid #e0e8f0;
+        overflow: hidden;
+      }
+
+      .patient-table table {
+        width: 100%;
+        border-collapse: collapse;
+      }
+
+      .patient-table th {
+        background: #f8fafc;
+        padding: 12px 16px;
+        text-align: left;
+        font-size: 11px;
+        font-weight: 700;
+        color: #8899aa;
+        text-transform: uppercase;
+        letter-spacing: 0.3px;
+        border-bottom: 2px solid #e0e8f0;
+      }
+
+      .patient-table td {
+        padding: 12px 16px;
+        font-size: 13px;
+        color: #334455;
+        border-bottom: 1px solid #f0f4f8;
+      }
+
+      .patient-table tr:hover td {
+        background: #f8fafc;
+      }
+
+      .status-badge {
+        display: inline-block;
+        padding: 3px 12px;
+        border-radius: 12px;
+        font-size: 11px;
+        font-weight: 600;
+      }
+
+      .status-badge.critical {
+        background: #ffebee;
+        color: #c62828;
+      }
+
+      .status-badge.high {
+        background: #fff3e0;
+        color: #e65100;
+      }
+
+      .status-badge.moderate {
+        background: #fff8e1;
+        color: #f57f17;
+      }
+
+      .status-badge.low {
+        background: #e8f5e9;
+        color: #2e7d32;
+      }
+
+      .status-badge.normal {
+        background: #e3f2fd;
+        color: #1565c0;
+      }
+
+      .status-badge.pending {
+        background: #f5f5f5;
+        color: #888;
+      }
+
+      .status-badge.active {
+        background: #e8f5e9;
+        color: #2e7d32;
+      }
+
+      .action-btn {
+        padding: 4px 12px;
+        border: 1px solid #e0e8f0;
+        border-radius: 6px;
+        background: #ffffff;
+        color: #334455;
+        font-size: 12px;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        margin-right: 4px;
+      }
+
+      .action-btn:hover {
+        background: #f0f4f8;
+        border-color: #b0c0d0;
+      }
+
+      .action-btn.view {
+        background: #e3f2fd;
+        border-color: #90caf9;
+        color: #1565c0;
+      }
+
+      .action-btn.view:hover {
+        background: #bbdefb;
+      }
+
+      .action-btn.assess {
+        background: #e8f5e9;
+        border-color: #81c784;
+        color: #2e7d32;
+      }
+
+      .action-btn.assess:hover {
+        background: #c8e6c9;
+      }
+
+      .action-btn.test {
+        background: #fff3e0;
+        border-color: #ffcc80;
+        color: #e65100;
+      }
+
+      .action-btn.test:hover {
+        background: #ffe0b2;
+      }
+
+      /* ============================================
+                   MODAL
+                ============================================ */
+      .modal-overlay {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.6);
+        backdrop-filter: blur(4px);
+        z-index: 1000;
+        justify-content: center;
+        align-items: center;
+      }
+
+      .modal-overlay.active {
+        display: flex;
+      }
+
+      .modal-content {
+        background: #ffffff;
+        border-radius: 16px;
+        max-width: 900px;
+        width: 95%;
+        max-height: 92vh;
+        overflow-y: auto;
+        padding: 0;
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4);
+        animation: slideUp 0.3s ease;
+      }
+
+      @keyframes slideUp {
+        from {
+          transform: translateY(30px);
+          opacity: 0;
+        }
+        to {
+          transform: translateY(0);
+          opacity: 1;
+        }
+      }
+
+      .modal-header {
+        padding: 20px 24px;
+        border-bottom: 1px solid #e0e8f0;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        background: #f8fafc;
+        border-radius: 16px 16px 0 0;
+        position: sticky;
+        top: 0;
+        z-index: 10;
+      }
+
+      .modal-header h2 {
+        font-size: 20px;
+        font-weight: 700;
+        color: #0a1628;
+      }
+
+      .modal-header .close-btn {
+        background: none;
+        border: none;
+        font-size: 28px;
+        color: #8899aa;
+        cursor: pointer;
+        padding: 0 8px;
+        transition: color 0.2s;
+      }
+
+      .modal-header .close-btn:hover {
+        color: #0a1628;
+      }
+
+      .modal-body {
+        padding: 24px;
+      }
+
+      .modal-footer {
+        padding: 16px 24px;
+        border-top: 1px solid #e0e8f0;
+        display: flex;
+        justify-content: flex-end;
+        gap: 12px;
+        background: #f8fafc;
+        border-radius: 0 0 16px 16px;
+        position: sticky;
+        bottom: 0;
+        z-index: 10;
+      }
+
+      /* ============================================
+                   PATIENT REGISTRATION FORM
+                ============================================ */
+      .form-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 16px;
+      }
+
+      .form-group {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+      }
+
+      .form-group.full-width {
+        grid-column: span 2;
+      }
+
+      .form-group label {
+        font-size: 11px;
+        font-weight: 600;
+        color: #8899aa;
+        text-transform: uppercase;
+        letter-spacing: 0.3px;
+      }
+
+      .form-group label .required {
+        color: #c62828;
+      }
+
+      .form-group input,
+      .form-group select,
+      .form-group textarea {
+        padding: 10px 14px;
+        border: 2px solid #e0e8f0;
+        border-radius: 8px;
+        font-size: 14px;
+        color: #1a1a1a;
+        transition: border-color 0.3s ease;
+        outline: none;
+        font-family: inherit;
+        width: 100%;
+      }
+
+      .form-group input:focus,
+      .form-group select:focus,
+      .form-group textarea:focus {
+        border-color: #1a2a4a;
+      }
+
+      .form-group textarea {
+        resize: vertical;
+        min-height: 60px;
+      }
+
+      .form-group .hint {
+        font-size: 11px;
+        color: #8899aa;
+      }
+
+      /* ============================================
+                   ASSESSMENT QUESTIONS
+                ============================================ */
+      .assessment-progress {
+        margin-bottom: 24px;
+      }
+
+      .assessment-progress .progress-bar {
+        width: 100%;
+        height: 6px;
+        background: #e8e8e8;
+        border-radius: 4px;
+        overflow: hidden;
+      }
+
+      .assessment-progress .progress-fill {
+        height: 100%;
+        background: #1a2a4a;
+        border-radius: 4px;
+        transition: width 0.5s ease;
+      }
+
+      .assessment-progress .progress-text {
+        display: flex;
+        justify-content: space-between;
+        margin-top: 8px;
+        font-size: 12px;
+        color: #8899aa;
+      }
+
+      .assessment-question {
+        margin-bottom: 24px;
+      }
+
+      .assessment-question .q-number {
+        font-size: 12px;
+        color: #8899aa;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.3px;
+      }
+
+      .assessment-question .q-text {
+        font-size: 18px;
+        font-weight: 700;
+        color: #0a1628;
+        margin-top: 4px;
+        margin-bottom: 16px;
+      }
+
+      .assessment-options {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+      }
+
+      .assessment-option {
+        padding: 12px 18px;
+        border: 2px solid #e0e8f0;
+        border-radius: 10px;
+        background: #ffffff;
+        color: #1a1a1a;
+        font-size: 15px;
+        font-weight: 500;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        text-align: left;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+      }
+
+      .assessment-option:hover {
+        border-color: #8899aa;
+        background: #f5f7fa;
+      }
+
+      .assessment-option.selected {
+        border-color: #1a2a4a;
+        background: #1a2a4a;
+        color: #ffffff;
+      }
+
+      .assessment-option .option-letter {
+        width: 28px;
+        height: 28px;
+        border-radius: 50%;
+        background: #f0f0f0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 700;
+        font-size: 13px;
+        color: #666;
+        flex-shrink: 0;
+        transition: all 0.3s ease;
+      }
+
+      .assessment-option.selected .option-letter {
+        background: #ffffff;
+        color: #1a2a4a;
+      }
+
+      .assessment-nav {
+        display: flex;
+        gap: 12px;
+        justify-content: center;
+        margin-top: 16px;
+      }
+
+      .assessment-nav .btn-prev {
+        padding: 12px 24px;
+        border: 2px solid #e0e8f0;
+        border-radius: 8px;
+        background: #ffffff;
+        color: #666;
+        font-size: 14px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.2s ease;
+      }
+
+      .assessment-nav .btn-prev:hover {
+        background: #f5f5f5;
+      }
+
+      .assessment-nav .btn-next,
+      .assessment-nav .btn-submit {
+        padding: 12px 32px;
+        border: none;
+        border-radius: 8px;
+        background: #1a2a4a;
+        color: #ffffff;
+        font-size: 14px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.2s ease;
+      }
+
+      .assessment-nav .btn-next:hover,
+      .assessment-nav .btn-submit:hover {
+        background: #0d1f3c;
+      }
+
+      .assessment-nav .btn-next:disabled,
+      .assessment-nav .btn-submit:disabled {
+        opacity: 0.4;
+        cursor: not-allowed;
+      }
+
+      /* ============================================
+                   ASSESSMENT RESULTS
+                ============================================ */
+      .result-summary {
+        text-align: center;
+        padding: 10px 0 20px 0;
+      }
+
+      .result-summary .result-icon {
+        font-size: 56px;
+        display: block;
+        margin-bottom: 8px;
+      }
+
+      .result-summary .result-title {
+        font-size: 22px;
+        font-weight: 700;
+        color: #0a1628;
+        margin-bottom: 4px;
+      }
+
+      .result-summary .result-subtitle {
+        font-size: 14px;
+        color: #666;
+      }
+
+      .result-risk-indicator {
+        padding: 14px;
+        border-radius: 12px;
+        margin: 12px 0 16px 0;
+        text-align: center;
+        font-weight: 600;
+        font-size: 14px;
+        border: 2px solid #333;
+      }
+
+      .result-risk-indicator.very-low {
+        background: #e8f5e9;
+        color: #2e7d32;
+        border-color: #2e7d32;
+      }
+
+      .result-risk-indicator.low {
+        background: #e8e8e8;
+        color: #1a1a1a;
+        border-color: #888;
+      }
+
+      .result-risk-indicator.moderate {
+        background: #fff3e0;
+        color: #e65100;
+        border-color: #e65100;
+      }
+
+      .result-risk-indicator.high {
+        background: #ffebee;
+        color: #c62828;
+        border-color: #c62828;
+      }
+
+      .result-risk-indicator.very-high {
+        background: #b71c1c;
+        color: #ffffff;
+        border-color: #b71c1c;
+      }
+
+      .result-disease-item {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 6px 0;
+        border-bottom: 1px solid #f0f0f0;
+      }
+
+      .result-disease-item .disease-name {
+        font-size: 13px;
+        font-weight: 500;
+        color: #1a1a1a;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+      }
+
+      .result-disease-item .disease-bar {
+        flex: 1;
+        margin: 0 10px;
+        height: 6px;
+        background: #e8e8e8;
+        border-radius: 4px;
+        overflow: hidden;
+      }
+
+      .result-disease-item .disease-bar .bar-fill {
+        height: 100%;
+        border-radius: 4px;
+        transition: width 0.8s ease;
+      }
+
+      .result-disease-item .disease-bar .bar-fill.high {
+        background: #c62828;
+      }
+
+      .result-disease-item .disease-bar .bar-fill.medium {
+        background: #e65100;
+      }
+
+      .result-disease-item .disease-bar .bar-fill.low {
+        background: #4caf50;
+      }
+
+      .result-disease-item .disease-prob {
+        font-size: 13px;
+        font-weight: 700;
+        color: #1a1a1a;
+        min-width: 45px;
+        text-align: right;
+      }
+
+      .result-disease-item .disease-status {
+        font-size: 10px;
+        font-weight: 600;
+        padding: 2px 10px;
+        border-radius: 12px;
+        min-width: 80px;
+        text-align: center;
+      }
+
+      .result-disease-item .disease-status.positive {
+        background: #ffebee;
+        color: #c62828;
+      }
+
+      .result-disease-item .disease-status.negative {
+        background: #e8f5e9;
+        color: #2e7d32;
+      }
+
+      /* ============================================
+                   TOAST
+                ============================================ */
+      .toast {
+        position: fixed;
+        bottom: 30px;
+        left: 50%;
+        transform: translateX(-50%);
+        background: #1a2a4a;
+        color: #ffffff;
+        padding: 14px 28px;
+        border-radius: 12px;
+        font-size: 14px;
+        font-weight: 500;
+        z-index: 999;
+        box-shadow: 0 8px 30px rgba(0, 0, 0, 0.4);
+        max-width: 600px;
+        width: 90%;
+        text-align: center;
+        opacity: 0;
+        transition:
+          opacity 0.3s ease,
+          transform 0.3s ease;
+        transform: translateX(-50%) translateY(20px);
+        pointer-events: none;
+      }
+
+      .toast.show {
+        opacity: 1;
+        transform: translateX(-50%) translateY(0);
+      }
+
+      /* ============================================
+                   RESPONSIVE
+                ============================================ */
+      @media (max-width: 1024px) {
+        .sidebar {
+          width: 200px;
+          padding: 16px 12px;
+        }
+        .content-area {
+          padding: 20px;
+        }
+        .form-grid {
+          grid-template-columns: 1fr;
+        }
+        .form-group.full-width {
+          grid-column: span 1;
+        }
+      }
+
+      @media (max-width: 768px) {
+        .header {
+          padding: 16px 20px;
+        }
+        .header-left h1 {
+          font-size: 18px;
+        }
+        .main-layout {
+          flex-direction: column;
+        }
+        .sidebar {
+          width: 100%;
+          border-right: none;
+          border-bottom: 1px solid #e0e8f0;
+          padding: 12px 16px;
+          display: flex;
+          flex-wrap: wrap;
+          gap: 4px;
+        }
+        .sidebar .section-title {
+          display: none;
+        }
+        .sidebar-menu-item {
+          padding: 8px 12px;
+          font-size: 12px;
+          flex: 0 0 auto;
+          width: auto;
+        }
+        .sidebar-menu-item .badge {
+          display: none;
+        }
+        .content-area {
+          padding: 16px;
+        }
+        .dashboard-grid {
+          grid-template-columns: 1fr 1fr;
+        }
+        .patient-table {
+          overflow-x: auto;
+        }
+        .patient-table table {
+          font-size: 12px;
+        }
+        .patient-table th,
+        .patient-table td {
+          padding: 8px 10px;
+        }
+        .modal-content {
+          width: 98%;
+          max-height: 95vh;
+        }
+        .modal-header h2 {
+          font-size: 17px;
+        }
+        .modal-body {
+          padding: 16px;
+        }
+        .assessment-question .q-text {
+          font-size: 16px;
+        }
+        .form-grid {
+          grid-template-columns: 1fr;
+        }
+        .form-group.full-width {
+          grid-column: span 1;
+        }
+        .assessment-nav {
+          flex-wrap: wrap;
+        }
+        .assessment-nav .btn-prev,
+        .assessment-nav .btn-next,
+        .assessment-nav .btn-submit {
+          flex: 1;
+          min-width: 100px;
+          justify-content: center;
+        }
+      }
+
+      @media (max-width: 480px) {
+        .header {
+          padding: 12px 14px;
+        }
+        .header-left h1 {
+          font-size: 16px;
+        }
+        .header-left .hospital-icon {
+          font-size: 28px;
+        }
+        .header-badge {
+          font-size: 9px;
+          padding: 2px 10px;
+        }
+        .content-area {
+          padding: 12px;
+        }
+        .dashboard-grid {
+          grid-template-columns: 1fr;
+        }
+        .stat-card .stat-value {
+          font-size: 22px;
+        }
+        .btn-primary,
+        .btn-secondary,
+        .btn-success,
+        .btn-danger,
+        .btn-outline-primary {
+          padding: 8px 16px;
+          font-size: 12px;
+        }
+        .patient-table td .action-btn {
+          padding: 2px 8px;
+          font-size: 10px;
+          margin-bottom: 2px;
+        }
+        .persona-selector select {
+          font-size: 12px;
+          padding: 4px 8px;
+        }
+        .modal-header h2 {
+          font-size: 15px;
+        }
+        .modal-body {
+          padding: 12px;
+        }
+        .assessment-question .q-text {
+          font-size: 15px;
+        }
+        .assessment-option {
+          padding: 10px 14px;
+          font-size: 13px;
+        }
+        .assessment-option .option-letter {
+          width: 24px;
+          height: 24px;
+          font-size: 11px;
+        }
+        .result-summary .result-icon {
+          font-size: 40px;
+        }
+        .result-summary .result-title {
+          font-size: 18px;
+        }
+        .result-disease-item {
+          flex-wrap: wrap;
+          gap: 4px;
+        }
+        .result-disease-item .disease-status {
+          min-width: 60px;
+          font-size: 9px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="app-container">
+      <!-- ===== HEADER ===== -->
+      <header class="header">
+        <div class="header-left">
+          <span class="hospital-icon">🏥</span>
+          <div>
+            <h1>NeuraClinic</h1>
+            <span class="subtitle"
+              >Neurodegenerative Assessment &amp; Research Center</span
+            >
+          </div>
+        </div>
+        <div class="header-right">
+          <span class="header-badge">🔬 Clinical Decision Support</span>
+          <div class="persona-selector">
+            <label>👤 Role:</label>
+            <select id="personaSelect">
+              <option value="neurologist">🧠 Neurologist</option>
+              <option value="resident">👨‍⚕️ Resident</option>
+              <option value="nurse">💉 Nurse</option>
+              <option value="researcher">🔬 Researcher</option>
+              <option value="patient">🧑‍⚕️ Patient</option>
+            </select>
+          </div>
+          <div class="header-status">
+            <span class="status-dot online"></span>
+            <span id="currentPersonaName">Neurologist</span>
+          </div>
+        </div>
+      </header>
+
+      <!-- ===== MAIN LAYOUT ===== -->
+      <div class="main-layout">
+        <!-- ===== SIDEBAR ===== -->
+        <nav class="sidebar" id="sidebar">
+          <div class="section-title">Dashboard</div>
+          <button class="sidebar-menu-item active" data-view="dashboard">
+            <span class="icon">📊</span> Overview
+            <span class="badge" id="totalPatientsBadge">0</span>
+          </button>
+
+          <div class="section-title">Patients</div>
+          <button class="sidebar-menu-item" data-view="patients">
+            <span class="icon">👤</span> All Patients
+            <span class="badge" id="patientListBadge">0</span>
+          </button>
+          <button class="sidebar-menu-item" data-view="pending">
+            <span class="icon">⏳</span> Pending Assessments
+            <span class="badge warning" id="pendingBadge">0</span>
+          </button>
+          <button class="sidebar-menu-item" data-view="critical">
+            <span class="icon">🚨</span> Critical Cases
+            <span class="badge alert" id="criticalBadge">0</span>
+          </button>
+
+          <div class="section-title">Clinical Tools</div>
+          <button class="sidebar-menu-item" data-view="assessment">
+            <span class="icon">🧠</span> New Assessment
+          </button>
+          <button class="sidebar-menu-item" data-view="reports">
+            <span class="icon">📄</span> Reports
+          </button>
+
+          <div class="section-title">Research</div>
+          <button class="sidebar-menu-item" data-view="research">
+            <span class="icon">🔬</span> Research Data
+          </button>
+          <button class="sidebar-menu-item" data-view="trends">
+            <span class="icon">📈</span> Trends
+          </button>
+        </nav>
+
+        <!-- ===== CONTENT AREA ===== -->
+        <main class="content-area" id="contentArea">
+          <!-- ===== DASHBOARD VIEW ===== -->
+          <div id="view-dashboard" class="view-content">
+            <div class="dashboard-grid">
+              <div class="stat-card">
+                <span class="stat-icon">👤</span>
+                <div class="stat-label">Total Patients</div>
+                <div class="stat-value" id="statTotalPatients">0</div>
+                <div class="stat-change">↗ Registered</div>
+              </div>
+              <div class="stat-card">
+                <span class="stat-icon">⏳</span>
+                <div class="stat-label">Pending Assessment</div>
+                <div class="stat-value" id="statPending">0</div>
+                <div class="stat-change">↗ Need review</div>
+              </div>
+              <div class="stat-card">
+                <span class="stat-icon">🚨</span>
+                <div class="stat-label">Critical Cases</div>
+                <div class="stat-value" id="statCritical">0</div>
+                <div class="stat-change negative">
+                  ↗ Require immediate attention
+                </div>
+              </div>
+              <div class="stat-card">
+                <span class="stat-icon">📊</span>
+                <div class="stat-label">Assessments Today</div>
+                <div class="stat-value" id="statToday">0</div>
+                <div class="stat-change">↗ Completed</div>
+              </div>
+            </div>
+
+            <div class="section-header">
+              <h2>
+                Recent Activity
+                <span class="sub">Latest patient assessments</span>
+              </h2>
+              <button class="btn-secondary" onclick="switchView('patients')">
+                View All →
+              </button>
+            </div>
+            <div class="patient-table" id="recentTable">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Patient</th>
+                    <th>MRN</th>
+                    <th>Condition</th>
+                    <th>Risk Level</th>
+                    <th>Date</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody id="recentTableBody">
+                  <!-- Populated by JS -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- ===== PATIENTS VIEW ===== -->
+          <div id="view-patients" class="view-content" style="display: none">
+            <div class="section-header">
+              <h2>
+                All Patients <span class="sub">Complete patient roster</span>
+              </h2>
+              <div style="display: flex; gap: 8px; flex-wrap: wrap">
+                <button class="btn-primary" onclick="openNewPatientModal()">
+                  ➕ New Patient
+                </button>
+                <button class="btn-secondary" onclick="exportPatientData()">
+                  📥 Export
+                </button>
+              </div>
+            </div>
+            <div class="patient-table">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Patient</th>
+                    <th>MRN</th>
+                    <th>Age</th>
+                    <th>Condition</th>
+                    <th>Risk Level</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody id="allPatientsBody">
+                  <!-- Populated by JS -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- ===== PENDING VIEW ===== -->
+          <div id="view-pending" class="view-content" style="display: none">
+            <div class="section-header">
+              <h2>
+                Pending Assessments
+                <span class="sub">Awaiting clinical review</span>
+              </h2>
+            </div>
+            <div class="patient-table">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Patient</th>
+                    <th>MRN</th>
+                    <th>Submitted</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody id="pendingBody">
+                  <!-- Populated by JS -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- ===== CRITICAL VIEW ===== -->
+          <div id="view-critical" class="view-content" style="display: none">
+            <div class="section-header">
+              <h2>
+                Critical Cases
+                <span class="sub">Requiring immediate attention</span>
+              </h2>
+            </div>
+            <div class="patient-table">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Patient</th>
+                    <th>MRN</th>
+                    <th>Risk Level</th>
+                    <th>Primary Concern</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody id="criticalBody">
+                  <!-- Populated by JS -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- ===== ASSESSMENT VIEW ===== -->
+          <div id="view-assessment" class="view-content" style="display: none">
+            <div class="section-header">
+              <h2>
+                Neurodegenerative Assessment
+                <span class="sub">Complete the screening</span>
+              </h2>
+            </div>
+            <div
+              id="assessmentContainer"
+              style="
+                background: #ffffff;
+                border-radius: 12px;
+                border: 1px solid #e0e8f0;
+                padding: 24px;
+              "
+            >
+              <div id="assessmentContent">
+                <!-- Assessment content rendered by JS -->
+              </div>
+            </div>
+          </div>
+
+          <!-- ===== REPORTS VIEW ===== -->
+          <div id="view-reports" class="view-content" style="display: none">
+            <div class="section-header">
+              <h2>
+                Clinical Reports
+                <span class="sub">Download patient reports</span>
+              </h2>
+            </div>
+            <div class="patient-table">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Patient</th>
+                    <th>MRN</th>
+                    <th>Report Date</th>
+                    <th>Type</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody id="reportsBody">
+                  <!-- Populated by JS -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- ===== RESEARCH VIEW ===== -->
+          <div id="view-research" class="view-content" style="display: none">
+            <div class="section-header">
+              <h2>
+                Research Data <span class="sub">Aggregated clinical data</span>
+              </h2>
+            </div>
+            <div
+              style="
+                display: grid;
+                grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+                gap: 16px;
+                margin-bottom: 20px;
+              "
+            >
+              <div class="stat-card">
+                <div class="stat-label">Total Assessments</div>
+                <div class="stat-value" id="researchTotal">0</div>
+              </div>
+              <div class="stat-card">
+                <div class="stat-label">Disease Prevalence</div>
+                <div class="stat-value" id="researchTopDisease">-</div>
+                <div class="stat-change">Most common</div>
+              </div>
+              <div class="stat-card">
+                <div class="stat-label">Avg Risk Score</div>
+                <div class="stat-value" id="researchAvgRisk">-</div>
+              </div>
+            </div>
+            <div
+              style="
+                background: #ffffff;
+                border-radius: 12px;
+                border: 1px solid #e0e8f0;
+                padding: 20px;
+              "
+            >
+              <h3 style="font-size: 14px; color: #0a1628; margin-bottom: 12px">
+                Disease Distribution
+              </h3>
+              <div id="diseaseDistribution">
+                <!-- Populated by JS -->
+              </div>
+            </div>
+          </div>
+
+          <!-- ===== TRENDS VIEW ===== -->
+          <div id="view-trends" class="view-content" style="display: none">
+            <div class="section-header">
+              <h2>Trends <span class="sub">Clinical pattern analysis</span></h2>
+            </div>
+            <div
+              style="
+                background: #ffffff;
+                border-radius: 12px;
+                border: 1px solid #e0e8f0;
+                padding: 24px;
+                text-align: center;
+                color: #8899aa;
+              "
+            >
+              📊 Trend analysis dashboard<br />
+              <span style="font-size: 13px"
+                >Showing aggregated data from all assessments</span
+              >
+            </div>
+          </div>
+        </main>
+      </div>
+    </div>
+
+    <!-- ===== MODAL ===== -->
+    <div class="modal-overlay" id="modalOverlay">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h2 id="modalTitle">Patient Management</h2>
+          <button class="close-btn" onclick="closeModal()">✕</button>
+        </div>
+        <div class="modal-body" id="modalBody">
+          <!-- Dynamic content -->
+        </div>
+        <div class="modal-footer" id="modalFooter">
+          <!-- Dynamic buttons -->
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== TOAST ===== -->
+    <div class="toast" id="toast"></div>
+
+    <script>
+      // ============================================================
+      //  NEUROCLINIC - COMPLETE HOSPITAL PERSONA SYSTEM
+      //  WITH FIXED PDF DOWNLOAD REPORT
+      // ============================================================
+
+      (function () {
+        "use strict";
+
+        // ============================================================
+        //  PERSONA CONFIGURATION
+        // ============================================================
+        const PERSONAS = {
+          neurologist: {
+            id: "neurologist",
+            name: "Neurologist",
+            icon: "🧠",
+            title: "Senior Neurologist",
+            permissions: [
+              "view_all",
+              "edit_all",
+              "diagnose",
+              "prescribe",
+              "export",
+              "delete",
+            ],
+            color: "#1a2a4a",
+            badge: "Attending Physician",
+          },
+          resident: {
+            id: "resident",
+            name: "Resident",
+            icon: "👨‍⚕️",
+            title: "Resident Physician",
+            permissions: [
+              "view_all",
+              "assess",
+              "edit_assigned",
+              "request_review",
+            ],
+            color: "#2a4a6a",
+            badge: "In Training",
+          },
+          nurse: {
+            id: "nurse",
+            name: "Nurse",
+            icon: "💉",
+            title: "Clinical Nurse",
+            permissions: ["view_patients", "record", "monitor"],
+            color: "#4a6a8a",
+            badge: "Clinical Staff",
+          },
+          researcher: {
+            id: "researcher",
+            name: "Researcher",
+            icon: "🔬",
+            title: "Research Scientist",
+            permissions: ["view_all", "export", "analyze", "anonymize"],
+            color: "#2a5a4a",
+            badge: "Research Team",
+          },
+          patient: {
+            id: "patient",
+            name: "Patient",
+            icon: "🧑‍⚕️",
+            title: "Patient",
+            permissions: ["view_own", "track"],
+            color: "#5a4a6a",
+            badge: "Patient Portal",
+          },
+        };
+
+        // ============================================================
+        //  DISEASE PATTERNS
+        // ============================================================
+        const DISEASE_PATTERNS = {
+          "Alzheimer's Disease": {
+            icon: "🧠",
+            threshold: 0.65,
+            color: "#e74c3c",
+          },
+          "Parkinson's Disease": {
+            icon: "🫨",
+            threshold: 0.6,
+            color: "#f39c12",
+          },
+          "Lewy Body Dementia": {
+            icon: "👁️",
+            threshold: 0.55,
+            color: "#9b59b6",
+          },
+          "Frontotemporal Dementia": {
+            icon: "🧩",
+            threshold: 0.6,
+            color: "#1abc9c",
+          },
+          "Huntington's Disease": {
+            icon: "🎯",
+            threshold: 0.55,
+            color: "#e67e22",
+          },
+          ALS: { icon: "💪", threshold: 0.65, color: "#e74c3c" },
+          MSA: { icon: "🔄", threshold: 0.6, color: "#3498db" },
+        };
+
+        // ============================================================
+        //  DISEASE PATTERNS FOR ASSESSMENT
+        // ============================================================
+        const diseasePatterns = {
+          "Alzheimer's Disease": {
+            symptoms: [
+              "Memory loss",
+              "Cognitive decline",
+              "Behavioral changes",
+            ],
+            olfactoryProfile: {
+              threshold: { low: 0.2, moderate: 0.4, high: 0.6 },
+              identification: { low: 0.15, moderate: 0.35, high: 0.55 },
+              discrimination: { low: 0.2, moderate: 0.4, high: 0.6 },
+              memory: { low: 0.1, moderate: 0.3, high: 0.5 },
+            },
+            threshold: 0.65,
+            icon: "🧠",
+          },
+          "Parkinson's Disease": {
+            symptoms: [
+              "Tremors",
+              "Rigidity",
+              "Bradykinesia",
+              "Postural instability",
+            ],
+            olfactoryProfile: {
+              threshold: { low: 0.15, moderate: 0.3, high: 0.5 },
+              identification: { low: 0.1, moderate: 0.25, high: 0.4 },
+              discrimination: { low: 0.2, moderate: 0.35, high: 0.5 },
+              memory: { low: 0.25, moderate: 0.4, high: 0.55 },
+            },
+            threshold: 0.6,
+            icon: "🫨",
+          },
+          "Lewy Body Dementia": {
+            symptoms: [
+              "Visual hallucinations",
+              "Fluctuating cognition",
+              "Parkinsonism",
+              "REM sleep disorder",
+            ],
+            olfactoryProfile: {
+              threshold: { low: 0.1, moderate: 0.25, high: 0.4 },
+              identification: { low: 0.05, moderate: 0.2, high: 0.35 },
+              discrimination: { low: 0.15, moderate: 0.3, high: 0.45 },
+              memory: { low: 0.15, moderate: 0.3, high: 0.45 },
+            },
+            threshold: 0.55,
+            icon: "👁️",
+          },
+          "Frontotemporal Dementia": {
+            symptoms: [
+              "Behavioral changes",
+              "Personality alterations",
+              "Language difficulties",
+              "Apathy",
+            ],
+            olfactoryProfile: {
+              threshold: { low: 0.3, moderate: 0.5, high: 0.7 },
+              identification: { low: 0.2, moderate: 0.4, high: 0.6 },
+              discrimination: { low: 0.3, moderate: 0.5, high: 0.7 },
+              memory: { low: 0.3, moderate: 0.5, high: 0.7 },
+            },
+            threshold: 0.6,
+            icon: "🧩",
+          },
+          "Huntington's Disease": {
+            symptoms: [
+              "Chorea",
+              "Cognitive decline",
+              "Psychiatric symptoms",
+              "Weight loss",
+            ],
+            olfactoryProfile: {
+              threshold: { low: 0.25, moderate: 0.4, high: 0.6 },
+              identification: { low: 0.2, moderate: 0.35, high: 0.5 },
+              discrimination: { low: 0.25, moderate: 0.4, high: 0.6 },
+              memory: { low: 0.2, moderate: 0.35, high: 0.5 },
+            },
+            threshold: 0.55,
+            icon: "🎯",
+          },
+          ALS: {
+            symptoms: [
+              "Muscle weakness",
+              "Muscle atrophy",
+              "Fasciculations",
+              "Speech difficulties",
+            ],
+            olfactoryProfile: {
+              threshold: { low: 0.4, moderate: 0.6, high: 0.8 },
+              identification: { low: 0.35, moderate: 0.55, high: 0.75 },
+              discrimination: { low: 0.4, moderate: 0.6, high: 0.8 },
+              memory: { low: 0.4, moderate: 0.6, high: 0.8 },
+            },
+            threshold: 0.65,
+            icon: "💪",
+          },
+          MSA: {
+            symptoms: [
+              "Autonomic dysfunction",
+              "Parkinsonism",
+              "Cerebellar ataxia",
+              "Sleep disorders",
+            ],
+            olfactoryProfile: {
+              threshold: { low: 0.2, moderate: 0.35, high: 0.55 },
+              identification: { low: 0.15, moderate: 0.3, high: 0.45 },
+              discrimination: { low: 0.2, moderate: 0.35, high: 0.55 },
+              memory: { low: 0.3, moderate: 0.45, high: 0.6 },
+            },
+            threshold: 0.6,
+            icon: "🔄",
+          },
+        };
+
+        // ============================================================
+        //  ASSESSMENT QUESTIONS
+        // ============================================================
+        const assessmentQuestions = [
+          {
+            id: "threshold_1",
+            test: "threshold",
+            question:
+              "Can you detect the scent of peppermint at a very low concentration?",
+            options: ["Yes, clearly", "Yes, faintly", "No, not at all"],
+            scores: [3, 2, 1],
+          },
+          {
+            id: "threshold_2",
+            test: "threshold",
+            question:
+              "Can you detect the scent of vanilla at a low concentration?",
+            options: ["Yes, clearly", "Yes, faintly", "No, not at all"],
+            scores: [3, 2, 1],
+          },
+          {
+            id: "threshold_3",
+            test: "threshold",
+            question:
+              "Can you detect the scent of lemon at a low concentration?",
+            options: ["Yes, clearly", "Yes, faintly", "No, not at all"],
+            scores: [3, 2, 1],
+          },
+          {
+            id: "identification_1",
+            test: "identification",
+            question:
+              "Identify this scent: It smells like a fresh flower, commonly found in gardens.",
+            options: ["Rose", "Lavender", "Jasmine"],
+            scores: [3, 2, 1],
+          },
+          {
+            id: "identification_2",
+            test: "identification",
+            question:
+              "Identify this scent: It has a sharp, citrusy aroma often used in cleaning products.",
+            options: ["Lemon", "Orange", "Lime"],
+            scores: [3, 2, 1],
+          },
+          {
+            id: "identification_3",
+            test: "identification",
+            question:
+              "Identify this scent: It is warm, sweet, and often used in baking.",
+            options: ["Vanilla", "Cinnamon", "Nutmeg"],
+            scores: [3, 2, 1],
+          },
+          {
+            id: "discrimination_1",
+            test: "discrimination",
+            question: "Which of these is a floral scent?",
+            options: ["Peppermint", "Rose", "Cinnamon"],
+            scores: [3, 2, 1],
+          },
+          {
+            id: "discrimination_2",
+            test: "discrimination",
+            question: "Which of these is a citrus scent?",
+            options: ["Lavender", "Orange", "Vanilla"],
+            scores: [3, 2, 1],
+          },
+          {
+            id: "discrimination_3",
+            test: "discrimination",
+            question: "Which of these is a woody scent?",
+            options: ["Rose", "Sandalwood", "Lemon"],
+            scores: [3, 2, 1],
+          },
+          {
+            id: "memory_1",
+            test: "memory",
+            question: "Do you recall smelling coffee in the morning?",
+            options: ["Yes, vividly", "Yes, faintly", "No"],
+            scores: [3, 2, 1],
+          },
+          {
+            id: "memory_2",
+            test: "memory",
+            question: "Do you recall the scent of fresh bread or pastries?",
+            options: ["Yes, vividly", "Yes, faintly", "No"],
+            scores: [3, 2, 1],
+          },
+          {
+            id: "memory_3",
+            test: "memory",
+            question: "Do you recall the scent of rain or wet earth?",
+            options: ["Yes, vividly", "Yes, faintly", "No"],
+            scores: [3, 2, 1],
+          },
+        ];
+
+        // ============================================================
+        //  STATE
+        // ============================================================
+        let patients = [];
+        let assessments = [];
+        let currentPatientId = null;
+        let currentPersona = "neurologist";
+        let toastTimer = null;
+        let assessmentState = {
+          currentQuestion: 0,
+          answers: [],
+          patientId: null,
+          inProgress: false,
+        };
+
+        // ============================================================
+        //  DOM REFS
+        // ============================================================
+        const sidebar = document.getElementById("sidebar");
+        const contentArea = document.getElementById("contentArea");
+        const modalOverlay = document.getElementById("modalOverlay");
+        const modalBody = document.getElementById("modalBody");
+        const modalTitle = document.getElementById("modalTitle");
+        const modalFooter = document.getElementById("modalFooter");
+        const toast = document.getElementById("toast");
+        const personaSelect = document.getElementById("personaSelect");
+        const currentPersonaName =
+          document.getElementById("currentPersonaName");
+
+        // ============================================================
+        //  UTILITY FUNCTIONS
+        // ============================================================
+        function generateMRN() {
+          const year = new Date().getFullYear().toString().slice(-2);
+          const num = String(Math.floor(Math.random() * 10000)).padStart(
+            4,
+            "0",
+          );
+          return "MRN-" + year + "-" + num;
+        }
+
+        function getRiskLevel(score) {
+          if (score >= 70) return { level: "Critical", class: "critical" };
+          if (score >= 50) return { level: "High", class: "high" };
+          if (score >= 30) return { level: "Moderate", class: "moderate" };
+          if (score >= 15) return { level: "Low", class: "low" };
+          return { level: "Normal", class: "normal" };
+        }
+
+        function showToast(message, duration = 3000) {
+          toast.textContent = message;
+          toast.classList.add("show");
+          clearTimeout(toastTimer);
+          toastTimer = setTimeout(
+            () => toast.classList.remove("show"),
+            duration,
+          );
+        }
+
+        // ============================================================
+        //  INITIALIZE DATA
+        // ============================================================
+        function initializeData() {
+          patients = [
+            {
+              id: "P001",
+              mrn: generateMRN(),
+              name: "Robert Johnson",
+              age: 72,
+              gender: "Male",
+              condition: "Hyposmia",
+              status: "active",
+              riskScore: 8.3,
+              riskLevel: getRiskLevel(8.3),
+              lastAssessment: "2026-07-08",
+              topConcern: "ALS",
+              probability: 0.65,
+              hasTakenTest: true,
+            },
+            {
+              id: "P002",
+              mrn: generateMRN(),
+              name: "Margaret Chen",
+              age: 68,
+              gender: "Female",
+              condition: "Anosmia",
+              status: "pending",
+              riskScore: 52.1,
+              riskLevel: getRiskLevel(52.1),
+              lastAssessment: "2026-07-07",
+              topConcern: "Alzheimer's Disease",
+              probability: 0.72,
+              hasTakenTest: true,
+            },
+            {
+              id: "P003",
+              mrn: generateMRN(),
+              name: "James Williams",
+              age: 65,
+              gender: "Male",
+              condition: "Post-COVID Olfactory Dysfunction",
+              status: "active",
+              riskScore: 68.4,
+              riskLevel: getRiskLevel(68.4),
+              lastAssessment: "2026-07-08",
+              topConcern: "Parkinson's Disease",
+              probability: 0.81,
+              hasTakenTest: true,
+            },
+            {
+              id: "P004",
+              mrn: generateMRN(),
+              name: "Sarah Davis",
+              age: 45,
+              gender: "Female",
+              condition: "Parosmia",
+              status: "critical",
+              riskScore: 85.2,
+              riskLevel: getRiskLevel(85.2),
+              lastAssessment: "2026-07-06",
+              topConcern: "Lewy Body Dementia",
+              probability: 0.91,
+              hasTakenTest: true,
+            },
+            {
+              id: "P005",
+              mrn: generateMRN(),
+              name: "Michael Brown",
+              age: 58,
+              gender: "Male",
+              condition: "Normal",
+              status: "active",
+              riskScore: 12.5,
+              riskLevel: getRiskLevel(12.5),
+              lastAssessment: "2026-07-05",
+              topConcern: "None",
+              probability: 0.0,
+              hasTakenTest: true,
+            },
+          ];
+
+          assessments = [
+            {
+              id: "A001",
+              patientId: "P001",
+              date: "2026-07-08",
+              scores: {
+                threshold: 9,
+                identification: 9,
+                discrimination: 6,
+                memory: 9,
+              },
+              totalScore: 33,
+              maxScore: 36,
+              riskScore: 8.3,
+              riskLevel: getRiskLevel(8.3),
+              topConcern: "ALS",
+              probability: 0.65,
+              status: "completed",
+              notes:
+                "Patient reports mild difficulty with scent discrimination.",
+            },
+            {
+              id: "A002",
+              patientId: "P002",
+              date: "2026-07-07",
+              scores: {
+                threshold: 4,
+                identification: 3,
+                discrimination: 5,
+                memory: 4,
+              },
+              totalScore: 16,
+              maxScore: 36,
+              riskScore: 52.1,
+              riskLevel: getRiskLevel(52.1),
+              topConcern: "Alzheimer's Disease",
+              probability: 0.72,
+              status: "pending",
+              notes:
+                "Significant impairment in identification and memory domains.",
+            },
+            {
+              id: "A003",
+              patientId: "P003",
+              date: "2026-07-08",
+              scores: {
+                threshold: 5,
+                identification: 4,
+                discrimination: 3,
+                memory: 5,
+              },
+              totalScore: 17,
+              maxScore: 36,
+              riskScore: 68.4,
+              riskLevel: getRiskLevel(68.4),
+              topConcern: "Parkinson's Disease",
+              probability: 0.81,
+              status: "completed",
+              notes:
+                "Post-COVID patient with persistent olfactory dysfunction.",
+            },
+            {
+              id: "A004",
+              patientId: "P004",
+              date: "2026-07-06",
+              scores: {
+                threshold: 2,
+                identification: 1,
+                discrimination: 3,
+                memory: 2,
+              },
+              totalScore: 8,
+              maxScore: 36,
+              riskScore: 85.2,
+              riskLevel: getRiskLevel(85.2),
+              topConcern: "Lewy Body Dementia",
+              probability: 0.91,
+              status: "critical",
+              notes: "Severe olfactory impairment across all domains.",
+            },
+            {
+              id: "A005",
+              patientId: "P005",
+              date: "2026-07-05",
+              scores: {
+                threshold: 9,
+                identification: 8,
+                discrimination: 9,
+                memory: 8,
+              },
+              totalScore: 34,
+              maxScore: 36,
+              riskScore: 12.5,
+              riskLevel: getRiskLevel(12.5),
+              topConcern: "None",
+              probability: 0.0,
+              status: "completed",
+              notes: "Normal olfactory function. No risk indicators detected.",
+            },
+          ];
+
+          updateUI();
+        }
+
+        // ============================================================
+        //  UPDATE UI
+        // ============================================================
+        function updateUI() {
+          const totalPatients = patients.length;
+          const pendingPatients = patients.filter(
+            (p) => p.status === "pending",
+          ).length;
+          const criticalPatients = patients.filter(
+            (p) => p.status === "critical",
+          ).length;
+          const todayAssessments = assessments.filter(
+            (a) => a.date === new Date().toISOString().slice(0, 10),
+          ).length;
+
+          document.getElementById("statTotalPatients").textContent =
+            totalPatients;
+          document.getElementById("statPending").textContent = pendingPatients;
+          document.getElementById("statCritical").textContent =
+            criticalPatients;
+          document.getElementById("statToday").textContent = todayAssessments;
+
+          document.getElementById("totalPatientsBadge").textContent =
+            totalPatients;
+          document.getElementById("patientListBadge").textContent =
+            totalPatients;
+          document.getElementById("pendingBadge").textContent = pendingPatients;
+          document.getElementById("criticalBadge").textContent =
+            criticalPatients;
+
+          renderRecentTable();
+          renderAllPatients();
+          renderPendingTable();
+          renderCriticalTable();
+          renderReportsTable();
+          updateResearchData();
+
+          const persona = PERSONAS[currentPersona];
+          currentPersonaName.textContent = persona.icon + " " + persona.name;
+        }
+
+        // ============================================================
+        //  RENDER TABLES
+        // ============================================================
+        function renderRecentTable() {
+          const tbody = document.getElementById("recentTableBody");
+          const recent = assessments.slice(0, 5);
+          if (recent.length === 0) {
+            tbody.innerHTML = `<tr><td colspan="6" style="text-align:center;color:#8899aa;padding:20px;">No recent assessments</td></tr>`;
+            return;
+          }
+          tbody.innerHTML = recent
+            .map((a) => {
+              const patient = patients.find((p) => p.id === a.patientId);
+              const risk = a.riskLevel;
+              return `
+                        <tr>
+                            <td><strong>${patient ? patient.name : "Unknown"}</strong></td>
+                            <td>${patient ? patient.mrn : "N/A"}</td>
+                            <td>${patient ? patient.condition : "N/A"}</td>
+                            <td><span class="status-badge ${risk.class}">${risk.level}</span></td>
+                            <td>${a.date}</td>
+                            <td>
+                                <button class="action-btn view" onclick="viewAssessment('${a.id}')">View</button>
+                                <button class="action-btn assess" onclick="startPatientTest('${a.patientId}')">Re-assess</button>
+                                <button class="action-btn view" onclick="downloadReport('${a.id}')">📥</button>
+                            </td>
+                        </tr>
+                    `;
+            })
+            .join("");
+        }
+
+        function renderAllPatients() {
+          const tbody = document.getElementById("allPatientsBody");
+          if (patients.length === 0) {
+            tbody.innerHTML = `<tr><td colspan="7" style="text-align:center;color:#8899aa;padding:20px;">No patients registered</td></tr>`;
+            return;
+          }
+          tbody.innerHTML = patients
+            .map((p) => {
+              const risk = p.riskLevel;
+              const statusClass =
+                p.status === "critical"
+                  ? "critical"
+                  : p.status === "pending"
+                    ? "pending"
+                    : "active";
+              return `
+                        <tr>
+                            <td><strong>${p.name}</strong></td>
+                            <td>${p.mrn}</td>
+                            <td>${p.age}</td>
+                            <td>${p.condition}</td>
+                            <td><span class="status-badge ${risk.class}">${risk.level}</span></td>
+                            <td><span class="status-badge ${statusClass}">${p.status.toUpperCase()}</span></td>
+                            <td>
+                                <button class="action-btn view" onclick="viewPatient('${p.id}')">View</button>
+                                ${!p.hasTakenTest ? `<button class="action-btn test" onclick="startPatientTest('${p.id}')">🧪 Test</button>` : `<button class="action-btn assess" onclick="startPatientTest('${p.id}')">Re-test</button>`}
+                                <button class="action-btn view" onclick="downloadReportForPatient('${p.id}')">📥</button>
+                            </td>
+                        </tr>
+                    `;
+            })
+            .join("");
+        }
+
+        function renderPendingTable() {
+          const tbody = document.getElementById("pendingBody");
+          const pending = patients.filter((p) => p.status === "pending");
+          if (pending.length === 0) {
+            tbody.innerHTML = `<tr><td colspan="5" style="text-align:center;color:#8899aa;padding:20px;">No pending assessments</td></tr>`;
+            return;
+          }
+          tbody.innerHTML = pending
+            .map((p) => {
+              const assessment = assessments.find((a) => a.patientId === p.id);
+              return `
+                        <tr>
+                            <td><strong>${p.name}</strong></td>
+                            <td>${p.mrn}</td>
+                            <td>${assessment ? assessment.date : "N/A"}</td>
+                            <td><span class="status-badge pending">Pending Review</span></td>
+                            <td>
+                                <button class="action-btn view" onclick="viewPatient('${p.id}')">Review</button>
+                                <button class="action-btn assess" onclick="completeReview('${p.id}')">Complete</button>
+                            </td>
+                        </tr>
+                    `;
+            })
+            .join("");
+        }
+
+        function renderCriticalTable() {
+          const tbody = document.getElementById("criticalBody");
+          const critical = patients.filter((p) => p.status === "critical");
+          if (critical.length === 0) {
+            tbody.innerHTML = `<tr><td colspan="5" style="text-align:center;color:#8899aa;padding:20px;">No critical cases</td></tr>`;
+            return;
+          }
+          tbody.innerHTML = critical
+            .map((p) => {
+              const risk = p.riskLevel;
+              return `
+                        <tr>
+                            <td><strong>${p.name}</strong></td>
+                            <td>${p.mrn}</td>
+                            <td><span class="status-badge ${risk.class}">${risk.level}</span></td>
+                            <td>${p.topConcern}</td>
+                            <td>
+                                <button class="action-btn view" onclick="viewPatient('${p.id}')">View</button>
+                                <button class="action-btn" style="background:#c62828;color:white;border-color:#c62828;" onclick="escalateCase('${p.id}')">🚨 Escalate</button>
+                            </td>
+                        </tr>
+                    `;
+            })
+            .join("");
+        }
+
+        function renderReportsTable() {
+          const tbody = document.getElementById("reportsBody");
+          const recentAssessments = assessments.slice(0, 5);
+          if (recentAssessments.length === 0) {
+            tbody.innerHTML = `<tr><td colspan="5" style="text-align:center;color:#8899aa;padding:20px;">No reports available</td></tr>`;
+            return;
+          }
+          tbody.innerHTML = recentAssessments
+            .map((a) => {
+              const patient = patients.find((p) => p.id === a.patientId);
+              return `
+                        <tr>
+                            <td>${patient ? patient.name : "Unknown"}</td>
+                            <td>${patient ? patient.mrn : "N/A"}</td>
+                            <td>${a.date}</td>
+                            <td>Neurodegenerative Assessment</td>
+                            <td>
+                                <button class="action-btn view" onclick="downloadReport('${a.id}')">📥 Download</button>
+                            </td>
+                        </tr>
+                    `;
+            })
+            .join("");
+        }
+
+        // ============================================================
+        //  RESEARCH DATA
+        // ============================================================
+        function updateResearchData() {
+          document.getElementById("researchTotal").textContent =
+            assessments.length;
+
+          const diseaseCount = {};
+          assessments.forEach((a) => {
+            if (a.topConcern && a.topConcern !== "None") {
+              diseaseCount[a.topConcern] =
+                (diseaseCount[a.topConcern] || 0) + 1;
+            }
+          });
+          const sorted = Object.entries(diseaseCount).sort(
+            (a, b) => b[1] - a[1],
+          );
+          document.getElementById("researchTopDisease").textContent =
+            sorted.length > 0 ? sorted[0][0] : "None";
+
+          const avgRisk =
+            assessments.reduce((sum, a) => sum + a.riskScore, 0) /
+            (assessments.length || 1);
+          document.getElementById("researchAvgRisk").textContent =
+            avgRisk.toFixed(1) + "%";
+
+          const container = document.getElementById("diseaseDistribution");
+          if (sorted.length === 0) {
+            container.innerHTML =
+              '<p style="color:#8899aa;">No disease data available</p>';
+            return;
+          }
+          container.innerHTML = sorted
+            .map(([disease, count]) => {
+              const data = DISEASE_PATTERNS[disease] || {
+                color: "#888",
+                icon: "🧬",
+              };
+              const total = assessments.length || 1;
+              const pct = ((count / total) * 100).toFixed(0);
+              return `
+                        <div style="display:flex;align-items:center;gap:12px;margin-bottom:8px;">
+                            <span style="font-size:16px;">${data.icon}</span>
+                            <span style="font-size:13px;font-weight:500;min-width:150px;">${disease}</span>
+                            <div style="flex:1;height:8px;background:#e8e8e8;border-radius:4px;overflow:hidden;">
+                                <div style="height:100%;width:${pct}%;background:${data.color};border-radius:4px;"></div>
+                            </div>
+                            <span style="font-size:12px;font-weight:600;min-width:40px;">${pct}%</span>
+                            <span style="font-size:11px;color:#888;">(${count})</span>
+                        </div>
+                    `;
+            })
+            .join("");
+        }
+
+        // ============================================================
+        //  VIEW FUNCTIONS
+        // ============================================================
+        function switchView(view) {
+          document
+            .querySelectorAll(".view-content")
+            .forEach((el) => (el.style.display = "none"));
+          const target = document.getElementById("view-" + view);
+          if (target) target.style.display = "block";
+
+          document
+            .querySelectorAll(".sidebar-menu-item")
+            .forEach((el) => el.classList.remove("active"));
+          const menuItem = document.querySelector(
+            `.sidebar-menu-item[data-view="${view}"]`,
+          );
+          if (menuItem) menuItem.classList.add("active");
+
+          if (view === "patients") renderAllPatients();
+          if (view === "pending") renderPendingTable();
+          if (view === "critical") renderCriticalTable();
+          if (view === "reports") renderReportsTable();
+          if (view === "research") updateResearchData();
+          if (view === "assessment") renderAssessmentView();
+        }
+
+        // ============================================================
+        //  PATIENT REGISTRATION
+        // ============================================================
+        function openNewPatientModal() {
+          modalTitle.textContent = "➕ Register New Patient";
+          modalBody.innerHTML = `
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label>Full Name <span class="required">*</span></label>
+                            <input type="text" id="regName" placeholder="John Doe" />
+                        </div>
+                        <div class="form-group">
+                            <label>Date of Birth <span class="required">*</span></label>
+                            <input type="date" id="regDob" />
+                        </div>
+                        <div class="form-group">
+                            <label>Gender <span class="required">*</span></label>
+                            <select id="regGender">
+                                <option value="">Select...</option>
+                                <option value="Male">Male</option>
+                                <option value="Female">Female</option>
+                                <option value="Other">Other</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Phone Number</label>
+                            <input type="tel" id="regPhone" placeholder="+1 234 567 8900" />
+                        </div>
+                        <div class="form-group">
+                            <label>Email</label>
+                            <input type="email" id="regEmail" placeholder="patient@example.com" />
+                        </div>
+                        <div class="form-group">
+                            <label>Olfactory Condition</label>
+                            <select id="regCondition">
+                                <option value="">Select condition...</option>
+                                <option value="Normal">Normal</option>
+                                <option value="Anosmia - Complete loss of smell">Anosmia - Complete loss of smell</option>
+                                <option value="Hyposmia - Reduced sense of smell">Hyposmia - Reduced sense of smell</option>
+                                <option value="Parosmia - Distorted sense of smell">Parosmia - Distorted sense of smell</option>
+                                <option value="Phantosmia - Phantom smells">Phantosmia - Phantom smells</option>
+                                <option value="Post-COVID Olfactory Dysfunction">Post-COVID Olfactory Dysfunction</option>
+                                <option value="Other">Other</option>
+                            </select>
+                        </div>
+                        <div class="form-group full-width">
+                            <label>Medical History / Notes</label>
+                            <textarea id="regNotes" placeholder="Any relevant medical history..."></textarea>
+                        </div>
+                    </div>
+                    <div style="margin-top:16px;padding:12px 16px;background:#e3f2fd;border-radius:8px;border:1px solid #90caf9;">
+                        <span style="font-weight:600;">📋 After registration:</span>
+                        <span style="font-size:13px;color:#555;margin-left:8px;">The patient will be directed to take the neurodegenerative assessment.</span>
+                    </div>
+                `;
+
+          modalFooter.innerHTML = `
+                    <button class="btn-secondary" onclick="closeModal()">Cancel</button>
+                    <button class="btn-success" onclick="registerAndTest()">✅ Register & Start Assessment</button>
+                `;
+
+          modalOverlay.classList.add("active");
+        }
+
+        function registerAndTest() {
+          const name = document.getElementById("regName").value.trim();
+          const dob = document.getElementById("regDob").value;
+          const gender = document.getElementById("regGender").value;
+          const phone = document.getElementById("regPhone").value.trim();
+          const email = document.getElementById("regEmail").value.trim();
+          const condition =
+            document.getElementById("regCondition").value || "Normal";
+          const notes = document.getElementById("regNotes").value.trim();
+
+          if (!name) {
+            showToast("⚠️ Please enter the patient's full name");
+            return;
+          }
+          if (!dob) {
+            showToast("⚠️ Please enter the patient's date of birth");
+            return;
+          }
+          if (!gender) {
+            showToast("⚠️ Please select the patient's gender");
+            return;
+          }
+
+          const birthDate = new Date(dob);
+          const today = new Date();
+          let age = today.getFullYear() - birthDate.getFullYear();
+          const m = today.getMonth() - birthDate.getMonth();
+          if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
+            age--;
+          }
+
+          const newPatient = {
+            id: "P" + String(patients.length + 1).padStart(3, "0"),
+            mrn: generateMRN(),
+            name: name,
+            age: age,
+            gender: gender,
+            condition: condition,
+            status: "pending",
+            riskScore: 0,
+            riskLevel: getRiskLevel(0),
+            lastAssessment: null,
+            topConcern: "None",
+            probability: 0,
+            hasTakenTest: false,
+            phone: phone,
+            email: email,
+            notes: notes,
+            registrationDate: today.toISOString().slice(0, 10),
+          };
+
+          patients.push(newPatient);
+          showToast(
+            `✅ Patient ${name} registered successfully! MRN: ${newPatient.mrn}`,
+          );
+
+          closeModal();
+
+          setTimeout(() => {
+            assessmentState.patientId = newPatient.id;
+            assessmentState.currentQuestion = 0;
+            assessmentState.answers = new Array(
+              assessmentQuestions.length,
+            ).fill(null);
+            assessmentState.inProgress = true;
+            switchView("assessment");
+            renderAssessmentView();
+            showToast(
+              `🧠 Starting assessment for ${name}. Please complete all 12 questions.`,
+            );
+          }, 500);
+
+          updateUI();
+        }
+
+        // ============================================================
+        //  ASSESSMENT SYSTEM
+        // ============================================================
+        function renderAssessmentView() {
+          const container = document.getElementById("assessmentContent");
+
+          if (!assessmentState.inProgress || !assessmentState.patientId) {
+            const patientOptions = patients
+              .filter((p) => !p.hasTakenTest || true)
+              .map(
+                (p) =>
+                  `<option value="${p.id}">${p.name} (${p.mrn})${p.hasTakenTest ? " - Re-test" : " - New"}</option>`,
+              )
+              .join("");
+
+            container.innerHTML = `
+                        <div style="text-align:center;padding:20px 0;">
+                            <span style="font-size:48px;display:block;margin-bottom:12px;">🧠</span>
+                            <h3 style="font-size:18px;color:#0a1628;margin-bottom:8px;">Start New Assessment</h3>
+                            <p style="color:#8899aa;margin-bottom:20px;">Select a patient to begin the neurodiagnostic assessment</p>
+                            <div style="max-width:400px;margin:0 auto;">
+                                <select id="assessmentPatientSelect" style="width:100%;padding:12px 16px;border:2px solid #e0e8f0;border-radius:10px;font-size:14px;margin-bottom:12px;">
+                                    <option value="">Select patient...</option>
+                                    ${patientOptions}
+                                </select>
+                                <button class="btn-primary" onclick="startAssessmentForSelected()" style="width:100%;justify-content:center;">
+                                    🧪 Start Assessment
+                                </button>
+                            </div>
+                        </div>
+                    `;
+            return;
+          }
+
+          const patient = patients.find(
+            (p) => p.id === assessmentState.patientId,
+          );
+          const q = assessmentQuestions[assessmentState.currentQuestion];
+          const total = assessmentQuestions.length;
+          const progress =
+            ((assessmentState.currentQuestion + 1) / total) * 100;
+          const letters = ["A", "B", "C"];
+
+          if (!q) {
+            calculateAssessmentResults();
+            return;
+          }
+
+          const domainNames = {
+            threshold: "Threshold",
+            identification: "Identification",
+            discrimination: "Discrimination",
+            memory: "Memory",
+          };
+
+          container.innerHTML = `
+                    <div style="margin-bottom:16px;padding:12px 16px;background:#e8edf5;border-radius:8px;">
+                        <strong>Patient:</strong> ${patient ? patient.name : "Unknown"} 
+                        <span style="color:#8899aa;margin-left:12px;">${patient ? patient.mrn : ""}</span>
+                    </div>
+                    <div class="assessment-progress">
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="width:${progress}%;"></div>
+                        </div>
+                        <div class="progress-text">
+                            <span>Question ${assessmentState.currentQuestion + 1} of ${total}</span>
+                            <span>${domainNames[q.test] || q.test}</span>
+                        </div>
+                    </div>
+                    <div class="assessment-question">
+                        <div class="q-number">Question ${assessmentState.currentQuestion + 1}</div>
+                        <div class="q-text">${q.question}</div>
+                        <div class="assessment-options">
+                            ${q.options
+                              .map(
+                                (opt, idx) => `
+                                <div class="assessment-option ${assessmentState.answers[assessmentState.currentQuestion] === idx ? "selected" : ""}" 
+                                     onclick="selectAssessmentOption(${idx})" data-index="${idx}">
+                                    <span class="option-letter">${letters[idx]}</span>
+                                    <span>${opt}</span>
+                                </div>
+                            `,
+                              )
+                              .join("")}
+                        </div>
+                    </div>
+                    <div class="assessment-nav">
+                        <button class="btn-prev" onclick="prevAssessmentQuestion()" ${assessmentState.currentQuestion === 0 ? 'style="visibility:hidden;"' : ""}>← Back</button>
+                        ${
+                          assessmentState.currentQuestion === total - 1
+                            ? `<button class="btn-submit" id="submitAssessmentBtn" onclick="completeAssessment()">📊 Complete Assessment</button>`
+                            : `<button class="btn-next" id="nextAssessmentBtn" onclick="nextAssessmentQuestion()">Next →</button>`
+                        }
+                    </div>
+                `;
+
+          const hasAnswer =
+            assessmentState.answers[assessmentState.currentQuestion] !== null;
+          const nextBtn = document.getElementById("nextAssessmentBtn");
+          const submitBtn = document.getElementById("submitAssessmentBtn");
+          if (nextBtn) nextBtn.disabled = !hasAnswer;
+          if (submitBtn) submitBtn.disabled = !hasAnswer;
+        }
+
+        function startAssessmentForSelected() {
+          const select = document.getElementById("assessmentPatientSelect");
+          const patientId = select.value;
+          if (!patientId) {
+            showToast("⚠️ Please select a patient");
+            return;
+          }
+          assessmentState.patientId = patientId;
+          assessmentState.currentQuestion = 0;
+          assessmentState.answers = new Array(assessmentQuestions.length).fill(
+            null,
+          );
+          assessmentState.inProgress = true;
+          renderAssessmentView();
+        }
+
+        function selectAssessmentOption(index) {
+          assessmentState.answers[assessmentState.currentQuestion] = index;
+          renderAssessmentView();
+        }
+
+        function nextAssessmentQuestion() {
+          if (
+            assessmentState.currentQuestion <
+            assessmentQuestions.length - 1
+          ) {
+            assessmentState.currentQuestion++;
+            renderAssessmentView();
+          }
+        }
+
+        function prevAssessmentQuestion() {
+          if (assessmentState.currentQuestion > 0) {
+            assessmentState.currentQuestion--;
+            renderAssessmentView();
+          }
+        }
+
+        function completeAssessment() {
+          const allAnswered = assessmentState.answers.every((a) => a !== null);
+          if (!allAnswered) {
+            showToast("⚠️ Please answer all questions before completing.");
+            return;
+          }
+          calculateAssessmentResults();
+        }
+
+        // ============================================================
+        //  CALCULATE ASSESSMENT RESULTS
+        // ============================================================
+        function calculateAssessmentResults() {
+          const answers = assessmentState.answers;
+          const patient = patients.find(
+            (p) => p.id === assessmentState.patientId,
+          );
+
+          const testScores = {
+            threshold: { score: 0, maxScore: 9 },
+            identification: { score: 0, maxScore: 9 },
+            discrimination: { score: 0, maxScore: 9 },
+            memory: { score: 0, maxScore: 9 },
+          };
+
+          answers.forEach((answer, idx) => {
+            const q = assessmentQuestions[idx];
+            if (answer !== null) {
+              const score = q.scores[answer] || 0;
+              testScores[q.test].score += score;
+            }
+          });
+
+          const thresholdScore =
+            testScores.threshold.score / testScores.threshold.maxScore;
+          const identificationScore =
+            testScores.identification.score /
+            testScores.identification.maxScore;
+          const discriminationScore =
+            testScores.discrimination.score /
+            testScores.discrimination.maxScore;
+          const memoryScore =
+            testScores.memory.score / testScores.memory.maxScore;
+
+          const probabilities = {};
+          for (const [disease, data] of Object.entries(diseasePatterns)) {
+            const profile = data.olfactoryProfile;
+
+            const thresholdDiff = Math.abs(
+              thresholdScore - profile.threshold.moderate,
+            );
+            const identificationDiff = Math.abs(
+              identificationScore - profile.identification.moderate,
+            );
+            const discriminationDiff = Math.abs(
+              discriminationScore - profile.discrimination.moderate,
+            );
+            const memoryDiff = Math.abs(memoryScore - profile.memory.moderate);
+
+            const thresholdMatch = 1 - Math.min(thresholdDiff, 1);
+            const identificationMatch = 1 - Math.min(identificationDiff, 1);
+            const discriminationMatch = 1 - Math.min(discriminationDiff, 1);
+            const memoryMatch = 1 - Math.min(memoryDiff, 1);
+
+            let probability =
+              thresholdMatch * 0.3 +
+              identificationMatch * 0.35 +
+              discriminationMatch * 0.2 +
+              memoryMatch * 0.15;
+
+            if (
+              thresholdScore < 0.4 &&
+              memoryScore < 0.3 &&
+              disease === "Alzheimer's Disease"
+            ) {
+              probability = Math.min(1, probability * 1.3);
+            }
+            if (
+              identificationScore < 0.3 &&
+              thresholdScore < 0.35 &&
+              disease === "Parkinson's Disease"
+            ) {
+              probability = Math.min(1, probability * 1.3);
+            }
+            if (
+              identificationScore < 0.25 &&
+              discriminationScore < 0.35 &&
+              disease === "Lewy Body Dementia"
+            ) {
+              probability = Math.min(1, probability * 1.4);
+            }
+
+            probabilities[disease] = Math.min(1, Math.max(0, probability));
+          }
+
+          const sorted = Object.entries(probabilities).sort(
+            (a, b) => b[1] - a[1],
+          );
+          const topDisease = sorted[0] ? sorted[0][0] : "None";
+          const topProbability = sorted[0] ? sorted[0][1] : 0;
+
+          const totalScore =
+            testScores.threshold.score +
+            testScores.identification.score +
+            testScores.discrimination.score +
+            testScores.memory.score;
+          const maxTotalScore =
+            testScores.threshold.maxScore +
+            testScores.identification.maxScore +
+            testScores.discrimination.maxScore +
+            testScores.memory.maxScore;
+
+          const rawPercentage = (totalScore / maxTotalScore) * 100;
+          const riskScore = 100 - rawPercentage;
+          const riskLevel = getRiskLevel(riskScore);
+
+          let status = "active";
+          if (riskScore >= 70) status = "critical";
+          else if (riskScore >= 50) status = "pending";
+
+          if (patient) {
+            patient.riskScore = riskScore;
+            patient.riskLevel = riskLevel;
+            patient.status = status;
+            patient.topConcern = topDisease;
+            patient.probability = topProbability;
+            patient.hasTakenTest = true;
+            patient.lastAssessment = new Date().toISOString().slice(0, 10);
+
+            const assessment = {
+              id: "A" + String(assessments.length + 1).padStart(3, "0"),
+              patientId: patient.id,
+              date: new Date().toISOString().slice(0, 10),
+              scores: {
+                threshold: testScores.threshold.score,
+                identification: testScores.identification.score,
+                discrimination: testScores.discrimination.score,
+                memory: testScores.memory.score,
+              },
+              totalScore: totalScore,
+              maxScore: maxTotalScore,
+              riskScore: riskScore,
+              riskLevel: riskLevel,
+              topConcern: topDisease,
+              probability: topProbability,
+              status: status,
+              notes: "Assessment completed via patient portal",
+            };
+            assessments.push(assessment);
+
+            updateUI();
+            showResults(assessment, sorted);
+          }
+        }
+
+        // ============================================================
+        //  SHOW RESULTS
+        // ============================================================
+        function showResults(assessment, sorted) {
+          const container = document.getElementById("assessmentContent");
+          const risk = assessment.riskLevel;
+
+          let icon, title, subtitle;
+          if (risk.level === "Critical") {
+            icon = "🚨";
+            title = "Critical Risk Profile";
+            subtitle = "Significant olfactory impairment detected";
+          } else if (risk.level === "High") {
+            icon = "🔴";
+            title = "High Risk Profile";
+            subtitle = "Moderate to severe olfactory dysfunction";
+          } else if (risk.level === "Moderate") {
+            icon = "🟡";
+            title = "Moderate Risk Profile";
+            subtitle = "Mild olfactory impairment detected";
+          } else if (risk.level === "Low") {
+            icon = "🟢";
+            title = "Low Risk Profile";
+            subtitle = "Minor olfactory variation detected";
+          } else {
+            icon = "✅";
+            title = "Very Low Risk Profile";
+            subtitle = "Normal olfactory function detected";
+          }
+
+          const patient = patients.find((p) => p.id === assessment.patientId);
+
+          let diseaseHtml = sorted
+            .slice(0, 7)
+            .map(([disease, prob]) => {
+              const probPercent = Math.round(prob * 100);
+              const diseaseData = DISEASE_PATTERNS[disease] || {
+                icon: "🧬",
+                color: "#888",
+              };
+              const threshold = diseasePatterns[disease]?.threshold || 0.6;
+              const isConcern = prob >= threshold;
+              return `
+                        <div class="result-disease-item">
+                            <span class="disease-name">${diseaseData.icon} ${disease}</span>
+                            <div class="disease-bar">
+                                <div class="bar-fill ${isConcern ? "high" : prob > 0.3 ? "medium" : "low"}" style="width:${Math.max(5, prob * 100)}%;"></div>
+                            </div>
+                            <span class="disease-prob">${probPercent}%</span>
+                            <span class="disease-status ${isConcern ? "positive" : "negative"}">${isConcern ? "⚠️ Concern" : "✅ Normal"}</span>
+                        </div>
+                    `;
+            })
+            .join("");
+
+          container.innerHTML = `
+                    <div class="result-summary">
+                        <span class="result-icon">${icon}</span>
+                        <div class="result-title">${title}</div>
+                        <div class="result-subtitle">${subtitle}</div>
+                    </div>
+
+                    <div class="result-risk-indicator ${risk.class}">
+                        <strong>${risk.level} Risk</strong>
+                        <div style="font-weight:400;font-size:12px;margin-top:4px;">Risk Score: ${assessment.riskScore.toFixed(1)}%</div>
+                        <div style="font-weight:400;font-size:11px;margin-top:2px;color:#666;">Raw Score: ${assessment.totalScore}/${assessment.maxScore} (${((assessment.totalScore / assessment.maxScore) * 100).toFixed(0)}%)</div>
+                    </div>
+
+                    <div style="margin:12px 0;padding:12px 16px;background:#f8fafc;border-radius:8px;border:1px solid #e0e8f0;">
+                        <div style="font-size:12px;font-weight:600;color:#8899aa;text-transform:uppercase;">Patient Summary</div>
+                        <div style="display:grid;grid-template-columns:1fr 1fr;gap:4px;margin-top:4px;">
+                            <div style="font-size:13px;"><strong>Name:</strong> ${patient ? patient.name : "Unknown"}</div>
+                            <div style="font-size:13px;"><strong>MRN:</strong> ${patient ? patient.mrn : "N/A"}</div>
+                            <div style="font-size:13px;"><strong>Condition:</strong> ${patient ? patient.condition : "N/A"}</div>
+                            <div style="font-size:13px;"><strong>Status:</strong> <span class="status-badge ${risk.class}">${risk.level}</span></div>
+                        </div>
+                    </div>
+
+                    <div style="margin:12px 0;">
+                        <div style="font-size:12px;font-weight:600;color:#8899aa;text-transform:uppercase;margin-bottom:8px;">Disease Probability Analysis</div>
+                        ${diseaseHtml}
+                    </div>
+
+                    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:12px 0;padding:12px 16px;background:#f5f7fa;border-radius:8px;">
+                        <div><span style="color:#8899aa;">Threshold:</span> ${assessment.scores.threshold}/9</div>
+                        <div><span style="color:#8899aa;">Identification:</span> ${assessment.scores.identification}/9</div>
+                        <div><span style="color:#8899aa;">Discrimination:</span> ${assessment.scores.discrimination}/9</div>
+                        <div><span style="color:#8899aa;">Memory:</span> ${assessment.scores.memory}/9</div>
+                    </div>
+
+                    <div class="result-actions" style="display:flex;gap:12px;margin-top:16px;flex-wrap:wrap;">
+                        <button class="btn-primary" onclick="downloadReport('${assessment.id}')">📥 Download Report</button>
+                        <button class="btn-secondary" onclick="resetAssessment()">🔄 Start New Assessment</button>
+                        <button class="btn-secondary" onclick="switchView('patients')">👤 View All Patients</button>
+                    </div>
+
+                    <div style="margin-top:12px;padding:10px 14px;background:#fafafa;border-radius:8px;font-size:11px;color:#999;text-align:center;border:1px solid #eee;">
+                        ⚕️ This assessment is for screening purposes only. Consult a neurologist for definitive diagnosis.
+                    </div>
+                `;
+
+          assessmentState.inProgress = false;
+        }
+
+        // ============================================================
+        //  RESET ASSESSMENT
+        // ============================================================
+        function resetAssessment() {
+          assessmentState.inProgress = false;
+          assessmentState.patientId = null;
+          assessmentState.currentQuestion = 0;
+          assessmentState.answers = [];
+          renderAssessmentView();
+          showToast("🔄 Assessment reset. Start a new one when ready.");
+        }
+
+        // ============================================================
+        //  START PATIENT TEST
+        // ============================================================
+        function startPatientTest(patientId) {
+          const patient = patients.find((p) => p.id === patientId);
+          if (!patient) {
+            showToast("⚠️ Patient not found");
+            return;
+          }
+
+          assessmentState.patientId = patientId;
+          assessmentState.currentQuestion = 0;
+          assessmentState.answers = new Array(assessmentQuestions.length).fill(
+            null,
+          );
+          assessmentState.inProgress = true;
+          switchView("assessment");
+          renderAssessmentView();
+          showToast(`🧠 Starting assessment for ${patient.name}`);
+        }
+
+        // ============================================================
+        //  VIEW PATIENT
+        // ============================================================
+        function viewPatient(patientId) {
+          const patient = patients.find((p) => p.id === patientId);
+          if (!patient) return;
+
+          const assessment = assessments.find((a) => a.patientId === patientId);
+          const persona = PERSONAS[currentPersona];
+
+          modalTitle.textContent = `👤 ${patient.name} - Patient Record`;
+          modalBody.innerHTML = `
+                    <div style="display:grid;grid-template-columns:1fr 2fr;gap:24px;">
+                        <div style="background:#f8fafc;border-radius:12px;padding:20px;border:1px solid #e0e8f0;">
+                            <div style="width:72px;height:72px;border-radius:50%;background:#1a2a4a;color:#fff;display:flex;align-items:center;justify-content:center;font-size:32px;font-weight:700;margin-bottom:12px;">
+                                ${patient.name.charAt(0)}
+                            </div>
+                            <div style="font-size:20px;font-weight:700;color:#0a1628;">${patient.name}</div>
+                            <div style="font-size:13px;color:#8899aa;"><strong>MRN:</strong> ${patient.mrn}</div>
+                            <div style="font-size:13px;color:#8899aa;"><strong>Age:</strong> ${patient.age} years</div>
+                            <div style="font-size:13px;color:#8899aa;"><strong>Gender:</strong> ${patient.gender}</div>
+                            <div style="font-size:13px;color:#8899aa;"><strong>Condition:</strong> ${patient.condition}</div>
+                            ${patient.phone ? `<div style="font-size:13px;color:#8899aa;"><strong>Phone:</strong> ${patient.phone}</div>` : ""}
+                            ${patient.email ? `<div style="font-size:13px;color:#8899aa;"><strong>Email:</strong> ${patient.email}</div>` : ""}
+                            <div style="height:1px;background:#e0e8f0;margin:12px 0;"></div>
+                            <div>
+                                <span class="status-badge ${patient.riskLevel.class}">${patient.riskLevel.level} Risk</span>
+                                <span class="status-badge ${patient.status === "critical" ? "critical" : patient.status === "pending" ? "pending" : "active"}">${patient.status.toUpperCase()}</span>
+                            </div>
+                            ${patient.hasTakenTest ? `<div style="margin-top:8px;font-size:12px;color:#2e7d32;">✅ Assessment completed on ${patient.lastAssessment}</div>` : `<div style="margin-top:8px;font-size:12px;color:#e65100;">⏳ Assessment pending</div>`}
+                        </div>
+                        <div style="background:#ffffff;border-radius:12px;padding:20px;border:1px solid #e0e8f0;">
+                            <div style="font-size:14px;font-weight:700;color:#0a1628;margin-bottom:12px;">📊 Assessment Summary</div>
+                            ${
+                              assessment
+                                ? `
+                                <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+                                    <div style="background:#f8fafc;padding:12px;border-radius:8px;">
+                                        <div style="font-size:10px;font-weight:600;color:#8899aa;text-transform:uppercase;">Total Score</div>
+                                        <div style="font-size:18px;font-weight:700;color:#0a1628;">${assessment.totalScore}<span style="font-size:12px;font-weight:400;color:#8899aa;">/${assessment.maxScore}</span></div>
+                                    </div>
+                                    <div style="background:#f8fafc;padding:12px;border-radius:8px;">
+                                        <div style="font-size:10px;font-weight:600;color:#8899aa;text-transform:uppercase;">Risk Score</div>
+                                        <div style="font-size:18px;font-weight:700;color:#0a1628;">${assessment.riskScore.toFixed(1)}%</div>
+                                    </div>
+                                    <div style="background:#f8fafc;padding:12px;border-radius:8px;">
+                                        <div style="font-size:10px;font-weight:600;color:#8899aa;text-transform:uppercase;">Top Concern</div>
+                                        <div style="font-size:14px;font-weight:700;color:#0a1628;">${assessment.topConcern || "None"}</div>
+                                    </div>
+                                    <div style="background:#f8fafc;padding:12px;border-radius:8px;">
+                                        <div style="font-size:10px;font-weight:600;color:#8899aa;text-transform:uppercase;">Status</div>
+                                        <div style="font-size:14px;font-weight:700;color:${assessment.status === "critical" ? "#c62828" : "#2e7d32"};">${assessment.status.toUpperCase()}</div>
+                                    </div>
+                                </div>
+                                <div style="margin-top:12px;padding:12px;background:#f8fafc;border-radius:8px;">
+                                    <div style="font-size:11px;color:#8899aa;font-weight:600;text-transform:uppercase;">Domain Scores</div>
+                                    <div style="display:grid;grid-template-columns:1fr 1fr;gap:4px;margin-top:4px;">
+                                        <div style="font-size:12px;">Threshold: ${assessment.scores.threshold}/9</div>
+                                        <div style="font-size:12px;">Identification: ${assessment.scores.identification}/9</div>
+                                        <div style="font-size:12px;">Discrimination: ${assessment.scores.discrimination}/9</div>
+                                        <div style="font-size:12px;">Memory: ${assessment.scores.memory}/9</div>
+                                    </div>
+                                    ${assessment.notes ? `<div style="margin-top:8px;font-size:12px;color:#555;border-top:1px solid #e0e8f0;padding-top:8px;">📝 ${assessment.notes}</div>` : ""}
+                                </div>
+                                <div style="margin-top:12px;display:flex;gap:8px;flex-wrap:wrap;">
+                                    <button class="btn-primary" onclick="closeModal();downloadReport('${assessment.id}')">📥 Download Report</button>
+                                    <button class="btn-secondary" onclick="closeModal();startPatientTest('${patient.id}')">🔄 Re-assess</button>
+                                    ${persona.permissions.includes("diagnose") ? `<button class="btn-success" onclick="closeModal();showToast('📝 Diagnosis recorded for ${patient.name}')">📝 Add Diagnosis</button>` : ""}
+                                </div>
+                            `
+                                : `
+                                <div style="text-align:center;padding:30px 0;color:#8899aa;">
+                                    <span style="font-size:48px;display:block;">📋</span>
+                                    No assessment recorded
+                                    <button class="btn-primary" style="margin-top:12px;" onclick="closeModal();startPatientTest('${patient.id}')">Start Assessment</button>
+                                </div>
+                            `
+                            }
+                        </div>
+                    </div>
+                `;
+
+          modalFooter.innerHTML = `
+                    <button class="btn-secondary" onclick="closeModal()">Close</button>
+                    ${!patient.hasTakenTest ? `<button class="btn-primary" onclick="closeModal();startPatientTest('${patient.id}')">🧪 Start Test</button>` : ""}
+                `;
+
+          modalOverlay.classList.add("active");
+        }
+
+        function viewAssessment(assessmentId) {
+          const assessment = assessments.find((a) => a.id === assessmentId);
+          if (assessment) viewPatient(assessment.patientId);
+        }
+
+        // ============================================================
+        //  ADMIN ACTIONS
+        // ============================================================
+        function completeReview(patientId) {
+          const patient = patients.find((p) => p.id === patientId);
+          if (patient) {
+            patient.status = "active";
+            showToast(
+              `✅ Assessment reviewed and completed for ${patient.name}`,
+            );
+            updateUI();
+          }
+        }
+
+        function escalateCase(patientId) {
+          const patient = patients.find((p) => p.id === patientId);
+          if (patient) {
+            showToast(
+              `🚨 Case escalated to attending neurologist for ${patient.name}`,
+            );
+          }
+        }
+
+        function downloadReportForPatient(patientId) {
+          const assessment = assessments.find((a) => a.patientId === patientId);
+          if (assessment) {
+            downloadReport(assessment.id);
+          } else {
+            showToast("⚠️ No assessment found for this patient");
+          }
+        }
+
+        // ============================================================
+        //  FIXED: DOWNLOAD REPORT (PDF)
+        // ============================================================
+        function downloadReport(assessmentId) {
+          const assessment = assessments.find((a) => a.id === assessmentId);
+          if (!assessment) {
+            showToast("⚠️ Assessment not found");
+            return;
+          }
+
+          const patient = patients.find((p) => p.id === assessment.patientId);
+          if (!patient) {
+            showToast("⚠️ Patient not found");
+            return;
+          }
+
+          try {
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF("p", "mm", "a4");
+            const pageWidth = doc.internal.pageSize.getWidth();
+            const margin = 15;
+            const maxWidth = pageWidth - margin * 2;
+            let yPos = 20;
+
+            // === TITLE ===
+            doc.setFontSize(24);
+            doc.setFont("helvetica", "bold");
+            doc.text(
+              "Neurodegenrative Assessment Report",
+              pageWidth / 2,
+              yPos,
+              {
+                align: "center",
+              },
+            );
+            yPos += 12;
+
+            // === HEADER ===
+            const now = new Date();
+            const dateStr = now.toLocaleString("en-US", {
+              weekday: "long",
+              year: "numeric",
+              month: "long",
+              day: "numeric",
+              hour: "2-digit",
+              minute: "2-digit",
+            });
+            doc.setFontSize(10);
+            doc.setFont("helvetica", "normal");
+            doc.text("Generated: " + dateStr, pageWidth / 2, yPos, {
+              align: "center",
+            });
+            yPos += 8;
+
+            doc.setFontSize(10);
+            doc.text("Report ID: " + assessment.id, pageWidth / 2, yPos, {
+              align: "center",
+            });
+            yPos += 8;
+
+            doc.setDrawColor(180);
+            doc.line(margin, yPos, pageWidth - margin, yPos);
+            yPos += 12;
+
+            // === PATIENT INFORMATION ===
+            doc.setFontSize(14);
+            doc.setFont("helvetica", "bold");
+            doc.text("Patient Information", margin, yPos);
+            yPos += 8;
+
+            const tableX = margin;
+            const tableWidth = maxWidth;
+            const rowHeight = 8;
+            const col1Width = 45;
+            const col2Width = tableWidth - col1Width - 4;
+
+            const patientFields = [
+              ["Patient Name", patient.name],
+              ["MRN", patient.mrn],
+              ["Age", patient.age + " years"],
+              ["Gender", patient.gender],
+              ["Condition", patient.condition],
+              ["Assessment Date", assessment.date],
+            ];
+
+            for (const [label, value] of patientFields) {
+              doc.rect(tableX, yPos, tableWidth, rowHeight, "D");
+              doc.setFont("helvetica", "bold");
+              doc.setFontSize(9);
+              doc.text(label, tableX + 4, yPos + 5.5);
+              doc.setFont("helvetica", "normal");
+              doc.text(String(value), tableX + col1Width + 4, yPos + 5.5);
+              yPos += rowHeight;
+            }
+            yPos += 4;
+
+            // === RISK ASSESSMENT ===
+            if (yPos > 200) {
+              doc.addPage();
+              yPos = 20;
+            }
+            doc.setFontSize(14);
+            doc.setFont("helvetica", "bold");
+            doc.text("Risk Assessment", margin, yPos);
+            yPos += 8;
+
+            const risk = assessment.riskLevel;
+            const riskFields = [
+              ["Risk Level", risk.level],
+              ["Risk Score", assessment.riskScore.toFixed(1) + "%"],
+              [
+                "Raw Score",
+                assessment.totalScore +
+                  "/" +
+                  assessment.maxScore +
+                  " (" +
+                  ((assessment.totalScore / assessment.maxScore) * 100).toFixed(
+                    0,
+                  ) +
+                  "%)",
+              ],
+              ["Status", assessment.status.toUpperCase()],
+            ];
+
+            for (const [label, value] of riskFields) {
+              doc.rect(tableX, yPos, tableWidth, rowHeight, "D");
+              doc.setFont("helvetica", "bold");
+              doc.setFontSize(9);
+              doc.text(label, tableX + 4, yPos + 5.5);
+              doc.setFont("helvetica", "normal");
+              doc.text(String(value), tableX + col1Width + 4, yPos + 5.5);
+              yPos += rowHeight;
+            }
+            yPos += 4;
+
+            // === DISEASE PROBABILITY ANALYSIS ===
+            if (yPos > 200) {
+              doc.addPage();
+              yPos = 20;
+            }
+            doc.setFontSize(14);
+            doc.setFont("helvetica", "bold");
+            doc.text("Disease Probability Analysis", margin, yPos);
+            yPos += 8;
+
+            // Calculate probabilities for display
+            const scores = assessment.scores;
+            const thresholdScore = scores.threshold / 9;
+            const identificationScore = scores.identification / 9;
+            const discriminationScore = scores.discrimination / 9;
+            const memoryScore = scores.memory / 9;
+
+            const probs = {};
+            for (const [disease, data] of Object.entries(diseasePatterns)) {
+              const profile = data.olfactoryProfile;
+              const thresholdMatch =
+                1 -
+                Math.min(
+                  Math.abs(thresholdScore - profile.threshold.moderate),
+                  1,
+                );
+              const identificationMatch =
+                1 -
+                Math.min(
+                  Math.abs(
+                    identificationScore - profile.identification.moderate,
+                  ),
+                  1,
+                );
+              const discriminationMatch =
+                1 -
+                Math.min(
+                  Math.abs(
+                    discriminationScore - profile.discrimination.moderate,
+                  ),
+                  1,
+                );
+              const memoryMatch =
+                1 -
+                Math.min(Math.abs(memoryScore - profile.memory.moderate), 1);
+
+              let probability =
+                thresholdMatch * 0.3 +
+                identificationMatch * 0.35 +
+                discriminationMatch * 0.2 +
+                memoryMatch * 0.15;
+
+              if (
+                thresholdScore < 0.4 &&
+                memoryScore < 0.3 &&
+                disease === "Alzheimer's Disease"
+              ) {
+                probability = Math.min(1, probability * 1.3);
+              }
+              if (
+                identificationScore < 0.3 &&
+                thresholdScore < 0.35 &&
+                disease === "Parkinson's Disease"
+              ) {
+                probability = Math.min(1, probability * 1.3);
+              }
+              if (
+                identificationScore < 0.25 &&
+                discriminationScore < 0.35 &&
+                disease === "Lewy Body Dementia"
+              ) {
+                probability = Math.min(1, probability * 1.4);
+              }
+              probs[disease] = Math.min(1, Math.max(0, probability));
+            }
+
+            const sortedProbs = Object.entries(probs).sort(
+              (a, b) => b[1] - a[1],
+            );
+
+            // Table headers
+            const headers = ["Disease", "Probability", "Status"];
+            const colWidths = [70, 35, 55];
+            let totalColWidth = 0;
+            for (const w of colWidths) totalColWidth += w;
+            const scaleFactor = tableWidth / totalColWidth;
+            const finalCols = colWidths.map((w) => w * scaleFactor);
+
+            doc.setFillColor(240, 240, 240);
+            doc.rect(tableX, yPos, tableWidth, rowHeight, "F");
+            doc.rect(tableX, yPos, tableWidth, rowHeight, "D");
+            doc.setFont("helvetica", "bold");
+            doc.setFontSize(9);
+            let hx = tableX + 2;
+            for (let i = 0; i < headers.length; i++) {
+              doc.text(headers[i], hx, yPos + 5.5);
+              hx += finalCols[i];
+            }
+            yPos += rowHeight;
+
+            doc.setFont("helvetica", "normal");
+            doc.setFontSize(9);
+
+            for (const [disease, prob] of sortedProbs.slice(0, 7)) {
+              if (yPos > 260) {
+                doc.addPage();
+                yPos = 20;
+              }
+              const probPercent = Math.round(prob * 100);
+              const diseaseData = DISEASE_PATTERNS[disease];
+              const threshold = diseaseData ? diseaseData.threshold : 0.6;
+              const isConcern = prob >= threshold;
+              const statusText = isConcern ? "⚠️ Concern" : "✅ Normal";
+
+              const rowHeightAdjusted = Math.max(rowHeight, 8);
+              doc.rect(tableX, yPos, tableWidth, rowHeightAdjusted, "D");
+
+              let displayName = disease;
+              if (displayName.length > 25)
+                displayName = displayName.substring(0, 22) + "...";
+
+              let cx = tableX + 2;
+              doc.text(displayName, cx, yPos + 5.5);
+              cx += finalCols[0];
+              doc.text(probPercent + "%", cx, yPos + 5.5);
+              cx += finalCols[1];
+              doc.text(statusText, cx, yPos + 5.5);
+
+              yPos += rowHeightAdjusted;
+            }
+            yPos += 4;
+
+            // === DOMAIN SCORES ===
+            if (yPos > 200) {
+              doc.addPage();
+              yPos = 20;
+            }
+            doc.setFontSize(14);
+            doc.setFont("helvetica", "bold");
+            doc.text("Domain Scores", margin, yPos);
+            yPos += 8;
+
+            const domainFields = [
+              ["Olfactory Threshold", scores.threshold + "/9"],
+              ["Odor Identification", scores.identification + "/9"],
+              ["Odor Discrimination", scores.discrimination + "/9"],
+              ["Olfactory Memory", memoryScore + "/9"],
+              [
+                "Total Score",
+                assessment.totalScore + "/" + assessment.maxScore,
+              ],
+            ];
+
+            for (const [label, value] of domainFields) {
+              doc.rect(tableX, yPos, tableWidth, rowHeight, "D");
+              doc.setFont("helvetica", "bold");
+              doc.setFontSize(9);
+              doc.text(label, tableX + 4, yPos + 5.5);
+              doc.setFont("helvetica", "normal");
+              doc.text(String(value), tableX + col1Width + 4, yPos + 5.5);
+              yPos += rowHeight;
+            }
+
+            // === FOOTER ===
+            const footerY = Math.min(yPos + 15, 280);
+            doc.setFontSize(8);
+            doc.setFont("helvetica", "italic");
+            doc.setTextColor(150);
+            doc.text(
+              "This report was generated automatically by NeuraClinic Assessment Platform.",
+              pageWidth / 2,
+              footerY,
+              { align: "center" },
+            );
+            doc.text(
+              "Data is protected and confidential. For clinical use only.",
+              pageWidth / 2,
+              footerY + 5,
+              { align: "center" },
+            );
+            doc.text(
+              "⚕️ This assessment is for screening purposes only. Consult a neurologist for definitive diagnosis.",
+              pageWidth / 2,
+              footerY + 10,
+              { align: "center" },
+            );
+
+            const fileName =
+              "NeuraClinic-Report-" +
+              patient.name.replace(/\s/g, "_") +
+              "-" +
+              now.getFullYear() +
+              "-" +
+              String(now.getMonth() + 1).padStart(2, "0") +
+              "-" +
+              String(now.getDate()).padStart(2, "0") +
+              ".pdf";
+            doc.save(fileName);
+            showToast("📊 Report downloaded successfully!");
+          } catch (error) {
+            console.error("PDF Generation Error:", error);
+            showToast("⚠️ Error generating report. Please try again.");
+          }
+        }
+
+        // ============================================================
+        //  EXPORT PATIENT DATA
+        // ============================================================
+        function exportPatientData() {
+          try {
+            const data = {
+              exportedAt: new Date().toISOString(),
+              totalPatients: patients.length,
+              totalAssessments: assessments.length,
+              patients: patients.map((p) => ({
+                id: p.id,
+                mrn: p.mrn,
+                name: p.name,
+                age: p.age,
+                gender: p.gender,
+                condition: p.condition,
+                status: p.status,
+                riskScore: p.riskScore,
+                riskLevel: p.riskLevel.level,
+                topConcern: p.topConcern,
+                lastAssessment: p.lastAssessment,
+                hasTakenTest: p.hasTakenTest,
+              })),
+              assessments: assessments.map((a) => ({
+                id: a.id,
+                patientId: a.patientId,
+                date: a.date,
+                scores: a.scores,
+                totalScore: a.totalScore,
+                maxScore: a.maxScore,
+                riskScore: a.riskScore,
+                riskLevel: a.riskLevel.level,
+                topConcern: a.topConcern,
+                status: a.status,
+              })),
+            };
+
+            const json = JSON.stringify(data, null, 2);
+            const blob = new Blob([json], { type: "application/json" });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement("a");
+            a.href = url;
+            a.download =
+              "NeuraClinic-Export-" +
+              new Date().toISOString().slice(0, 10) +
+              ".json";
+            a.click();
+            URL.revokeObjectURL(url);
+            showToast("📥 Patient data exported successfully!");
+          } catch (error) {
+            showToast("⚠️ Error exporting data");
+          }
+        }
+
+        // ============================================================
+        //  MODAL FUNCTIONS
+        // ============================================================
+        function closeModal() {
+          modalOverlay.classList.remove("active");
+        }
+
+        modalOverlay.addEventListener("click", function (e) {
+          if (e.target === this) closeModal();
+        });
+
+        // ============================================================
+        //  PERSONA SWITCHING
+        // ============================================================
+        function switchPersona(personaId) {
+          currentPersona = personaId;
+          const persona = PERSONAS[personaId];
+          if (persona) {
+            currentPersonaName.textContent = persona.icon + " " + persona.name;
+            showToast(`👤 Switched to ${persona.name} (${persona.title})`);
+            document.querySelector(".header-badge").textContent = persona.badge;
+          }
+        }
+
+        // ============================================================
+        //  SIDEBAR NAVIGATION
+        // ============================================================
+        document.querySelectorAll(".sidebar-menu-item").forEach((item) => {
+          item.addEventListener("click", function () {
+            const view = this.dataset.view;
+            if (view) switchView(view);
+          });
+        });
+
+        personaSelect.addEventListener("change", function () {
+          switchPersona(this.value);
+        });
+
+        // ============================================================
+        //  KEYBOARD SHORTCUTS
+        // ============================================================
+        document.addEventListener("keydown", function (e) {
+          if (e.key === "Escape") closeModal();
+          if ((e.ctrlKey || e.metaKey) && e.key === "1")
+            switchView("dashboard");
+          if ((e.ctrlKey || e.metaKey) && e.key === "2") switchView("patients");
+          if ((e.ctrlKey || e.metaKey) && e.key === "3") switchView("pending");
+          if ((e.ctrlKey || e.metaKey) && e.key === "4") switchView("critical");
+          if ((e.ctrlKey || e.metaKey) && e.key === "5")
+            switchView("assessment");
+          if ((e.ctrlKey || e.metaKey) && e.key === "6") switchView("reports");
+          if ((e.ctrlKey || e.metaKey) && e.key === "7") switchView("research");
+          if ((e.ctrlKey || e.metaKey) && e.key === "8") switchView("trends");
+        });
+
+        // ============================================================
+        //  INIT
+        // ============================================================
+        initializeData();
+        switchPersona("neurologist");
+        switchView("dashboard");
+        renderAssessmentView();
+
+        console.log("🏥 NeuraClinic - Neurodegenerative Assessment Platform");
+        console.log("✅ PDF Download Report - FIXED");
+        console.log("👤 Current Persona: " + PERSONAS[currentPersona].name);
+        console.log(
+          "📊 " +
+            patients.length +
+            " patients, " +
+            assessments.length +
+            " assessments",
+        );
+
+        // Expose functions globally
+        window.switchView = switchView;
+        window.closeModal = closeModal;
+        window.viewPatient = viewPatient;
+        window.viewAssessment = viewAssessment;
+        window.startPatientTest = startPatientTest;
+        window.openNewPatientModal = openNewPatientModal;
+        window.registerAndTest = registerAndTest;
+        window.startAssessmentForSelected = startAssessmentForSelected;
+        window.selectAssessmentOption = selectAssessmentOption;
+        window.nextAssessmentQuestion = nextAssessmentQuestion;
+        window.prevAssessmentQuestion = prevAssessmentQuestion;
+        window.completeAssessment = completeAssessment;
+        window.resetAssessment = resetAssessment;
+        window.completeReview = completeReview;
+        window.escalateCase = escalateCase;
+        window.downloadReport = downloadReport;
+        window.downloadReportForPatient = downloadReportForPatient;
+        window.exportPatientData = exportPatientData;
+        window.renderAssessmentView = renderAssessmentView;
+        window.showToast = showToast;
+      })();
+    </script>
+  </body>
+</html>

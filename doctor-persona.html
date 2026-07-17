@@ -1,0 +1,888 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Dr. Sarah Chen - Chief of Neurology</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family:
+          -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu,
+          sans-serif;
+        background: #f0f4f8;
+        min-height: 100vh;
+        display: flex;
+        justify-content: center;
+        align-items: flex-start;
+        padding: 40px 20px;
+      }
+
+      .container {
+        max-width: 1200px;
+        width: 100%;
+        background: #ffffff;
+        border-radius: 24px;
+        padding: 0;
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.08);
+        overflow: hidden;
+      }
+
+      /* Header */
+      .header {
+        background: linear-gradient(
+          135deg,
+          #0a1628 0%,
+          #1a2a4a 50%,
+          #0d1f3c 100%
+        );
+        padding: 40px 48px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 20px;
+      }
+
+      .header-left {
+        display: flex;
+        align-items: center;
+        gap: 24px;
+      }
+
+      /* AI Avatar */
+      .ai-avatar-container {
+        position: relative;
+        flex-shrink: 0;
+      }
+
+      .ai-avatar {
+        width: 96px;
+        height: 96px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, #2a5f8a, #4a8ab5);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        position: relative;
+        overflow: hidden;
+        border: 3px solid rgba(255, 255, 255, 0.3);
+        box-shadow: 0 4px 20px rgba(42, 95, 138, 0.4);
+      }
+
+      .ai-avatar svg {
+        width: 56px;
+        height: 56px;
+      }
+
+      /* Avatar Glow Effect */
+      .ai-avatar::before {
+        content: "";
+        position: absolute;
+        inset: -3px;
+        border-radius: 50%;
+        background: conic-gradient(
+          from 0deg,
+          #2a5f8a,
+          #4a8ab5,
+          #88b4d8,
+          #4a8ab5,
+          #2a5f8a
+        );
+        z-index: -1;
+        animation: rotate-glow 4s linear infinite;
+      }
+
+      @keyframes rotate-glow {
+        0% {
+          transform: rotate(0deg);
+        }
+        100% {
+          transform: rotate(360deg);
+        }
+      }
+
+      /* Status Badge on Avatar */
+      .online-status {
+        position: absolute;
+        bottom: 4px;
+        right: 4px;
+        width: 18px;
+        height: 18px;
+        background: #4caf50;
+        border-radius: 50%;
+        border: 3px solid #1a2a4a;
+        z-index: 2;
+        animation: pulse-dot 2s infinite;
+      }
+
+      @keyframes pulse-dot {
+        0%,
+        100% {
+          opacity: 1;
+          transform: scale(1);
+        }
+        50% {
+          opacity: 0.6;
+          transform: scale(0.9);
+        }
+      }
+
+      .header-left .name-section h1 {
+        font-size: 28px;
+        font-weight: 700;
+        color: #ffffff;
+        letter-spacing: -0.5px;
+      }
+
+      .header-left .name-section .title {
+        font-size: 16px;
+        color: #88b4d8;
+        font-weight: 400;
+      }
+
+      .header-left .name-section .hospital {
+        font-size: 13px;
+        color: #6a8aaa;
+        margin-top: 2px;
+      }
+
+      .header-badge {
+        display: inline-block;
+        background: rgba(255, 255, 255, 0.1);
+        border: 1px solid rgba(255, 255, 255, 0.15);
+        padding: 6px 20px;
+        border-radius: 20px;
+        font-size: 12px;
+        color: #88b4d8;
+        letter-spacing: 0.5px;
+        text-transform: uppercase;
+      }
+
+      /* Content */
+      .content {
+        padding: 40px 48px;
+      }
+
+      /* Profile Grid */
+      .profile-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 32px;
+        margin-bottom: 32px;
+      }
+
+      .profile-card {
+        background: #f8fafc;
+        border-radius: 16px;
+        padding: 24px;
+        border: 1px solid #e8edf5;
+      }
+
+      .profile-card .label {
+        font-size: 11px;
+        font-weight: 700;
+        color: #8899aa;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        margin-bottom: 12px;
+      }
+
+      .profile-card .value {
+        font-size: 15px;
+        color: #1a2a4a;
+        line-height: 1.8;
+      }
+
+      .profile-card .value strong {
+        color: #0a1628;
+      }
+
+      /* Stats */
+      .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 16px;
+        margin-bottom: 32px;
+      }
+
+      .stat-card {
+        background: #f8fafc;
+        border-radius: 12px;
+        padding: 18px 20px;
+        border: 1px solid #e8edf5;
+        text-align: center;
+      }
+
+      .stat-card .stat-number {
+        font-size: 28px;
+        font-weight: 700;
+        color: #0a1628;
+      }
+
+      .stat-card .stat-label {
+        font-size: 11px;
+        font-weight: 600;
+        color: #8899aa;
+        text-transform: uppercase;
+        letter-spacing: 0.3px;
+        margin-top: 4px;
+      }
+
+      /* Pain Points */
+      .section-title {
+        font-size: 18px;
+        font-weight: 700;
+        color: #0a1628;
+        margin-bottom: 16px;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+      }
+
+      .section-title .icon {
+        font-size: 24px;
+      }
+
+      .pain-points-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 16px;
+        margin-bottom: 32px;
+      }
+
+      .pain-point-card {
+        background: #fff5f5;
+        border-radius: 12px;
+        padding: 18px 20px;
+        border: 1px solid #ffebee;
+        display: flex;
+        align-items: flex-start;
+        gap: 12px;
+      }
+
+      .pain-point-card .icon {
+        font-size: 20px;
+        flex-shrink: 0;
+      }
+
+      .pain-point-card .issue {
+        font-weight: 600;
+        color: #c62828;
+        font-size: 14px;
+      }
+
+      .pain-point-card .impact {
+        font-size: 13px;
+        color: #666;
+        margin-top: 2px;
+      }
+
+      /* Goals */
+      .goals-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 16px;
+        margin-bottom: 32px;
+      }
+
+      .goal-card {
+        background: #e8f5e9;
+        border-radius: 12px;
+        padding: 18px 20px;
+        border: 1px solid #c8e6c9;
+        display: flex;
+        align-items: flex-start;
+        gap: 12px;
+      }
+
+      .goal-card .icon {
+        font-size: 20px;
+        flex-shrink: 0;
+      }
+
+      .goal-card .goal-text {
+        font-weight: 600;
+        color: #2e7d32;
+        font-size: 14px;
+      }
+
+      .goal-card .priority {
+        font-size: 12px;
+        color: #555;
+        margin-top: 2px;
+      }
+
+      .priority-stars {
+        color: #f5a623;
+        font-size: 13px;
+        letter-spacing: 1px;
+      }
+
+      /* Quote */
+      .quote-section {
+        background: #e3f2fd;
+        border-radius: 16px;
+        padding: 24px 32px;
+        border: 1px solid #90caf9;
+        margin-bottom: 32px;
+        position: relative;
+      }
+
+      .quote-section::before {
+        content: '"';
+        font-size: 48px;
+        color: #1565c0;
+        opacity: 0.3;
+        position: absolute;
+        top: 8px;
+        left: 16px;
+      }
+
+      .quote-section .quote-text {
+        font-size: 18px;
+        font-weight: 500;
+        color: #0a1628;
+        line-height: 1.6;
+        padding-left: 20px;
+      }
+
+      .quote-section .quote-author {
+        font-size: 14px;
+        color: #1565c0;
+        font-weight: 600;
+        margin-top: 8px;
+        padding-left: 20px;
+      }
+
+      /* Why NeuroClinic */
+      .neuroclinic-section {
+        background: linear-gradient(135deg, #1a2a4a 0%, #0d1f3c 100%);
+        border-radius: 16px;
+        padding: 32px 36px;
+        color: #ffffff;
+        margin-bottom: 32px;
+      }
+
+      .neuroclinic-section h3 {
+        font-size: 18px;
+        font-weight: 700;
+        margin-bottom: 12px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+
+      .neuroclinic-section p {
+        font-size: 15px;
+        color: #88b4d8;
+        line-height: 1.8;
+      }
+
+      .neuroclinic-section .highlight {
+        color: #ffffff;
+        font-weight: 600;
+      }
+
+      /* Benefits List */
+      .benefits-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr 1fr;
+        gap: 16px;
+        margin-top: 16px;
+      }
+
+      .benefit-item {
+        background: rgba(255, 255, 255, 0.06);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        border-radius: 10px;
+        padding: 16px 18px;
+        text-align: center;
+      }
+
+      .benefit-item .icon {
+        font-size: 28px;
+        display: block;
+        margin-bottom: 6px;
+      }
+
+      .benefit-item .text {
+        font-size: 13px;
+        color: #88b4d8;
+      }
+
+      .benefit-item .text strong {
+        color: #ffffff;
+      }
+
+      /* Responsive */
+      @media (max-width: 1024px) {
+        .profile-grid {
+          grid-template-columns: 1fr;
+        }
+        .stats-grid {
+          grid-template-columns: repeat(2, 1fr);
+        }
+        .pain-points-grid {
+          grid-template-columns: 1fr;
+        }
+        .goals-grid {
+          grid-template-columns: 1fr;
+        }
+        .benefits-grid {
+          grid-template-columns: 1fr 1fr;
+        }
+      }
+
+      @media (max-width: 768px) {
+        .header {
+          padding: 24px;
+        }
+        .content {
+          padding: 24px;
+        }
+        .header-left .name-section h1 {
+          font-size: 22px;
+        }
+        .header-left .name-section .title {
+          font-size: 14px;
+        }
+        .stats-grid {
+          grid-template-columns: 1fr 1fr;
+        }
+        .benefits-grid {
+          grid-template-columns: 1fr;
+        }
+        .quote-section .quote-text {
+          font-size: 16px;
+        }
+        .neuroclinic-section {
+          padding: 24px;
+        }
+        .ai-avatar {
+          width: 72px;
+          height: 72px;
+        }
+        .ai-avatar svg {
+          width: 40px;
+          height: 40px;
+        }
+      }
+
+      @media (max-width: 480px) {
+        .header {
+          padding: 16px;
+          flex-direction: column;
+          align-items: flex-start;
+        }
+        .header-left {
+          flex-wrap: wrap;
+          gap: 16px;
+        }
+        .header-left .ai-avatar {
+          width: 60px;
+          height: 60px;
+        }
+        .header-left .ai-avatar svg {
+          width: 32px;
+          height: 32px;
+        }
+        .header-left .name-section h1 {
+          font-size: 18px;
+        }
+        .online-status {
+          width: 14px;
+          height: 14px;
+          bottom: 2px;
+          right: 2px;
+          border-width: 2px;
+        }
+        .content {
+          padding: 16px;
+        }
+        .stats-grid {
+          grid-template-columns: 1fr;
+        }
+        .profile-card {
+          padding: 16px;
+        }
+        .stat-card .stat-number {
+          font-size: 22px;
+        }
+        .quote-section {
+          padding: 16px 20px;
+        }
+        .quote-section .quote-text {
+          font-size: 14px;
+          padding-left: 0;
+        }
+        .quote-section::before {
+          display: none;
+        }
+        .neuroclinic-section h3 {
+          font-size: 16px;
+        }
+        .header-badge {
+          font-size: 10px;
+          padding: 4px 14px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <!-- ===== HEADER ===== -->
+      <header class="header">
+        <div class="header-left">
+          <!-- AI Avatar -->
+          <div class="ai-avatar-container">
+            <div class="ai-avatar">
+              <svg
+                viewBox="0 0 100 100"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <!-- Background circle -->
+                <circle cx="50" cy="50" r="48" fill="rgba(255,255,255,0.15)" />
+
+                <!-- Hair -->
+                <path
+                  d="M20 40 C20 15, 80 15, 80 40 L80 50 L20 50 L20 40Z"
+                  fill="rgba(255,255,255,0.6)"
+                />
+
+                <!-- Face -->
+                <ellipse
+                  cx="50"
+                  cy="55"
+                  rx="28"
+                  ry="30"
+                  fill="rgba(255,255,255,0.85)"
+                />
+
+                <!-- Eyes -->
+                <ellipse cx="40" cy="50" rx="6" ry="7" fill="#2a5f8a" />
+                <ellipse cx="60" cy="50" rx="6" ry="7" fill="#2a5f8a" />
+                <ellipse cx="40" cy="48" rx="2.5" ry="2.5" fill="white" />
+                <ellipse cx="60" cy="48" rx="2.5" ry="2.5" fill="white" />
+
+                <!-- Eyebrows -->
+                <path
+                  d="M34 42 Q40 38, 46 42"
+                  stroke="#2a5f8a"
+                  stroke-width="2"
+                  fill="none"
+                  stroke-linecap="round"
+                />
+                <path
+                  d="M54 42 Q60 38, 66 42"
+                  stroke="#2a5f8a"
+                  stroke-width="2"
+                  fill="none"
+                  stroke-linecap="round"
+                />
+
+                <!-- Smile -->
+                <path
+                  d="M40 60 Q50 68, 60 60"
+                  stroke="#2a5f8a"
+                  stroke-width="2"
+                  fill="none"
+                  stroke-linecap="round"
+                />
+
+                <!-- Lab Coat Collar -->
+                <path
+                  d="M30 75 L40 68 L50 75 L60 68 L70 75 L65 85 L35 85 L30 75Z"
+                  fill="rgba(255,255,255,0.3)"
+                  stroke="rgba(255,255,255,0.2)"
+                  stroke-width="1"
+                />
+
+                <!-- Stethoscope -->
+                <path
+                  d="M35 82 C30 78, 28 70, 35 65 C42 60, 48 65, 50 70 C52 65, 58 60, 65 65 C72 70, 70 78, 65 82"
+                  stroke="#88b4d8"
+                  stroke-width="2"
+                  fill="none"
+                />
+                <circle cx="50" cy="72" r="4" fill="#88b4d8" opacity="0.5" />
+
+                <!-- Name initial badge -->
+                <circle
+                  cx="78"
+                  cy="20"
+                  r="12"
+                  fill="#2a5f8a"
+                  stroke="white"
+                  stroke-width="2"
+                />
+                <text
+                  x="78"
+                  y="25"
+                  font-size="12"
+                  font-weight="700"
+                  fill="white"
+                  text-anchor="middle"
+                >
+                  SC
+                </text>
+
+                <!-- Subtle glow particles -->
+                <circle cx="15" cy="25" r="2" fill="rgba(136,180,216,0.3)" />
+                <circle cx="85" cy="35" r="1.5" fill="rgba(136,180,216,0.2)" />
+                <circle cx="10" cy="70" r="1.5" fill="rgba(136,180,216,0.2)" />
+                <circle cx="90" cy="75" r="2" fill="rgba(136,180,216,0.3)" />
+              </svg>
+            </div>
+            <div class="online-status"></div>
+          </div>
+
+          <div class="name-section">
+            <h1>Dr. Sarah Chen</h1>
+            <div class="title">Chief of Neurology</div>
+            <div class="hospital">🏥 University Medical Center</div>
+          </div>
+        </div>
+        <span class="header-badge">🧠 Attending Physician</span>
+      </header>
+
+      <!-- ===== CONTENT ===== -->
+      <div class="content">
+        <!-- ===== PROFILE ===== -->
+        <div class="profile-grid">
+          <div class="profile-card">
+            <div class="label">👤 About</div>
+            <div class="value">
+              <strong>Age:</strong> 48<br />
+              <strong>Experience:</strong> 15+ years<br />
+              <strong>Team:</strong> 12 neurologists<br />
+              <strong>Patients:</strong> 200+ annually<br />
+              <strong>Specialty:</strong> Neurodegenerative disorders
+            </div>
+          </div>
+          <div class="profile-card">
+            <div class="label">🏥 Clinical Practice</div>
+            <div class="value">
+              <strong>Setting:</strong> Academic Medical Center<br />
+              <strong>Patients:</strong> Mix of early-stage and advanced
+              neurodegenerative cases<br />
+              <strong>Referrals:</strong> Primary care, geriatrics, and memory
+              clinics<br />
+              <strong>Research:</strong> Active in clinical trials for early
+              detection biomarkers
+            </div>
+          </div>
+        </div>
+
+        <!-- ===== STATS ===== -->
+        <div class="stats-grid">
+          <div class="stat-card">
+            <div class="stat-number">200+</div>
+            <div class="stat-label">Annual Patients</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-number">85%</div>
+            <div class="stat-label">Patients with Olfactory Dysfunction</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-number">5-10</div>
+            <div class="stat-label">Years Diagnosis Delay</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-number">2-3</div>
+            <div class="stat-label">Hours for Manual Reporting</div>
+          </div>
+        </div>
+
+        <!-- ===== PAIN POINTS ===== -->
+        <div class="section-title">
+          <span class="icon">🔴</span> Pain Points
+        </div>
+        <div class="pain-points-grid">
+          <div class="pain-point-card">
+            <span class="icon">⏰</span>
+            <div>
+              <div class="issue">Late Diagnosis</div>
+              <div class="impact">
+                Patients diagnosed 5-10 years too late, missing critical
+                treatment window
+              </div>
+            </div>
+          </div>
+          <div class="pain-point-card">
+            <span class="icon">👃</span>
+            <div>
+              <div class="issue">Olfactory Dysfunction Overlooked</div>
+              <div class="impact">
+                85% of patients show olfactory changes, but only 15% are
+                assessed
+              </div>
+            </div>
+          </div>
+          <div class="pain-point-card">
+            <span class="icon">📋</span>
+            <div>
+              <div class="issue">Manual Reporting</div>
+              <div class="impact">
+                2-3 hours per patient spent on documentation and reporting
+              </div>
+            </div>
+          </div>
+          <div class="pain-point-card">
+            <span class="icon">📊</span>
+            <div>
+              <div class="issue">No Standardized Tool</div>
+              <div class="impact">
+                Inconsistent assessment methods across the department
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ===== GOALS ===== -->
+        <div class="section-title">
+          <span class="icon">🎯</span> Goals & Priorities
+        </div>
+        <div class="goals-grid">
+          <div class="goal-card">
+            <span class="icon">🔬</span>
+            <div>
+              <div class="goal-text">
+                Detect Neurodegenerative Diseases Earlier
+              </div>
+              <div class="priority">
+                Priority: <span class="priority-stars">★★★★★</span>
+              </div>
+            </div>
+          </div>
+          <div class="goal-card">
+            <span class="icon">📐</span>
+            <div>
+              <div class="goal-text">Standardize Olfactory Assessment</div>
+              <div class="priority">
+                Priority: <span class="priority-stars">★★★★★</span>
+              </div>
+            </div>
+          </div>
+          <div class="goal-card">
+            <span class="icon">⏱️</span>
+            <div>
+              <div class="goal-text">Reduce Manual Reporting Time</div>
+              <div class="priority">
+                Priority: <span class="priority-stars">★★★★☆</span>
+              </div>
+            </div>
+          </div>
+          <div class="goal-card">
+            <span class="icon">❤️</span>
+            <div>
+              <div class="goal-text">Improve Patient Outcomes</div>
+              <div class="priority">
+                Priority: <span class="priority-stars">★★★★★</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ===== QUOTE ===== -->
+        <div class="quote-section">
+          <div class="quote-text">
+            I need a tool that can screen every patient with olfactory
+            complaints in under 5 minutes. The 12-question assessment and
+            instant risk analysis would revolutionize our early detection
+            program.
+          </div>
+          <div class="quote-author">— Dr. Sarah Chen, Chief of Neurology</div>
+        </div>
+
+        <!-- ===== WHY NEUROCLINIC ===== -->
+        <div class="neuroclinic-section">
+          <h3>💡 Why NeuroClinic?</h3>
+          <p>
+            As Chief of Neurology, I see patients with olfactory dysfunction
+            daily.
+            <span class="highlight"
+              >85% of my patients show olfactory changes</span
+            >
+            that could indicate neurodegenerative disease, yet
+            <span class="highlight">only 15% are properly assessed</span>.
+            <br /><br />
+            NeuroClinic provides a
+            <span class="highlight">5-minute, standardized assessment</span>
+            that screens for 7 neurodegenerative diseases instantly. This allows
+            me to
+            <span class="highlight"
+              >detect Alzheimer's, Parkinson's, and other conditions 5-10 years
+              earlier</span
+            >, when interventions are most effective.
+          </p>
+          <div class="benefits-grid">
+            <div class="benefit-item">
+              <span class="icon">⏱️</span>
+              <div class="text"><strong>5-Minute</strong> Assessment</div>
+            </div>
+            <div class="benefit-item">
+              <span class="icon">🧠</span>
+              <div class="text"><strong>7 Diseases</strong> Analyzed</div>
+            </div>
+            <div class="benefit-item">
+              <span class="icon">📊</span>
+              <div class="text"><strong>Instant</strong> Risk Analysis</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ===== IMPACT ===== -->
+        <div
+          style="
+            background: #f8fafc;
+            border-radius: 12px;
+            padding: 20px 24px;
+            border: 1px solid #e8edf5;
+          "
+        >
+          <div
+            style="
+              font-size: 13px;
+              font-weight: 600;
+              color: #8899aa;
+              text-transform: uppercase;
+              letter-spacing: 0.3px;
+              margin-bottom: 8px;
+            "
+          >
+            📈 Projected Impact with NeuroClinic
+          </div>
+          <div
+            style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px"
+          >
+            <div>
+              <div style="font-size: 20px; font-weight: 700; color: #2e7d32">
+                70%
+              </div>
+              <div style="font-size: 12px; color: #666">Faster Diagnosis</div>
+            </div>
+            <div>
+              <div style="font-size: 20px; font-weight: 700; color: #2e7d32">
+                5-10 Years
+              </div>
+              <div style="font-size: 12px; color: #666">Earlier Detection</div>
+            </div>
+            <div>
+              <div style="font-size: 20px; font-weight: 700; color: #2e7d32">
+                2.5 hrs
+              </div>
+              <div style="font-size: 12px; color: #666">Saved Per Day</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>
